@@ -1320,19 +1320,38 @@
             margin-bottom: 8px;
         }
 
-        .login-form .form-input {
+        .login-form .form-input,
+        .login-form input[type="text"],
+        .login-form input[type="email"],
+        .login-form input[type="password"],
+        .login-form select {
             width: 100%;
             padding: 12px 15px;
             border: 2px solid #e2e8f0;
             border-radius: 10px;
             font-size: 14px;
             transition: all 0.3s;
+            font-family: inherit;
+            background: white;
         }
 
-        .login-form .form-input:focus {
+        .login-form .form-input:focus,
+        .login-form input[type="text"]:focus,
+        .login-form input[type="email"]:focus,
+        .login-form input[type="password"]:focus,
+        .login-form select:focus {
             outline: none;
             border-color: #4299e1;
             box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.1);
+        }
+
+        .login-form select {
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%234a5568' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 15px center;
+            padding-right: 40px;
         }
 
         .btn-block {
@@ -1944,16 +1963,18 @@
     <!-- Toast Notification Container -->
     <div id="toast-container"></div>
 
-    <!-- Login Modal -->
+    <!-- Login/Registration Modal -->
     <div id="login-modal" class="login-modal" style="display: none;">
         <div class="login-container">
             <div class="login-card">
                 <div class="login-header">
                     <img src="MCDlogo.png" alt="MCD Logo" class="login-logo">
                     <h2>MCD Smart Parking System</h2>
-                    <p>Sign in to your account</p>
+                    <p id="modal-subtitle">Sign in to your account</p>
                 </div>
-                <form id="login-form" class="login-form">
+                
+                <!-- Login Form -->
+                <form id="login-form" class="login-form" style="display: none;">
                     <div class="form-group">
                         <label for="login-username">
                             <i class="fas fa-user"></i> Username or Email
@@ -1970,6 +1991,59 @@
                         <i class="fas fa-sign-in-alt"></i> Sign In
                     </button>
                     <div id="login-error" class="error-message" style="display: none;"></div>
+                    <div style="text-align: center; margin-top: 15px;">
+                        <a href="#" id="switch-to-register" style="color: #4299e1; text-decoration: none; font-size: 14px;">
+                            Don't have an account? Register here
+                        </a>
+                    </div>
+                </form>
+
+                <!-- Registration Form -->
+                <form id="register-form" class="login-form" style="display: none;">
+                    <div class="form-group">
+                        <label for="register-fullname">
+                            <i class="fas fa-id-card"></i> Full Name
+                        </label>
+                        <input type="text" id="register-fullname" name="full_name" required autocomplete="name">
+                    </div>
+                    <div class="form-group">
+                        <label for="register-username">
+                            <i class="fas fa-user"></i> Username
+                        </label>
+                        <input type="text" id="register-username" name="username" required autocomplete="username" minlength="3">
+                    </div>
+                    <div class="form-group">
+                        <label for="register-email">
+                            <i class="fas fa-envelope"></i> Email
+                        </label>
+                        <input type="email" id="register-email" name="email" required autocomplete="email">
+                    </div>
+                    <div class="form-group">
+                        <label for="register-password">
+                            <i class="fas fa-lock"></i> Password
+                        </label>
+                        <input type="password" id="register-password" name="password" required autocomplete="new-password" minlength="6">
+                    </div>
+                    <div class="form-group">
+                        <label for="register-role">
+                            <i class="fas fa-user-tag"></i> Role
+                        </label>
+                        <select id="register-role" name="role" required>
+                            <option value="officer">MCD Officer</option>
+                            <option value="contractor">Contractor</option>
+                            <option value="viewer">User/Viewer</option>
+                            <option value="admin">Administrator</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block">
+                        <i class="fas fa-user-plus"></i> Register
+                    </button>
+                    <div id="register-error" class="error-message" style="display: none;"></div>
+                    <div style="text-align: center; margin-top: 15px;">
+                        <a href="#" id="switch-to-login" style="color: #4299e1; text-decoration: none; font-size: 14px;">
+                            Already have an account? Sign in here
+                        </a>
+                    </div>
                 </form>
             </div>
         </div>
@@ -2034,12 +2108,43 @@
             }
         }
 
-        function showLoginModal() {
-            const modal = document.getElementById('login-modal');
-            if (modal) {
-                modal.style.display = 'flex';
-                document.body.style.overflow = 'hidden';
+        async function checkUsersExist() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/auth/check-users`);
+                const data = await response.json();
+                return data.hasUsers || false;
+            } catch (error) {
+                console.error('Error checking users:', error);
+                return true; // Assume users exist if check fails
             }
+        }
+
+        async function showLoginModal() {
+            const modal = document.getElementById('login-modal');
+            if (!modal) return;
+
+            const hasUsers = await checkUsersExist();
+            const loginForm = document.getElementById('login-form');
+            const registerForm = document.getElementById('register-form');
+            const modalSubtitle = document.getElementById('modal-subtitle');
+
+            if (hasUsers) {
+                // Show login form
+                if (loginForm) loginForm.style.display = 'block';
+                if (registerForm) registerForm.style.display = 'none';
+                if (modalSubtitle) modalSubtitle.textContent = 'Sign in to your account';
+            } else {
+                // Show registration form (first user)
+                if (loginForm) loginForm.style.display = 'none';
+                if (registerForm) registerForm.style.display = 'block';
+                if (modalSubtitle) modalSubtitle.textContent = 'Create the first administrator account';
+                // Set default role to admin for first user
+                const roleSelect = document.getElementById('register-role');
+                if (roleSelect) roleSelect.value = 'admin';
+            }
+
+            modal.style.display = 'flex';
+            document.body.style.overflow = 'hidden';
         }
 
         function hideLoginModal() {
@@ -2047,6 +2152,67 @@
             if (modal) {
                 modal.style.display = 'none';
                 document.body.style.overflow = '';
+            }
+        }
+
+        function switchToRegister() {
+            const loginForm = document.getElementById('login-form');
+            const registerForm = document.getElementById('register-form');
+            const modalSubtitle = document.getElementById('modal-subtitle');
+            
+            if (loginForm) loginForm.style.display = 'none';
+            if (registerForm) registerForm.style.display = 'block';
+            if (modalSubtitle) modalSubtitle.textContent = 'Create a new account';
+        }
+
+        function switchToLogin() {
+            const loginForm = document.getElementById('login-form');
+            const registerForm = document.getElementById('register-form');
+            const modalSubtitle = document.getElementById('modal-subtitle');
+            
+            if (loginForm) loginForm.style.display = 'block';
+            if (registerForm) registerForm.style.display = 'none';
+            if (modalSubtitle) modalSubtitle.textContent = 'Sign in to your account';
+        }
+
+        async function register(userData) {
+            try {
+                const response = await fetch(`${API_BASE_URL}/auth/register`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(userData)
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    const errorDiv = document.getElementById('register-error');
+                    if (errorDiv) {
+                        errorDiv.textContent = data.error || 'Registration failed';
+                        errorDiv.style.display = 'block';
+                    }
+                    return false;
+                }
+
+                setAuthToken(data.token);
+                currentUser = data.user;
+                updateUIForRole(currentUser.role);
+                hideLoginModal();
+                showToast('Registration successful! Welcome!', 'success');
+                
+                // Reload data
+                await init();
+                return true;
+            } catch (error) {
+                console.error('Registration error:', error);
+                const errorDiv = document.getElementById('register-error');
+                if (errorDiv) {
+                    errorDiv.textContent = 'Network error. Please try again.';
+                    errorDiv.style.display = 'block';
+                }
+                return false;
             }
         }
 
@@ -2071,8 +2237,8 @@
                     return false;
                 }
 
-                setAuthToken(data.data.token);
-                currentUser = data.data.user;
+                setAuthToken(data.token);
+                currentUser = data.user;
                 updateUIForRole(currentUser.role);
                 hideLoginModal();
                 showToast('Login successful!', 'success');
@@ -3280,8 +3446,9 @@
             }, 30000); // Update every 30 seconds
         }
 
-        // Login Form Handler
+        // Login and Registration Form Handlers
         document.addEventListener('DOMContentLoaded', async () => {
+            // Login Form Handler
             const loginForm = document.getElementById('login-form');
             if (loginForm) {
                 loginForm.addEventListener('submit', async (e) => {
@@ -3304,6 +3471,55 @@
                     if (success) {
                         loginForm.reset();
                     }
+                });
+            }
+
+            // Registration Form Handler
+            const registerForm = document.getElementById('register-form');
+            if (registerForm) {
+                registerForm.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    const errorDiv = document.getElementById('register-error');
+                    if (errorDiv) errorDiv.style.display = 'none';
+
+                    const userData = {
+                        full_name: document.getElementById('register-fullname').value,
+                        username: document.getElementById('register-username').value,
+                        email: document.getElementById('register-email').value,
+                        password: document.getElementById('register-password').value,
+                        role: document.getElementById('register-role').value
+                    };
+
+                    const submitBtn = registerForm.querySelector('button[type="submit"]');
+                    
+                    submitBtn.disabled = true;
+                    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Registering...';
+                    
+                    const success = await register(userData);
+                    
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = '<i class="fas fa-user-plus"></i> Register';
+                    
+                    if (success) {
+                        registerForm.reset();
+                    }
+                });
+            }
+
+            // Switch between login and registration
+            const switchToRegisterLink = document.getElementById('switch-to-register');
+            if (switchToRegisterLink) {
+                switchToRegisterLink.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    switchToRegister();
+                });
+            }
+
+            const switchToLoginLink = document.getElementById('switch-to-login');
+            if (switchToLoginLink) {
+                switchToLoginLink.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    switchToLogin();
                 });
             }
 

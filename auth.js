@@ -137,8 +137,30 @@ router.post('/login', async (req, res) => {
 router.get('/me', authenticate, async (req, res) => {
   res.json({
     success: true,
-    user: req.user.toSafeObject()
+    data: req.user.toSafeObject()
   });
+});
+
+/**
+ * ✅ CHECK IF USERS EXIST
+ * GET /api/auth/check-users
+ * Public endpoint to check if any users are registered
+ */
+router.get('/check-users', async (req, res) => {
+  try {
+    const userCount = await User.count();
+    res.json({
+      success: true,
+      hasUsers: userCount > 0,
+      count: userCount
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: 'Failed to check users',
+      message: error.message
+    });
+  }
 });
 
 module.exports = router;
