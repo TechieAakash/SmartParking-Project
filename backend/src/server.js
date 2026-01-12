@@ -1,0 +1,182 @@
+/**
+ * Server Initialization
+ * Starts the Express server and connects to database
+ */
+
+const app = require('./app');
+const config = require('./config/env');
+const { testConnection, sequelize } = require('./config/database');
+
+// Handle uncaught exceptions
+process.on('uncaughtException', (error) => {
+  console.error('❌ UNCAUGHT EXCEPTION! Shutting down...');
+  console.error(error.name, error.message);
+  process.exit(1);
+});
+
+let server;
+
+const startServer = async () => {
+  try {
+    // Test database connection
+    const isConnected = await testConnection();
+    
+    if (!isConnected) {
+      console.error('❌ Failed to connect to database. Please check your configuration.');
+      process.exit(1);
+    }
+
+    // Sync database models
+    if (config.nodeEnv === 'development') {
+      console.log('🔄 Synchronizing database (Updating schema)...');
+      
+      await sequelize.query('SET FOREIGN_KEY_CHECKS = 0');
+      // Use standard sync to avoid foreign key issues during development startup
+      await sequelize.sync();
+      await sequelize.query('SET FOREIGN_KEY_CHECKS = 1');
+      console.log('✅ Database schema updated');
+      
+      // Seed Data if needed
+      const { User, ParkingZone, Setting, Violation } = require('./models');
+      const userCount = await User.count();
+      
+      if (userCount === 0) {
+        console.log('🌱 Seeding initial data...');
+        const bcrypt = require('bcryptjs');
+        // ... (rest of seeding remains same or slightly modified for brevity)
+
+      // 1. Create Users
+      console.log('👤 Hashing password...');
+      const hashedPass = await bcrypt.hash('admin123', 10);
+      console.log('👤 Creating users...');
+      await User.bulkCreate([
+        { username: 'admin', email: 'admin@smartparking.com', passwordHash: hashedPass, fullName: 'MCD Administrator', role: 'admin' },
+        { username: 'officer1', email: 'officer1@mcd.gov.in', passwordHash: hashedPass, fullName: 'Rajesh Kumar', role: 'officer' },
+        { username: 'viewer1', email: 'viewer@gmail.com', passwordHash: hashedPass, fullName: 'General Visitor', role: 'viewer' }
+      ]);
+      console.log('✅ Standard accounts created');
+
+      // 2. Create 10+ Zones from User SQL
+      const zones = await ParkingZone.bulkCreate([
+        { name: 'Downtown Central Parking', address: 'Connaught Place, Delhi', latitude: 28.6328, longitude: 77.2197, totalCapacity: 200, currentOccupancy: 185, contractorLimit: 180, contractorName: 'City Contractors Inc.', contractorContact: '+1-555-0101', hourlyRate: 60.00, penaltyPerVehicle: 750.00 },
+        { name: 'Mall Plaza Parking', address: 'Select Citywalk, Saket, Delhi', latitude: 28.5283, longitude: 77.2185, totalCapacity: 500, currentOccupancy: 475, contractorLimit: 450, contractorName: 'Mall Management Group', contractorContact: '+1-555-0102', hourlyRate: 70.00, penaltyPerVehicle: 850.00 },
+        { name: 'Tech Park Zone A', address: 'Okhla Industrial Estate, Delhi', latitude: 28.5358, longitude: 77.2732, totalCapacity: 300, currentOccupancy: 275, contractorLimit: 250, contractorName: 'Tech Park Authority', contractorContact: '+1-555-0103', hourlyRate: 80.00, penaltyPerVehicle: 1000.00 },
+        { name: 'University North Campus', address: 'North Campus, DU, Delhi', latitude: 28.6892, longitude: 77.2106, totalCapacity: 400, currentOccupancy: 320, contractorLimit: 350, contractorName: 'University Services', contractorContact: '+1-555-0104', hourlyRate: 40.00, penaltyPerVehicle: 500.00 },
+        { name: 'Hospital Emergency Parking', address: 'AIIMS, Ansari Nagar, Delhi', latitude: 28.5672, longitude: 77.2100, totalCapacity: 150, currentOccupancy: 140, contractorLimit: 120, contractorName: 'Hospital Admin', contractorContact: '+1-555-0105', hourlyRate: 30.00, penaltyPerVehicle: 1000.00 },
+        { name: 'Airport Terminal A', address: 'IGI Airport, Terminal 3, Delhi', latitude: 28.5562, longitude: 77.1000, totalCapacity: 800, currentOccupancy: 650, contractorLimit: 700, contractorName: 'Airport Authority', contractorContact: '+1-555-0106', hourlyRate: 100.00, penaltyPerVehicle: 1500.00 },
+        { name: 'Stadium West Parking', address: 'Jawaharlal Nehru Stadium, Delhi', latitude: 28.5828, longitude: 77.2344, totalCapacity: 1000, currentOccupancy: 450, contractorLimit: 800, contractorName: 'Stadium Management', contractorContact: '+1-555-0107', hourlyRate: 90.00, penaltyPerVehicle: 1200.00 },
+        { name: 'Business District Parking', address: 'Nehru Place, Delhi', latitude: 28.5494, longitude: 77.2515, totalCapacity: 350, currentOccupancy: 300, contractorLimit: 300, contractorName: 'Business District Corp', contractorContact: '+1-555-0108', hourlyRate: 75.00, penaltyPerVehicle: 900.00 },
+        { name: 'Shopping Center Parking', address: 'Karol Bagh, Delhi', latitude: 28.6441, longitude: 77.1882, totalCapacity: 600, currentOccupancy: 520, contractorLimit: 500, contractorName: 'Retail Management', contractorContact: '+1-555-0109', hourlyRate: 65.00, penaltyPerVehicle: 800.00 },
+        { name: 'Residential Complex Parking', address: 'Rohini Sector 15, Delhi', latitude: 28.7299, longitude: 77.1215, totalCapacity: 250, currentOccupancy: 180, contractorLimit: 200, contractorName: 'Residential Association', contractorContact: '+1-555-0110', hourlyRate: 45.00, penaltyPerVehicle: 600.00 }
+      ]);
+      console.log('🅿️ 10 Custom Parking Zones seeded from SQL script');
+
+      // 3. Create Sample Violations from User SQL
+      const zoneIds = zones.reduce((acc, z) => ({ ...acc, [z.name]: z.id }), {});
+      const { Violation } = require('./models');
+      
+      await Violation.bulkCreate([
+        { zoneId: zoneIds['Downtown Central Parking'], severity: 'critical', excessVehicles: 15, penaltyAmount: 11250.00, status: 'pending', autoGenerated: true, uniqueCode: 'VIO-SQL-001' },
+        { zoneId: zoneIds['Mall Plaza Parking'], severity: 'critical', excessVehicles: 25, penaltyAmount: 21250.00, status: 'pending', autoGenerated: true, uniqueCode: 'VIO-SQL-002' },
+        { zoneId: zoneIds['Tech Park Zone A'], severity: 'critical', excessVehicles: 25, penaltyAmount: 25000.00, status: 'pending', autoGenerated: true, uniqueCode: 'VIO-SQL-003' },
+        { zoneId: zoneIds['Hospital Emergency Parking'], severity: 'critical', excessVehicles: 20, penaltyAmount: 20000.00, status: 'resolved', isPaid: true, resolvedAt: new Date(), autoGenerated: true, uniqueCode: 'VIO-SQL-004' },
+        { zoneId: zoneIds['Airport Terminal A'], severity: 'warning', excessVehicles: 10, penaltyAmount: 15000.00, status: 'resolved', isPaid: true, resolvedAt: new Date(), autoGenerated: true, uniqueCode: 'VIO-SQL-005' },
+        { zoneId: zoneIds['Downtown Central Parking'], severity: 'warning', excessVehicles: 5, penaltyAmount: 3750.00, status: 'pending', autoGenerated: true, uniqueCode: 'VIO-SQL-006' }
+      ]);
+      console.log('⚠️ 6 Sample Violations seeded from SQL script');
+
+        await Setting.create({ 
+          settingKey: 'system_name', 
+          settingValue: 'MCD Smart Parking', 
+          settingType: 'string', 
+          category: 'general' 
+        });
+        console.log('✨ System Seeding Complete');
+      } else {
+        console.log('📊 Database already contains data, skipping seeding');
+      }
+      
+      // 4. Seed Valid Officer Badges (Independent Check)
+      const { ValidOfficerBadge } = require('./models');
+      const badgeCount = await ValidOfficerBadge.count();
+      if (badgeCount === 0) {
+        console.log('🌱 Seeding Valid Officer Badges...');
+        const badges = [];
+        for (let i = 1001; i <= 1050; i++) {
+          badges.push({ badgeId: `MCD-OFF-${i}` });
+        }
+        await ValidOfficerBadge.bulkCreate(badges);
+        console.log('✅ Seeded 50 Officer Badges');
+      }
+    }
+
+    // Start server with port error handling
+    server = app.listen(config.port, () => {
+      console.log('');
+      console.log('🚀 ============================================');
+      console.log('   Smart Parking Management System');
+      console.log('============================================ 🚀');
+      console.log('');
+      console.log(`📡 Server running in ${config.nodeEnv} mode`);
+      console.log(`🌐 URL: http://localhost:${config.port}`);
+      console.log(`📊 API: http://localhost:${config.port}/api`);
+      console.log(`💚 Health: http://localhost:${config.port}/api/health`);
+      console.log('');
+      console.log('Press CTRL+C to stop');
+      console.log('');
+    });
+
+    server.on('error', (error) => {
+      if (error.code === 'EADDRINUSE') {
+        console.error(`❌ Port ${config.port} is already in use.`);
+        console.log('Attempting to recover in 3 seconds...');
+        setTimeout(() => {
+          process.exit(1); // Exit to let nodemon restart or just retry? Let's just exit and let nodemon handle.
+        }, 3000);
+      } else {
+        console.error('❌ Server error:', error);
+      }
+    });
+
+  } catch (error) {
+    console.error('❌ Error starting server:', error);
+    process.exit(1);
+  }
+};
+
+// Handle unhandled promise rejections
+process.on('unhandledRejection', (error) => {
+  console.error('❌ UNHANDLED REJECTION! Shutting down...');
+  console.error(error);
+  
+  if (server) {
+    server.close(() => {
+      process.exit(1);
+    });
+  } else {
+    process.exit(1);
+  }
+});
+
+// Graceful shutdown
+process.on('SIGTERM', () => {
+  console.log('👋 SIGTERM received. Shutting down gracefully...');
+  
+  if (server) {
+    server.close(async () => {
+      console.log('💤 Server closed');
+      
+      try {
+        await sequelize.close();
+        console.log('💤 Database connection closed');
+      } catch (error) {
+        console.error('❌ Error closing database:', error.message);
+      }
+      
+      process.exit(0);
+    });
+  }
+});
+
+// Start the server
+startServer();
