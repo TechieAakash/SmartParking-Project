@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MCD Certified Contractor Program</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        :root {
+            --mcd-navy: #1a2980;
+            --mcd-gold: #fbbf24;
+            --mcd-silver: #94a3b8;
+            --mcd-bronze: #b45309;
+        }
+
+        body {
+            background: #f8fafc;
+            color: #1e293b;
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+        }
+
+        .hero {
+            background: linear-gradient(135deg, rgba(26, 41, 128, 0.9) 0%, rgba(38, 208, 206, 0.8) 100%), url('contractors.png');
+            background-size: cover;
+            background-position: center;
+            padding: 100px 40px;
+            text-align: center;
+            color: white;
+            clip-path: polygon(0 0, 100% 0, 100% 90%, 0% 100%);
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 60px 20px;
+        }
+
+        .tier-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 50px;
+        }
+
+        .tier-card {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            border: 1px solid #e2e8f0;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .tier-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .tier-icon {
+            font-size: 50px;
+            margin-bottom: 20px;
+        }
+
+        .tier-card.gold {
+            border-top: 6px solid var(--mcd-gold);
+        }
+
+        .tier-card.silver {
+            border-top: 6px solid var(--mcd-silver);
+        }
+
+        .tier-card.bronze {
+            border-top: 6px solid var(--mcd-bronze);
+        }
+
+        .info-section {
+            background: white;
+            border-radius: 24px;
+            padding: 50px;
+            border: 1px solid #e2e8f0;
+            margin-bottom: 60px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02);
+        }
+
+        .tag {
+            background: #eff6ff;
+            color: #3b82f6;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 700;
+            display: inline-block;
+            margin-bottom: 20px;
+        }
+
+        .btn-portal {
+            background: var(--mcd-navy);
+            color: white;
+            padding: 15px 40px;
+            border-radius: 30px;
+            font-weight: 800;
+            border: none;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="hero">
+        <h1 style="font-size: 56px; font-weight: 900; margin-bottom: 20px;">Join the Certified <br><span
+                style="color: var(--mcd-gold);">Contractor Network</span></h1>
+        <p style="font-size: 20px; max-width: 700px; margin: 0 auto; opacity: 0.9;">Partner with MCD to install and
+            maintain the backbone of Delhi's Smart Parking infrastructure.</p>
+    </div>
+
+    <div class="container">
+        <section class="info-section">
+            <div class="tag">Installation & Maintenance</div>
+            <h2 style="font-size: 32px; font-weight: 900; margin-bottom: 25px;">Become a Local Lifecycle Partner</h2>
+            <p style="font-size: 18px; color: #64748b; margin-bottom: 30px;">
+                As the MCD transitions to 100% digital parking, we require professional local teams to manage sensor
+                installation, hardware maintenance, and point-of-fault reporting. Through our **Tiered Partnership
+                Program**, your company can scale alongside Delhi's growth.
+            </p>
+            <div style="display: flex; gap: 40px; flex-wrap: wrap;">
+                <div style="flex: 1; min-width: 250px;">
+                    <h3 style="font-weight: 800; margin-bottom: 15px;"><i class="fas fa-tools"
+                            style="color: #3b82f6;"></i> Dig & Deploy</h3>
+                    <p style="color: #64748b;">Specialized training for burying geomagnetic sensors and mounting AI
+                        vision cameras.</p>
+                </div>
+                <div style="flex: 1; min-width: 250px;">
+                    <h3 style="font-weight: 800; margin-bottom: 15px;"><i class="fas fa-mobile-alt"
+                            style="color: #3b82f6;"></i> Contractor App</h3>
+                    <p style="color: #64748b;">A dedicated portal for real-time fault reporting, maintenance ticket
+                        tracking, and automated billing.</p>
+                </div>
+            </div>
+        </section>
+
+        <h2 style="text-align: center; font-size: 32px; font-weight: 900;">Choose Your Partnership Tier</h2>
+        <div class="tier-grid">
+            <div class="tier-card bronze">
+                <div class="tier-icon" style="color: var(--mcd-bronze);"><i class="fas fa-shield-alt"></i></div>
+                <h3 style="font-size: 24px; font-weight: 800;">Bronze Partner</h3>
+                <p style="color: #64748b; margin: 15px 0 25px;">Manage up to 5 Parking Zones</p>
+                <ul style="text-align: left; padding: 0; list-style: none; color: #475569; margin-bottom: 30px;">
+                    <li><i class="fas fa-check" style="color: #10b981;"></i> Standard Repair SLA</li>
+                    <li><i class="fas fa-check" style="color: #10b981;"></i> Basic Maintenance App</li>
+                    <li><i class="fas fa-check" style="color: #10b981;"></i> Monthly Payouts</li>
+                </ul>
+                <button class="btn" style="width: 100%;" onclick="window.close()">Apply Now</button>
+            </div>
+            <div class="tier-card gold"
+                style="transform: scale(1.05); z-index: 10; box-shadow: 0 25px 50px rgba(0,0,0,0.1);">
+                <div
+                    style="position: absolute; top: 15px; right: -30px; background: var(--mcd-gold); color: #000; padding: 5px 40px; transform: rotate(45deg); font-weight: 900; font-size: 12px;">
+                    REGULATED</div>
+                <div class="tier-icon" style="color: var(--mcd-gold);"><i class="fas fa-crown"></i></div>
+                <h3 style="font-size: 24px; font-weight: 800;">Gold Partner</h3>
+                <p style="color: #64748b; margin: 15px 0 25px;">Unlimited Zone Capacity</p>
+                <ul style="text-align: left; padding: 0; list-style: none; color: #475569; margin-bottom: 30px;">
+                    <li><i class="fas fa-check" style="color: #10b981;"></i> Priority Procurement Queue</li>
+                    <li><i class="fas fa-check" style="color: #10b981;"></i> Advanced Fault Prediction Tools</li>
+                    <li><i class="fas fa-check" style="color: #10b981;"></i> Quarterly Performance Bonus</li>
+                    <li><i class="fas fa-check" style="color: #10b981;"></i> MCD Board Seat Advisory</li>
+                </ul>
+                <button class="btn" style="width: 100%; background: var(--mcd-navy); color: #fff;"
+                    onclick="window.close()">Apply Premium</button>
+            </div>
+            <div class="tier-card silver">
+                <div class="tier-icon" style="color: var(--mcd-silver);"><i class="fas fa-medal"></i></div>
+                <h3 style="font-size: 24px; font-weight: 800;">Silver Partner</h3>
+                <p style="color: #64748b; margin: 15px 0 25px;">Manage up to 20 Parking Zones</p>
+                <ul style="text-align: left; padding: 0; list-style: none; color: #475569; margin-bottom: 30px;">
+                    <li><i class="fas fa-check" style="color: #10b981;"></i> 24-Hour Maintenance SLA</li>
+                    <li><i class="fas fa-check" style="color: #10b981;"></i> Bi-Weekly Payouts</li>
+                    <li><i class="fas fa-check" style="color: #10b981;"></i> Spare Hardware Inventory</li>
+                </ul>
+                <button class="btn" style="width: 100%;" onclick="window.close()">Apply Now</button>
+            </div>
+        </div>
+
+        <div style="text-align: center; margin-top: 80px;">
+            <button class="btn-portal" onclick="window.close()">
+                <i class="fas fa-external-link-alt"></i> Access Contractor Dashboard
+            </button>
+        </div>
+    </div>
+</body>
+
+</html>

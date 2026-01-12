@@ -1,0 +1,966 @@
+<!-- Enhanced Authentication & Kuro Chatbot Components -->
+
+<!-- Enhanced Login/Register Modal -->
+<style>
+    /* Enhanced Modal Styles */
+    .auth-modal {
+        display: none;
+        position: fixed;
+        z-index: 3000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.7);
+        backdrop-filter: blur(8px);
+        animation: fadeIn 0.3s ease;
+    }
+
+    .auth-modal.active {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .auth-modal-content {
+        background: white;
+        border-radius: 20px;
+        max-width: 480px;
+        width: 90%;
+        max-height: 90vh;
+        overflow-y: auto;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        animation: slideUp 0.4s ease;
+    }
+
+    @keyframes slideUp {
+        from {
+            transform: translateY(50px);
+            opacity: 0;
+        }
+
+        to {
+            transform: translateY(0);
+            opacity: 1;
+        }
+    }
+
+    .auth-modal-header {
+        background: linear-gradient(135deg, #1a2980, #26d0ce);
+        color: white;
+        padding: 24px;
+        text-align: center;
+        border-radius: 20px 20px 0 0;
+    }
+
+    .auth-modal-body {
+        padding: 28px;
+    }
+
+    .auth-tab-buttons {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 24px;
+        background: #f7fafc;
+        padding: 6px;
+        border-radius: 12px;
+    }
+
+    .auth-tab-btn {
+        flex: 1;
+        padding: 12px;
+        border: none;
+        background: transparent;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s;
+        color: #4a5568;
+    }
+
+    .auth-tab-btn.active {
+        background: white;
+        color: #1a2980;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .auth-form {
+        display: none;
+    }
+
+    .auth-form.active {
+        display: block;
+        animation: fadeIn 0.3s ease;
+    }
+
+    .form-group {
+        margin-bottom: 18px;
+    }
+
+    .form-label {
+        display: block;
+        font-size: 13px;
+        font-weight: 600;
+        color: #4a5568;
+        margin-bottom: 6px;
+    }
+
+    .form-label .required {
+        color: #e53e3e;
+    }
+
+    .form-input {
+        width: 100%;
+        padding: 12px 14px;
+        border: 2px solid #e2e8f0;
+        border-radius: 10px;
+        font-size: 14px;
+        transition: all 0.3s;
+        font-family: inherit;
+    }
+
+    .form-input:focus {
+        outline: none;
+        border-color: #4299e1;
+        box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.1);
+    }
+
+    .form-input:disabled {
+        background: #f7fafc;
+        cursor: not-allowed;
+    }
+
+    .form-select {
+        appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%234a5568' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 12px center;
+        padding-right: 40px;
+    }
+
+    .password-strength {
+        margin-top: 6px;
+        height: 4px;
+        background: #e2e8f0;
+        border-radius: 2px;
+        overflow: hidden;
+    }
+
+    .password-strength-bar {
+        height: 100%;
+        width: 0%;
+        transition: all 0.3s;
+    }
+
+    .password-strength-bar.weak {
+        width: 33%;
+        background: #e53e3e;
+    }
+
+    .password-strength-bar.medium {
+        width: 66%;
+        background: #ed8936;
+    }
+
+    .password-strength-bar.strong {
+        width: 100%;
+        background: #38a169;
+    }
+
+    .password-strength-text {
+        font-size: 11px;
+        margin-top: 4px;
+        font-weight: 500;
+    }
+
+    .form-help-text {
+        font-size: 11px;
+        color: #718096;
+        margin-top: 4px;
+    }
+
+    .conditional-field {
+        display: none;
+        animation: fadeIn 0.3s ease;
+    }
+
+    .conditional-field.show {
+        display: block;
+    }
+
+    /* Kuro Chatbot Styles */
+    .chatbot-fab {
+        position: fixed;
+        bottom: 24px;
+        right: 24px;
+        width: 60px;
+        height: 60px;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        transition: all 0.3s;
+        z-index: 2500;
+    }
+
+    .chatbot-fab:hover {
+        transform: scale(1.1) rotate(10deg);
+        box-shadow: 0 8px 30px rgba(102, 126, 234, 0.6);
+    }
+
+    .chatbot-fab i {
+        font-size: 28px;
+        color: white;
+    }
+
+    .bot-badge {
+        position: absolute;
+        top: -5px;
+        right: -5px;
+        background: #fc8181;
+        color: white;
+        font-size: 9px;
+        padding: 3px 6px;
+        border-radius: 10px;
+        font-weight: 700;
+    }
+
+    .chat-window {
+        position: fixed;
+        bottom: 100px;
+        right: 24px;
+        width: 400px;
+        height: 600px;
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+        display: none;
+        flex-direction: column;
+        z-index: 2500;
+        animation: slideUp 0.3s ease;
+    }
+
+    .chat-window.active {
+        display: flex;
+    }
+
+    .chat-window.minimized {
+        height: 60px;
+    }
+
+    .chat-header {
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        color: white;
+        padding: 16px;
+        border-radius: 16px 16px 0 0;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .bot-avatar {
+        width: 40px;
+        height: 40px;
+        background: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+    }
+
+    .bot-info {
+        flex: 1;
+    }
+
+    .bot-info h4 {
+        margin: 0;
+        font-size: 16px;
+    }
+
+    .bot-status {
+        font-size: 11px;
+        opacity: 0.9;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+    }
+
+    .bot-status::before {
+        content: '';
+        width: 8px;
+        height: 8px;
+        background: #68d391;
+        border-radius: 50%;
+        display: inline-block;
+        animation: pulse 2s infinite;
+    }
+
+    .chat-controls {
+        display: flex;
+        gap: 8px;
+    }
+
+    .chat-controls button {
+        background: rgba(255, 255, 255, 0.2);
+        border: none;
+        color: white;
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        cursor: pointer;
+        font-size: 18px;
+        transition: all 0.2s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .chat-controls button:hover {
+        background: rgba(255, 255, 255, 0.3);
+    }
+
+    .chat-messages {
+        flex: 1;
+        overflow-y: auto;
+        padding: 16px;
+        background: #f7fafc;
+    }
+
+    .chat-message {
+        margin-bottom: 12px;
+        animation: fadeIn 0.3s ease;
+    }
+
+    .message-bubble {
+        max-width: 75%;
+        padding: 10px 14px;
+        border-radius: 12px;
+        font-size: 14px;
+        line-height: 1.5;
+        word-wrap: break-word;
+    }
+
+    .message-bubble.bot {
+        background: white;
+        color: #2d3748;
+        border-bottom-left-radius: 4px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .message-bubble.user {
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        color: white;
+        margin-left: auto;
+        border-bottom-right-radius: 4px;
+    }
+
+    .message-timestamp {
+        font-size: 10px;
+        color: #a0aec0;
+        margin-top: 4px;
+    }
+
+    .chat-typing {
+        display: none;
+        padding: 10px 14px;
+        background: white;
+        border-radius: 12px;
+        width: fit-content;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .chat-typing.active {
+        display: block;
+        animation: fadeIn 0.3s ease;
+    }
+
+    .typing-dot {
+        display: inline-block;
+        width: 8px;
+        height: 8px;
+        background: #a0aec0;
+        border-radius: 50%;
+        margin: 0 2px;
+        animation: typingDot 1.4s infinite;
+    }
+
+    .typing-dot:nth-child(2) {
+        animation-delay: 0.2s;
+    }
+
+    .typing-dot:nth-child(3) {
+        animation-delay: 0.4s;
+    }
+
+    @keyframes typingDot {
+
+        0%,
+        60%,
+        100% {
+            transform: translateY(0);
+        }
+
+        30% {
+            transform: translateY(-10px);
+        }
+    }
+
+    .quick-replies {
+        padding: 0 16px 8px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        background: #f7fafc;
+    }
+
+    .quick-reply-btn {
+        background: white;
+        border: 2px solid #e2e8f0;
+        padding: 6px 12px;
+        border-radius: 16px;
+        font-size: 12px;
+        cursor: pointer;
+        transition: all 0.2s;
+        color: #4a5568;
+        font-weight: 500;
+    }
+
+    .quick-reply-btn:hover {
+        border-color: #667eea;
+        color: #667eea;
+        transform: translateY(-2px);
+    }
+
+    .chat-input-area {
+        padding: 12px;
+        background: white;
+        border-radius: 0 0 16px 16px;
+        display: flex;
+        gap: 8px;
+        border-top: 1px solid #e2e8f0;
+    }
+
+    .chat-input {
+        flex: 1;
+        padding: 10px 14px;
+        border: 2px solid #e2e8f0;
+        border-radius: 20px;
+        font-size: 14px;
+        outline: none;
+        font-family: inherit;
+    }
+
+    .chat-input:focus {
+        border-color: #667eea;
+    }
+
+    .chat-send-btn {
+        width: 40px;
+        height: 40px;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        border: none;
+        border-radius: 50%;
+        color: white;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s;
+    }
+
+    .chat-send-btn:hover {
+        transform: scale(1.1);
+    }
+
+    .chat-send-btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+
+    /* Mobile Responsive */
+    @media (max-width: 768px) {
+        .chat-window {
+            width: 100%;
+            height: 100%;
+            bottom: 0;
+            right: 0;
+            border-radius: 0;
+        }
+
+        .chat-header {
+            border-radius: 0;
+        }
+
+        .chatbot-fab {
+            bottom: 16px;
+            right: 16px;
+            width: 56px;
+            height: 56px;
+        }
+    }
+</style>
+
+<!-- Enhanced Login/Register Modal HTML -->
+<div id="enhanced-auth-modal" class="auth-modal">
+    <div class="auth-modal-content">
+        <div class="auth-modal-header">
+            <img src="MCDlogo.png" alt="MCD Logo" style="width: 64px; margin-bottom: 12px;">
+            <h2 style="margin: 0; font-size: 24px;">MCD Smart Parking</h2>
+            <p style="margin: 8px 0 0 0; opacity: 0.9; font-size: 14px;">Secure Access Portal</p>
+        </div>
+
+        <div class="auth-modal-body">
+            <div class="auth-tab-buttons">
+                <button class="auth-tab-btn active" onclick="switchAuthTab('login')">
+                    <i class="fas fa-sign-in-alt"></i> Login
+                </button>
+                <button class="auth-tab-btn" onclick="switchAuthTab('register')">
+                    <i class="fas fa-user-plus"></i> Register
+                </button>
+            </div>
+
+            <!-- Login Form -->
+            <form id="enhanced-login-form" class="auth-form active" onsubmit="handleEnhancedLogin(event)">
+                <div class="form-group">
+                    <label class="form-label">Email or Username <span class="required">*</span></label>
+                    <input type="text" class="form-input" id="elogin-identifier" required
+                        placeholder="Enter your email or username">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Password <span class="required">*</span></label>
+                    <input type="password" class="form-input" id="elogin-password" required
+                        placeholder="Enter your password">
+                </div>
+
+                <button type="submit" class="btn btn-primary" id="elogin-btn"
+                    style="width: 100%; justify-content: center;">
+                    <i class="fas fa-lock"></i> Login Securely
+                </button>
+
+                <p style="text-align: center; margin-top: 16px; font-size: 12px; color: #718096;">
+                    <i class="fas fa-info-circle"></i> Demo: admin / admin123
+                </p>
+            </form>
+
+            <!-- Register Form -->
+            <form id="enhanced-register-form" class="auth-form" onsubmit="handleEnhancedRegister(event)">
+                <div class="form-group">
+                    <label class="form-label">Full Name <span class="required">*</span></label>
+                    <input type="text" class="form-input" id="reg-fullname" required placeholder="Enter your full name">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Email <span class="required">*</span></label>
+                    <input type="email" class="form-input" id="reg-email" required placeholder="your.email@example.com">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Username <span class="required">*</span></label>
+                    <input type="text" class="form-input" id="reg-username" required placeholder="Choose a username">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Phone</label>
+                    <input type="tel" class="form-input" id="reg-phone" placeholder="+91 XXXXXXXXXX">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Select Role <span class="required">*</span></label>
+                    <select class="form-input form-select" id="reg-role" required onchange="handleRoleChange()">
+                        <option value="">Choose your role...</option>
+                        <option value="viewer">Viewer (Read-only access)</option>
+                        <option value="user">User (Standard access)</option>
+                        <option value="officer">MCD Officer (Requires Badge)</option>
+                    </select>
+                </div>
+
+                <div id="officer-fields" class="conditional-field">
+                    <div class="form-group">
+                        <label class="form-label">Officer Badge ID <span class="required">*</span></label>
+                        <input type="text" class="form-input" id="reg-badge" placeholder="MCD-OFF-1001"
+                            pattern="MCD-OFF-\d{4}">
+                        <p class="form-help-text">
+                            <i class="fas fa-info-circle"></i> Format: MCD-OFF-XXXX (e.g., MCD-OFF-1001)
+                        </p>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Department <span class="required">*</span></label>
+                        <select class="form-input form-select" id="reg-department">
+                            <option value="">Select department...</option>
+                            <option value="Enforcement">Enforcement</option>
+                            <option value="Operations">Operations</option>
+                            <option value="Administration">Administration</option>
+                            <option value="IT">IT & Technical</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Password <span class="required">*</span></label>
+                    <input type="password" class="form-input" id="reg-password" required
+                        placeholder="Create a strong password" oninput="checkPasswordStrength()">
+                    <div class="password-strength">
+                        <div id="password-strength-bar" class="password-strength-bar"></div>
+                    </div>
+                    <p id="password-strength-text" class="password-strength-text"></p>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Confirm Password <span class="required">*</span></label>
+                    <input type="password" class="form-input" id="reg-confirm-password" required
+                        placeholder="Re-enter your password">
+                </div>
+
+                <button type="submit" class="btn btn-success" id="register-btn"
+                    style="width: 100%; justify-content: center;">
+                    <i class="fas fa-user-check"></i> Create Account
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Kuro Chatbot HTML -->
+<div class="chatbot-fab" onclick="toggleKuroChat()">
+    <i class="fas fa-robot"></i>
+    <span class="bot-badge">Kuro</span>
+</div>
+
+<div id="kuro-chat-window" class="chat-window">
+    <div class="chat-header">
+        <div class="bot-avatar">🤖</div>
+        <div class="bot-info">
+            <h4>Kuro AI</h4>
+            <span class="bot-status">Online</span>
+        </div>
+        <div class="chat-controls">
+            <button onclick="minimizeKuroChat()" title="Minimize">
+                <i class="fas fa-minus"></i>
+            </button>
+            <button onclick="closeKuroChat()" title="Close">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+    </div>
+
+    <div class="chat-messages" id="kuro-messages">
+        <div class="chat-message">
+            <div class="message-bubble bot">
+                👋 Hello! I'm Kuro, your MCD Smart Parking assistant. I can help you with parking rules, violations,
+                payments, and more. How can I assist you today?
+            </div>
+        </div>
+    </div>
+
+    <div class="chat-typing" id="kuro-typing">
+        <span class="typing-dot"></span>
+        <span class="typing-dot"></span>
+        <span class="typing-dot"></span>
+    </div>
+
+    <div class="quick-replies" id="kuro-quick-replies">
+        <button class="quick-reply-btn" onclick="sendQuickReply('Parking rules')">
+            <i class="fas fa-parking"></i> Parking rules
+        </button>
+        <button class="quick-reply-btn" onclick="sendQuickReply('How to register?')">
+            <i class="fas fa-user-plus"></i> Register
+        </button>
+        <button class="quick-reply-btn" onclick="sendQuickReply('View violations')">
+            <i class="fas fa-exclamation-triangle"></i> Violations
+        </button>
+    </div>
+
+    <div class="chat-input-area">
+        <input type="text" class="chat-input" id="kuro-chat-input" placeholder="Ask Kuro anything..."
+            onkeypress="handleChatKeyPress(event)">
+        <button class="chat-send-btn" id="kuro-send-btn" onclick="sendKuroMessage()">
+            <i class="fas fa-paper-plane"></i>
+        </button>
+    </div>
+</div>
+
+<script>
+    // Kuro Chatbot State
+    let kuroSessionId = null;
+    let kuroLanguage = 'en';
+
+    // Authentication Tab Switching
+    function switchAuthTab(tab) {
+        document.querySelectorAll('.auth-tab-btn').forEach(btn => btn.classList.remove('active'));
+        document.querySelectorAll('.auth-form').forEach(form => form.classList.remove('active'));
+
+        if (tab === 'login') {
+            document.querySelectorAll('.auth-tab-btn')[0].classList.add('active');
+            document.getElementById('enhanced-login-form').classList.add('active');
+        } else {
+            document.querySelectorAll('.auth-tab-btn')[1].classList.add('active');
+            document.getElementById('enhanced-register-form').classList.add('active');
+        }
+    }
+
+    // Handle Role Change
+    function handleRoleChange() {
+        const role = document.getElementById('reg-role').value;
+        const officerFields = document.getElementById('officer-fields');
+        const badgeInput = document.getElementById('reg-badge');
+        const deptSelect = document.getElementById('reg-department');
+
+        if (role === 'officer') {
+            officerFields.classList.add('show');
+            badgeInput.required = true;
+            deptSelect.required = true;
+        } else {
+            officerFields.classList.remove('show');
+            badgeInput.required = false;
+            deptSelect.required = false;
+        }
+    }
+
+    // Password Strength Checker
+    function checkPasswordStrength() {
+        const password = document.getElementById('reg-password').value;
+        const strengthBar = document.getElementById('password-strength-bar');
+        const strengthText = document.getElementById('password-strength-text');
+
+        let strength = 0;
+        if (password.length >= 8) strength++;
+        if (/[a-z]/.test(password) && /[A-Z]/.test(password)) strength++;
+        if (/\d/.test(password)) strength++;
+        if (/[^a-zA-Z0-9]/.test(password)) strength++;
+
+        strengthBar.className = 'password-strength-bar';
+        if (strength <= 1) {
+            strengthBar.classList.add('weak');
+            strengthText.textContent = '❌ Weak password';
+            strengthText.style.color = '#e53e3e';
+        } else if (strength <= 3) {
+            strengthBar.classList.add('medium');
+            strengthText.textContent = '⚠️ Medium strength';
+            strengthText.style.color = '#ed8936';
+        } else {
+            strengthBar.classList.add('strong');
+            strengthText.textContent = '✓ Strong password';
+            strengthText.style.color = '#38a169';
+        }
+    }
+
+    // Enhanced Login Handler
+    async function handleEnhancedLogin(e) {
+        e.preventDefault();
+        const btn = document.getElementById('elogin-btn');
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Logging in...';
+
+        try {
+            const response = await fetch(`${API_BASE_URL}/auth/login`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    username: document.getElementById('elogin-identifier').value,
+                    password: document.getElementById('elogin-password').value
+                })
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                localStorage.setItem('token', data.data.token);
+                localStorage.setItem('user', JSON.stringify(data.data.user));
+                showToast('Login successful! Welcome back.', 'success');
+                document.getElementById('enhanced-auth-modal').classList.remove('active');
+                location.reload();
+            } else {
+                showToast(data.message || 'Login failed', 'error');
+            }
+        } catch (error) {
+            showToast('Login error: ' + error.message, 'error');
+        } finally {
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fas fa-lock"></i> Login Securely';
+        }
+    }
+
+    // Enhanced Register Handler
+    async function handleEnhancedRegister(e) {
+        e.preventDefault();
+
+        const password = document.getElementById('reg-password').value;
+        const confirmPassword = document.getElementById('reg-confirm-password').value;
+
+        if (password !== confirmPassword) {
+            showToast('Passwords do not match!', 'error');
+            return;
+        }
+
+        const btn = document.getElementById('register-btn');
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creating account...';
+
+        const role = document.getElementById('reg-role').value;
+        const payload = {
+            fullName: document.getElementById('reg-fullname').value,
+            email: document.getElementById('reg-email').value,
+            username: document.getElementById('reg-username').value,
+            phone: document.getElementById('reg-phone').value,
+            role: role,
+            password: password
+        };
+
+        if (role === 'officer') {
+            payload.officerBadgeId = document.getElementById('reg-badge').value;
+            payload.department = document.getElementById('reg-department').value;
+        }
+
+        try {
+            const response = await fetch(`${API_BASE_URL}/auth/register`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                showToast('Registration successful! Please login.', 'success');
+                switchAuthTab('login');
+                document.getElementById('enhanced-register-form').reset();
+            } else {
+                showToast(data.message || 'Registration failed', 'error');
+            }
+        } catch (error) {
+            showToast('Registration error: ' + error.message, 'error');
+        } finally {
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fas fa-user-check"></i> Create Account';
+        }
+    }
+
+// Kur
+
+o Chat Functions
+    function toggleKuroChat() {
+        const chatWindow = document.getElementById('kuro-chat-window');
+        chatWindow.classList.toggle('active');
+        chatWindow.classList.remove('minimized');
+
+        if (chatWindow.classList.contains('active')) {
+            document.getElementById('kuro-chat-input').focus();
+        }
+    }
+
+    function closeKuroChat() {
+        document.getElementById('kuro-chat-window').classList.remove('active');
+    }
+
+    function minimizeKuroChat() {
+        document.getElementById('kuro-chat-window').classList.toggle('minimized');
+    }
+
+    function handleChatKeyPress(e) {
+        if (e.key === 'Enter') {
+            sendKuroMessage();
+        }
+    }
+
+    async function sendKuroMessage() {
+        const input = document.getElementById('kuro-chat-input');
+        const message = input.value.trim();
+
+        if (!message) return;
+
+        // Add user message to chat
+        addChatMessage(message, 'user');
+        input.value = '';
+
+        // Show typing indicator
+        document.getElementById('kuro-typing').classList.add('active');
+        document.getElementById('kuro-send-btn').disabled = true;
+
+        try {
+            const token = localStorage.getItem('token');
+            const headers = { 'Content-Type': 'application/json' };
+            if (token) headers['Authorization'] = `Bearer ${token}`;
+
+            const response = await fetch(`${API_BASE_URL}/chat/message`, {
+                method: 'POST',
+                headers,
+                body: JSON.stringify({ message, sessionId: kuroSessionId })
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                kuroSessionId = data.data.sessionId;
+
+                // Add bot response
+                setTimeout(() => {
+                    document.getElementById('kuro-typing').classList.remove('active');
+                    addChatMessage(data.data.response, 'bot');
+
+                    // Update quick replies
+                    updateQuickReplies(data.data.quickReplies);
+
+                    document.getElementById('kuro-send-btn').disabled = false;
+                }, 500);
+            } else {
+                throw new Error(data.message);
+            }
+        } catch (error) {
+            document.getElementById('kuro-typing').classList.remove('active');
+            addChatMessage('Sorry, I encountered an error. Please try again.', 'bot');
+            document.getElementById('kuro-send-btn').disabled = false;
+        }
+    }
+
+    function sendQuickReply(message) {
+        document.getElementById('kuro-chat-input').value = message;
+        sendKuroMessage();
+    }
+
+    function addChatMessage(text, sender) {
+        const messagesContainer = document.getElementById('kuro-messages');
+        const messageDiv = document.createElement('div');
+        messageDiv.className = 'chat-message';
+        messageDiv.style.display = 'flex';
+        messageDiv.style.justifyContent = sender === 'user' ? 'flex-end' : 'flex-start';
+
+        const bubble = document.createElement('div');
+        bubble.className = `message-bubble ${sender}`;
+        bubble.textContent = text;
+
+        messageDiv.appendChild(bubble);
+        messagesContainer.appendChild(messageDiv);
+
+        // Scroll to bottom
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    }
+
+    function updateQuickReplies(replies) {
+        if (!replies || replies.length === 0) return;
+
+        const container = document.getElementById('kuro-quick-replies');
+        container.innerHTML = '';
+
+        replies.forEach(reply => {
+            const btn = document.createElement('button');
+            btn.className = 'quick-reply-btn';
+            btn.textContent = reply;
+            btn.onclick = () => sendQuickReply(reply);
+            container.appendChild(btn);
+        });
+    }
+
+    // Show enhanced auth modal on page load if not authenticated
+    window.addEventListener('DOMContentLoaded', () => {
+        const token = localStorage.getItem('token');
+        if (!token) {
+            document.getElementById('enhanced-auth-modal').classList.add('active');
+        }
+    });
+</script>

@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MCD Knowledge Base & Support</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        :root {
+            --h-primary: #0369a1;
+        }
+
+        body {
+            background: #f8fafc;
+            color: #1e293b;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .hero {
+            background: var(--h-primary);
+            padding: 80px 20px;
+            text-align: center;
+            color: white;
+        }
+
+        .search-container {
+            max-width: 600px;
+            margin: -30px auto 60px;
+            position: relative;
+        }
+
+        .search-bar {
+            width: 100%;
+            padding: 20px 60px;
+            border-radius: 100px;
+            border: 1px solid #e2e8f0;
+            font-size: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 25px;
+            top: 22px;
+            color: #94a3b8;
+            font-size: 18px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 20px 80px;
+        }
+
+        .faq-grid {
+            display: grid;
+            gap: 20px;
+        }
+
+        .faq-item {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            border: 1px solid #e2e8f0;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .faq-item:hover {
+            border-color: var(--h-primary);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+        }
+
+        .faq-question {
+            font-weight: 800;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .faq-answer {
+            margin-top: 15px;
+            color: #64748b;
+            font-size: 15px;
+            display: none;
+        }
+
+        .faq-item.active .faq-answer {
+            display: block;
+        }
+
+        .faq-item.active i {
+            transform: rotate(180deg);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="hero">
+        <h1 style="font-size: 40px; font-weight: 950;">MCD Knowledge Bureau</h1>
+        <p style="opacity: 0.9;">Help, FAQs, and Documentation for New Delhi's Parking Network.</p>
+    </div>
+
+    <div class="search-container">
+        <i class="fas fa-search search-icon"></i>
+        <input type="text" class="search-bar" placeholder="Search for 'FASTag', 'Refunds', 'Fines'...">
+    </div>
+
+    <div class="container">
+        <h2 style="font-size: 28px; font-weight: 900; margin-bottom: 30px;">Frequently Asked Questions</h2>
+        <div class="faq-grid">
+            <div class="faq-item active" onclick="this.classList.toggle('active')">
+                <div class="faq-question">How do I pay for parking? <i class="fas fa-chevron-down"></i></div>
+                <div class="faq-answer">
+                    Payments are handled automatically via your vehicle's FASTag. Ensure your FASTag has sufficient
+                    balance. For non-FASTag vehicles, you can use the MCD311 app QR scan at the zone entrance.
+                </div>
+            </div>
+            <div class="faq-item" onclick="this.classList.toggle('active')">
+                <div class="faq-question">What is a 'Cruising Fine'? <i class="fas fa-chevron-down"></i></div>
+                <div class="faq-answer">
+                    Cruising occurs when a vehicle remains in a high-demand zone without a valid parking session for
+                    more than 15 minutes. This is detected by AI vision and leads to an automatic violation report.
+                </div>
+            </div>
+            <div class="faq-item" onclick="this.classList.toggle('active')">
+                <div class="faq-question">How do I dispute a violation? <i class="fas fa-chevron-down"></i></div>
+                <div class="faq-answer">
+                    You can dispute a violation via the Complaints Centre (redirect from footer) within 48 hours.
+                    Provide your violation code and a brief explanation. Our bureau reviews AI evidence before
+                    processing.
+                </div>
+            </div>
+        </div>
+
+        <section
+            style="margin-top: 80px; background: #fff; padding: 50px; border-radius: 24px; border: 1px solid #e2e8f0; text-align: center;">
+            <h2 style="font-size: 28px; font-weight: 900; margin-bottom: 20px;">Still need assistance?</h2>
+            <p style="color: #64748b; margin-bottom: 30px;">Our support bureau is available 24/7 for technical and
+                payment issues.</p>
+            <div style="display: flex; gap: 20px; justify-content: center; flex-wrap: wrap;">
+                <button class="btn" style="background: var(--h-primary); color: white;"
+                    onclick="location.href='mailto:support@mcd.portal'">Email Support</button>
+                <button class="btn" style="background: white; border: 1px solid #e2e8f0;" onclick="window.close()">Back
+                    to Portal</button>
+            </div>
+        </section>
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MCD Official Procurement Channel</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        :root {
+            --p-navy: #1e3a8a;
+            --p-border: #cbd5e1;
+        }
+
+        body {
+            background: white;
+            color: #334155;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .hero {
+            background: linear-gradient(135deg, rgba(30, 58, 138, 0.95) 0%, rgba(30, 58, 138, 0.8) 100%), url('procurement.png');
+            background-size: cover;
+            padding: 100px 40px;
+            text-align: center;
+            color: white;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 80px 20px;
+        }
+
+        .checklist-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin: 50px 0;
+        }
+
+        .checklist-item {
+            border: 1px solid var(--p-border);
+            padding: 30px;
+            border-radius: 12px;
+            display: flex;
+            gap: 20px;
+            align-items: flex-start;
+        }
+
+        .check-step {
+            width: 32px;
+            height: 32px;
+            background: #e0f2fe;
+            color: #0369a1;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            flex-shrink: 0;
+        }
+
+        .startup-banner {
+            background: #f8fafc;
+            border: 2px dashed #94a3b8;
+            padding: 50px;
+            border-radius: 24px;
+            text-align: center;
+            margin-top: 60px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="hero">
+        <h1 style="font-size: 56px; font-weight: 950; margin-bottom: 20px;">Official Vendor <br><span
+                style="text-decoration: underline; text-underline-offset: 10px; text-decoration-color: #3b82f6;">Onboarding
+                Portal</span></h1>
+        <p style="font-size: 20px; opacity: 0.9; max-width: 700px; margin: 0 auto;">Streamlining procurement for the
+            Smart Parking Infrastructure of India's capital.</p>
+    </div>
+
+    <div class="container">
+        <h2 style="font-size: 32px; font-weight: 900; color: var(--p-navy);">Supply to MCD: Vendor Checklist</h2>
+        <p style="color: #64748b; font-size: 18px; margin-top: 10px;">Ensure your business meets the rigorous standards
+            of municipal infrastructure supply.</p>
+
+        <div class="checklist-grid">
+            <div class="checklist-item">
+                <div class="check-step">01</div>
+                <div>
+                    <h3 style="font-weight: 800; margin-bottom: 10px;">Legal & Financials</h3>
+                    <p style="color: #64748b; font-size: 14px;">GST registration, 3-year audited financial statements,
+                        and GeM listing.</p>
+                </div>
+            </div>
+            <div class="checklist-item">
+                <div class="check-step">02</div>
+                <div>
+                    <h3 style="font-weight: 800; margin-bottom: 10px;">Technical Compliance</h3>
+                    <p style="color: #64748b; font-size: 14px;">ISO 9001/14001 certifications. Hardware must meet CPWD
+                        electrical and safety specifications.</p>
+                </div>
+            </div>
+            <div class="checklist-item">
+                <div class="check-step">03</div>
+                <div>
+                    <h3 style="font-weight: 800; margin-bottom: 10px;">"Make in India" Badge</h3>
+                    <p style="color: #64748b; font-size: 14px;">Priority is given to vendors with local manufacturing
+                        facilities as per the DPIIT Public Procurement Order.</p>
+                </div>
+            </div>
+            <div class="checklist-item">
+                <div class="check-step">04</div>
+                <div>
+                    <h3 style="font-weight: 800; margin-bottom: 10px;">Service Backbone</h3>
+                    <p style="color: #64748b; font-size: 14px;">Must have a dedicated local support team in Delhi NCT
+                        for rapid on-site resolution.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="startup-banner">
+            <h2 style="font-size: 32px; font-weight: 900; color: #0f172a; margin-bottom: 20px;">Are You an Innovative
+                Startup?</h2>
+            <p style="font-size: 18px; color: #64748b; max-width: 750px; margin: 0 auto 30px;">
+                MCD Science & Tech department is looking for pilot projects in AI traffic management, drone-based
+                inspection, and solar-integrated hardware.
+            </p>
+            <button class="btn" style="background: #3b82f6; color: white;" onclick="window.close()">Pitch Pilot Project
+                <i class="fas fa-rocket"></i></button>
+        </div>
+    </div>
+</body>
+
+</html>

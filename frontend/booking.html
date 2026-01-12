@@ -1,0 +1,872 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Parking | MCD Smart Parking</title>
+    <link rel="icon" type="image/png" href="MCDlogo.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .booking-container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        /* Stepper UI */
+        .stepper {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 40px;
+            position: relative;
+        }
+
+        .stepper::before {
+            content: '';
+            position: absolute;
+            top: 20px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: #e2e8f0;
+            z-index: 1;
+        }
+
+        .step {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            flex: 1;
+        }
+
+        .step-circle {
+            width: 40px;
+            height: 40px;
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: #718096;
+            transition: all 0.3s;
+        }
+
+        .step.active .step-circle {
+            background: #3b82f6;
+            border-color: #3b82f6;
+            color: white;
+            box-shadow: 0 0 15px rgba(59, 130, 246, 0.4);
+        }
+
+        .step.completed .step-circle {
+            background: #10b981;
+            border-color: #10b981;
+            color: white;
+        }
+
+        .step-label {
+            font-size: 13px;
+            font-weight: 600;
+            color: #718096;
+        }
+
+        .step.active .step-label {
+            color: #3b82f6;
+        }
+
+        /* Booking Sections */
+        .booking-section {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            display: none;
+            animation: fadeIn 0.4s ease-out;
+            min-height: 400px;
+        }
+
+        .booking-section.active {
+            display: block;
+        }
+
+        .section-title {
+            font-size: 24px;
+            font-weight: 800;
+            color: #1e293b;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        /* Zone Grid */
+        .zone-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .zone-card {
+            border: 2px solid #f1f5f9;
+            border-radius: 16px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .zone-card:hover {
+            border-color: #3b82f6;
+            background: #f8fbff;
+            transform: translateY(-4px);
+        }
+
+        .zone-card.selected {
+            border-color: #3b82f6;
+            background: #eff6ff;
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.1);
+        }
+
+        .zone-card.selected::after {
+            content: '\f058';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            color: #3b82f6;
+            font-size: 20px;
+        }
+
+        /* Summary Sidebar */
+        .booking-layout {
+            display: grid;
+            grid-template-columns: 1fr 350px;
+            gap: 30px;
+        }
+
+        @media (max-width: 992px) {
+            .booking-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .summary-card {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            position: sticky;
+            top: 100px;
+            height: fit-content;
+        }
+
+        .summary-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: #1e293b;
+            border-bottom: 1px solid #f1f5f9;
+            padding-bottom: 15px;
+        }
+
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+
+        .summary-label {
+            color: #64748b;
+        }
+
+        .summary-value {
+            color: #1e293b;
+            font-weight: 600;
+        }
+
+        .total-price {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 2px dashed #f1f5f9;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .price-value {
+            font-size: 24px;
+            font-weight: 800;
+            color: #2d3748;
+        }
+
+        /* QR Pass */
+        .pass-container {
+            text-align: center;
+            padding: 20px;
+        }
+
+        .qr-frame {
+            width: 200px;
+            height: 200px;
+            margin: 20px auto;
+            border: 10px solid #f1f5f9;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: white;
+        }
+
+        .timer-badge {
+            display: inline-block;
+            padding: 8px 20px;
+            background: #fff5f5;
+            color: #e53e3e;
+            border-radius: 25px;
+            font-weight: 700;
+            font-size: 14px;
+            margin-top: 15px;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #718096;
+        }
+    </style>
+</head>
+
+<body style="background: #f8fafc;">
+    <div class="top-nav">
+        <div class="nav-container">
+            <div class="logo" onclick="location.href='index.html'" style="cursor: pointer;">
+                <img src="MCDlogo.png" alt="MCD Logo" class="logo-img">
+                <div class="logo-text">
+                    <h1>MCD Smart Parking</h1>
+                </div>
+            </div>
+            <div class="nav-actions">
+                <div class="user-wallet-brief" id="nav-wallet">
+                    <i class="fas fa-wallet" style="color: #48bb78;"></i>
+                    <span id="nav-balance">₹0.00</span>
+                </div>
+                <button class="btn btn-outline" onclick="location.href='index.html'">
+                    <i class="fas fa-times"></i> Cancel
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="booking-container">
+        <!-- Stepper -->
+        <div class="stepper">
+            <div class="step active" id="step-1-label">
+                <div class="step-circle">1</div>
+                <div class="step-label">Zone</div>
+            </div>
+            <div class="step" id="step-2-label">
+                <div class="step-circle">2</div>
+                <div class="step-label">Time</div>
+            </div>
+            <div class="step" id="step-3-label">
+                <div class="step-circle">3</div>
+                <div class="step-label">Vehicle</div>
+            </div>
+            <div class="step" id="step-4-label">
+                <div class="step-circle">4</div>
+                <div class="step-label">Review</div>
+            </div>
+            <div class="step" id="step-5-label">
+                <div class="step-circle">5</div>
+                <div class="step-label">Pass</div>
+            </div>
+        </div>
+
+        <div class="booking-layout">
+            <div class="booking-content">
+                <!-- Step 1: Zone Selection -->
+                <div class="booking-section active" id="section-1">
+                    <h2 class="section-title"><i class="fas fa-map-marked-alt" style="color: #3b82f6;"></i> Select
+                        Parking Zone</h2>
+
+                    <!-- Booking Type Toggle -->
+                    <div
+                        style="display: flex; gap: 20px; margin-bottom: 25px; background: #f8fafc; padding: 5px; border-radius: 12px; border: 1px solid #e2e8f0; width: fit-content;">
+                        <button class="btn btn-primary" id="type-hourly" onclick="setBookingType('hourly')"
+                            style="border-radius: 8px;">Hourly Booking</button>
+                        <button class="btn btn-outline" id="type-subscription" onclick="setBookingType('subscription')"
+                            style="border-radius: 8px; border: none;">Monthly Pass</button>
+                    </div>
+                    <div class="zone-grid" id="booking-zone-grid">
+                        <div class="loading">Searching verified MCD zones...</div>
+                    </div>
+                </div>
+
+                <!-- Step 2: Time Selection -->
+                <div class="booking-section" id="section-2">
+                    <h2 class="section-title"><i class="fas fa-clock" style="color: #fbbf24;"></i> Select Duration</h2>
+                    <!-- Hourly Form -->
+                    <div class="form-grid" id="hourly-form"
+                        style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                        <div class="form-group">
+                            <label class="form-label">Booking Date</label>
+                            <input type="date" class="form-input" id="book-date" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Start Time</label>
+                            <input type="time" class="form-input" id="book-start" required step="1800">
+                        </div>
+                        <div class="form-group" style="grid-column: span 2;">
+                            <label class="form-label">Duration (Hours)</label>
+                            <select class="form-input" id="book-duration" onchange="calculateBookingPrice()">
+                                <option value="1">1 Hour</option>
+                                <option value="2">2 Hours</option>
+                                <option value="4">4 Hours</option>
+                                <option value="8">8 Hours (Full Day)</option>
+                                <option value="24">24 Hours (Overnight)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Subscription Form -->
+                    <div class="form-grid" id="subscription-form"
+                        style="display: none; grid-template-columns: 1fr; gap: 20px;">
+                        <div class="zone-card selected" style="cursor: default;">
+                            <div style="font-weight: 800; font-size: 18px; margin-bottom: 10px;">Monthly Subscription
+                            </div>
+                            <p style="color: #4a5568; margin-bottom: 15px;">Unlimited parking in the selected zone for
+                                30 days. Includes priority access.</p>
+                            <div style="font-size: 24px; color: #2d3748; font-weight: 800;" id="sub-price-display">₹1500
+                                <span style="font-size: 14px; font-weight: 500; color: #718096;">/ month</span>
+                            </div>
+                        </div>
+                        <p style="font-size: 12px; color: #718096; text-align: center;"><i
+                                class="fas fa-info-circle"></i> Pass will be valid starting today.</p>
+                    </div>
+                    <div id="availability-status"
+                        style="margin-top: 20px; padding: 15px; border-radius: 12px; display: none;"></div>
+                </div>
+
+                <!-- Step 3: Vehicle Selection -->
+                <div class="booking-section" id="section-3">
+                    <h2 class="section-title"><i class="fas fa-car" style="color: #3182ce;"></i> Choose Vehicle</h2>
+                    <div class="zone-grid" id="booking-vehicle-grid">
+                        <div class="loading">Fetching your registered vehicles...</div>
+                    </div>
+                </div>
+
+                <!-- Step 4: Payment & Review -->
+                <div class="booking-section" id="section-4">
+                    <h2 class="section-title"><i class="fas fa-shield-alt" style="color: #10b981;"></i> Review & Pay
+                    </h2>
+                    <div class="payment-methods" style="margin-bottom: 30px;">
+                        <h3 style="font-size: 16px; margin-bottom: 15px;">Choose Payment Method</h3>
+                        <div style="display: flex; gap: 15px; flex-wrap: wrap;">
+                            <div class="zone-card selected" style="flex: 1; padding: 15px; text-align: center;">
+                                <i class="fas fa-wallet fa-2x" style="color: #48bb78; margin-bottom: 10px;"></i>
+                                <div style="font-weight: 700;">MCD Wallet</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="wallet-status" id="booking-wallet-status"
+                        style="background: #f8fafc; padding: 20px; border-radius: 16px; border: 1px solid #e2e8f0;">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <div>
+                                <div style="font-size: 12px; color: #718096; text-transform: uppercase;">Available
+                                    Balance</div>
+                                <div style="font-size: 24px; font-weight: 800; color: #2d3748;"
+                                    id="booking-wallet-balance">₹0.00</div>
+                            </div>
+                            <button class="btn btn-primary" onclick="window.open('profile-driver.html', '_blank')">Top
+                                Up</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 5: Digital Pass -->
+                <div class="booking-section" id="section-5">
+                    <h2 class="section-title" style="justify-content: center; color: #10b981;"><i
+                            class="fas fa-check-circle"></i> Booking Confirmed!</h2>
+                    <div class="pass-container">
+                        <p style="color: #718096; margin-bottom: 20px;">Your digital parking pass is ready. Show this QR
+                            code at the zone entrance.</p>
+                        <div class="qr-frame" id="pass-qr-code">
+                            <i class="fas fa-qrcode fa-8x" style="color: #1e293b;"></i>
+                        </div>
+                        <div style="margin-top: 30px; display: flex; gap: 15px; justify-content: center;">
+                            <button class="btn btn-primary" onclick="window.print()">
+                                <i class="fas fa-download"></i> Download Pass
+                            </button>
+                            <button class="btn btn-outline" onclick="location.href='index.html'">
+                                <i class="fas fa-home"></i> Go Home
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Navigation Buttons -->
+                <div class="booking-nav" style="margin-top: 30px; display: flex; justify-content: space-between;"
+                    id="booking-btns">
+                    <button class="btn btn-outline" id="prev-btn" onclick="prevStep()" style="visibility: hidden;">
+                        <i class="fas fa-arrow-left"></i> Previous
+                    </button>
+                    <button class="btn btn-primary" id="next-btn" onclick="nextStep()" style="padding: 12px 30px;">
+                        Continue <i class="fas fa-arrow-right"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Booking Summary -->
+            <div class="booking-sidebar">
+                <div class="summary-card">
+                    <h3 class="summary-title">Booking Summary</h3>
+                    <div id="summary-details">
+                        <div class="summary-item">
+                            <span class="summary-label">Zone</span>
+                            <span class="summary-value" id="sum-zone">Not selected</span>
+                        </div>
+                        <div class="summary-item">
+                            <span class="summary-label">Date</span>
+                            <span class="summary-value" id="sum-date">---</span>
+                        </div>
+                        <div class="summary-item">
+                            <span class="summary-label">Duration</span>
+                            <span class="summary-value" id="sum-duration">---</span>
+                        </div>
+                        <div class="summary-item">
+                            <span class="summary-label">Vehicle</span>
+                            <span class="summary-value" id="sum-vehicle">---</span>
+                        </div>
+                    </div>
+                    <div class="total-price">
+                        <span style="font-weight: 700; color: #64748b;">Total Amount</span>
+                        <div class="price-value" id="sum-total">₹0</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="toast-container"></div>
+    <script src="js/config.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/ui.js"></script>
+    <script>
+        let currentStep = 1;
+        let bookingType = 'hourly';
+        let bookingData = {
+            zoneId: null,
+            vehicleId: null,
+            date: '',
+            startTime: '',
+            duration: 1,
+            totalPrice: 0
+        };
+        let selectedZone = null;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const user = JSON.parse(localStorage.getItem('user_data') || '{}');
+            if (!user.id) {
+                location.href = 'index.html?trigger=login';
+                return;
+            }
+
+            const today = new Date().toISOString().split('T')[0];
+            const dateInput = document.getElementById('book-date');
+            if (dateInput) {
+                dateInput.value = today;
+                dateInput.min = today;
+            }
+
+            loadBookingZones();
+            initWallet();
+            loadUserVehicles();
+        });
+
+        function setBookingType(type) {
+            bookingType = type;
+            document.getElementById('type-hourly').className = type === 'hourly' ? 'btn btn-primary' : 'btn btn-outline';
+            document.getElementById('type-subscription').className = type === 'subscription' ? 'btn btn-primary' : 'btn btn-outline';
+
+            // Reset zone selection to force update
+            if (selectedZone) calculateBookingPrice();
+        }
+
+        async function initWallet() {
+            const data = await fetchWalletBalance();
+            if (data) {
+                document.getElementById('nav-balance').textContent = `₹${parseFloat(data.balance).toFixed(2)}`;
+                document.getElementById('booking-wallet-balance').textContent = `₹${parseFloat(data.balance).toFixed(2)}`;
+            }
+        }
+
+        async function loadBookingZones() {
+            try {
+                const data = await fetchAPI('/zones');
+                const zones = data.data || data;
+                const container = document.getElementById('booking-zone-grid');
+
+                container.innerHTML = zones.map(zone => `
+                    <div class="zone-card" onclick="selectZone(${zone.id}, '${zone.name}', ${zone.hourlyRate})">
+                        <div style="font-weight: 800; font-size: 16px; margin-bottom: 5px;">${zone.name}</div>
+                        <div style="font-size: 12px; color: #718096; margin-bottom: 12px;"><i class="fas fa-map-marker-alt"></i> ${zone.address}</div>
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <div>
+                                <div style="color: #38a169; font-weight: 700;">₹${zone.hourlyRate}/hr</div>
+                                <div style="font-size: 10px; color: #718096;">Pass: ₹${(zone.hourlyRate * 10 * 30 * 0.4).toFixed(0)}/mo</div>
+                            </div>
+                            <div style="font-size: 11px; color: #4a5568;">Slots: ${zone.capacity}</div>
+                        </div>
+                    </div>
+                `).join('');
+            } catch (error) {
+                console.error('Zone load error');
+            }
+        }
+
+        async function loadUserVehicles() {
+            try {
+                const res = await fetch(`${API_BASE_URL}/vehicles/my`, {
+                    headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+                });
+                const data = await res.json();
+                const container = document.getElementById('booking-vehicle-grid');
+
+                if (data.success && data.data.vehicles.length > 0) {
+                    container.innerHTML = data.data.vehicles.map(v => `
+                        <div class="zone-card" onclick="selectVehicle(${v.id}, '${v.licensePlate}')">
+                            <div style="display: flex; align-items: center; gap: 15px;">
+                                <i class="fas fa-car fa-2x" style="color: #4a5568;"></i>
+                                <div>
+                                    <div style="font-weight: 800;">${v.licensePlate}</div>
+                                    <div style="font-size: 12px; color: #718096;">${v.model || 'Standard'}</div>
+                                </div>
+                            </div>
+                        </div>
+                    `).join('');
+                } else {
+                    container.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 20px;">Add vehicles in your profile first.</div>';
+                }
+            } catch (error) {
+                console.error('Vehicle load error');
+            }
+        }
+
+        function selectZone(id, name, rate) {
+            bookingData.zoneId = id;
+            selectedZone = { name, rate };
+            document.querySelectorAll('#section-1 .zone-card').forEach(c => c.classList.remove('selected'));
+            event.currentTarget.classList.add('selected');
+            document.getElementById('sum-zone').textContent = name;
+            calculateBookingPrice();
+        }
+
+        function selectVehicle(id, plate) {
+            bookingData.vehicleId = id;
+            document.querySelectorAll('#section-3 .zone-card').forEach(c => c.classList.remove('selected'));
+            event.currentTarget.classList.add('selected');
+            document.getElementById('sum-vehicle').textContent = plate;
+        }
+
+        function calculateBookingPrice() {
+            if (!selectedZone) return;
+
+            if (bookingType === 'hourly') {
+                const duration = parseInt(document.getElementById('book-duration').value);
+                bookingData.duration = duration;
+                bookingData.totalPrice = selectedZone.rate * duration;
+                document.getElementById('sum-duration').textContent = `${duration} Hour${duration > 1 ? 's' : ''}`;
+            } else {
+                // Subscription Logic (Monthly = ~40% of daily 10hr cost)
+                const monthlyPrice = Math.round(selectedZone.rate * 10 * 30 * 0.4);
+                bookingData.totalPrice = monthlyPrice;
+                bookingData.duration = '30 Days';
+                document.getElementById('sub-price-display').innerHTML = `₹${monthlyPrice} <span style="font-size: 14px; font-weight: 500; color: #718096;">/ month</span>`;
+                document.getElementById('sum-duration').textContent = 'Monthly Pass';
+            }
+
+            document.getElementById('sum-total').textContent = `₹${bookingData.totalPrice}`;
+        }
+
+        function nextStep() {
+            if (currentStep === 1 && !bookingData.zoneId) return showToast('Select a zone', 'warning');
+
+            if (currentStep === 2) {
+                if (bookingType === 'hourly') {
+                    bookingData.date = document.getElementById('book-date').value;
+                    bookingData.startTime = document.getElementById('book-start').value;
+                    if (!bookingData.date || !bookingData.startTime) return showToast('Select time', 'warning');
+                    document.getElementById('sum-date').textContent = `${bookingData.date} ${bookingData.startTime}`;
+                } else {
+                    document.getElementById('sum-date').textContent = 'Starts Today';
+                    document.getElementById('sum-start').textContent = 'N/A';
+                }
+            }
+
+            if (currentStep === 3 && !bookingData.vehicleId && bookingType === 'hourly') return showToast('Select a vehicle', 'warning');
+
+            if (currentStep === 4) {
+                processBooking();
+                return;
+            }
+
+            document.getElementById(`section-${currentStep}`).classList.remove('active');
+            document.getElementById(`step-${currentStep}-label`).classList.add('completed');
+
+            currentStep++;
+
+            // Setup Step 2 UI based on type
+            if (currentStep === 2) {
+                document.getElementById('hourly-form').style.display = bookingType === 'hourly' ? 'grid' : 'none';
+                document.getElementById('subscription-form').style.display = bookingType === 'subscription' ? 'grid' : 'none';
+                // Safe check for section title ID in case we want to manipulate it, currently handled by general UI
+            }
+
+            document.getElementById(`section-${currentStep}`).classList.add('active');
+            document.getElementById(`step-${currentStep}-label`).classList.add('active');
+
+            document.getElementById('prev-btn').style.visibility = 'visible';
+            if (currentStep === 4) document.getElementById('next-btn').innerHTML = '<i class="fas fa-check"></i> Pay & Confirm';
+        }
+
+        function prevStep() {
+            document.getElementById(`section-${currentStep}`).classList.remove('active');
+            document.getElementById(`step-${currentStep}-label`).classList.remove('active');
+            currentStep--;
+            document.getElementById(`section-${currentStep}`).classList.add('active');
+            document.getElementById(`step-${currentStep}-label`).classList.remove('completed');
+
+            if (currentStep === 1) document.getElementById('prev-btn').style.visibility = 'hidden';
+            document.getElementById('next-btn').innerHTML = 'Continue <i class="fas fa-arrow-right"></i>';
+        }
+
+        async function processBooking() {
+            const btn = document.getElementById('next-btn');
+
+            // Client-side balance check
+            const currentBalance = parseFloat(document.getElementById('booking-wallet-balance').textContent.replace('₹', ''));
+            if (currentBalance < bookingData.totalPrice) {
+                showToast('Insufficient wallet balance. Please Top Up.', 'error');
+                // Highlight Top Up button
+                const topUpBtn = document.querySelector('.wallet-status button');
+                topUpBtn.style.animation = 'pulse 0.5s ease 2';
+                return;
+            }
+
+            try {
+                btn.disabled = true;
+                btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+
+                let res;
+                if (bookingType === 'hourly') {
+                    const startStr = `${bookingData.date}T${bookingData.startTime}`;
+                    const end = new Date(new Date(startStr).getTime() + bookingData.duration * 60 * 60 * 1000);
+
+                    const payload = {
+                        zoneId: bookingData.zoneId,
+                        vehicleId: bookingData.vehicleId,
+                        startTime: new Date(startStr),
+                        endTime: end,
+                        totalPrice: bookingData.totalPrice
+                    };
+                    res = await createNewBooking(payload);
+                } else {
+                    const payload = {
+                        planType: 'monthly',
+                        zoneId: bookingData.zoneId,
+                        price: bookingData.totalPrice
+                    };
+                    res = await purchaseSubscription(payload);
+                }
+
+                if (res.success) {
+                    showToast(bookingType === 'hourly' ? 'Booking Confirmed!' : 'Subscription Activated!', 'success');
+                    document.getElementById('section-4').classList.remove('active');
+                    document.getElementById('section-5').classList.add('active');
+                    document.getElementById('booking-btns').style.display = 'none';
+                    initWallet(); // Refresh balance display
+                } else {
+                    showToast(res.error || 'Transaction failed', 'error');
+                }
+            } catch (error) {
+                showToast(error.message, 'error');
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = 'Pay & Confirm';
+            }
+        }
+    </script>
+
+    <!-- Download App Section -->
+    <section class="app-banner"
+        style="background: linear-gradient(135deg, #1e293b, #0f172a); padding: 60px 20px; text-align: center; color: white;">
+        <div style="max-width: 800px; margin: 0 auto;">
+            <h2
+                style="font-size: 32px; font-weight: 800; margin-bottom: 15px; background: linear-gradient(90deg, #38bdf8, #818cf8); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+                Get the MCD Smart Parking App</h2>
+            <p style="color: #cbd5e1; margin-bottom: 30px; font-size: 18px; line-height: 1.6;">
+                Seamless parking payments, real-time violation tracking, and instant slot availability at your
+                fingertips.
+                <br>Available now for iOS and Android.
+            </p>
+            <div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;">
+                <a href="https://apps.apple.com/in/app/mcd-app/id6450366872" target="_blank" class="btn"
+                    style="padding: 14px 30px; display: flex; align-items: center; gap: 12px; background: white; color: #0f172a; border-radius: 100px; font-weight: 700; text-decoration: none;">
+                    <i class="fab fa-apple fa-xl"></i> App Store
+                </a>
+                <a href="https://play.google.com/store/search?q=mcd%20app&c=apps&hl=en" target="_blank" class="btn"
+                    style="padding: 14px 30px; display: flex; align-items: center; gap: 12px; background: rgba(255,255,255,0.1); color: white; border: 1px solid rgba(255,255,255,0.2); border-radius: 100px; font-weight: 700; backdrop-filter: blur(10px); text-decoration: none;">
+                    <i class="fab fa-google-play fa-xl"></i> Google Play
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Premium Footer -->
+    <div class="footer-back-to-top" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
+        Back to top
+    </div>
+
+    <footer class="gov-footer">
+        <!-- Watermark Logo -->
+        <img src="MCDlogo.png" class="gov-footer-watermark" alt="">
+        <div class="gov-footer-content">
+            <div class="gov-grid">
+                <!-- Column 1: Get to Know Us -->
+                <div class="gov-col">
+                    <h4>Get to Know Us</h4>
+                    <ul class="gov-links">
+                        <li><a href="https://mcdonline.nic.in/" target="_blank" class="gov-link"><i
+                                    class="fas fa-arrow-right"></i> About MCD</a></li>
+                        <li><a href="about.html" class="gov-link"><i class="fas fa-arrow-right"></i> Smart City
+                                Mission</a></li>
+                        <li><a href="#" class="gov-link"><i class="fas fa-arrow-right"></i> Press Releases</a></li>
+                        <li><a href="mcd-science.html" class="gov-link"><i class="fas fa-arrow-right"></i> MCD
+                                Science</a></li>
+                    </ul>
+                </div>
+
+                <!-- Column 2: Connect with Us -->
+                <div class="gov-col">
+                    <h4>Connect with Us</h4>
+                    <ul class="gov-links">
+                        <li><a href="https://www.facebook.com/off.MCD/" target="_blank" class="gov-link"><i
+                                    class="fab fa-facebook"></i> Facebook</a></li>
+                        <li><a href="https://twitter.com/MCD_Delhi" target="_blank" class="gov-link"><i
+                                    class="fab fa-twitter"></i> Twitter</a></li>
+                        <li><a href="https://www.instagram.com/mcd_delhi" target="_blank" class="gov-link"><i
+                                    class="fab fa-instagram"></i> Instagram</a></li>
+                    </ul>
+                </div>
+
+                <!-- Column 3: Make Money with Us -->
+                <div class="gov-col">
+                    <h4>Make Money with Us</h4>
+                    <ul class="gov-links">
+                        <li><a href="contractors.html" class="gov-link"><i class="fas fa-arrow-right"></i> Apply as
+                                Contractor</a></li>
+                        <li><a href="sensors.html" class="gov-link"><i class="fas fa-arrow-right"></i> Sell Smart
+                                Sensors</a></li>
+                        <li><a href="procurement.html" class="gov-link"><i class="fas fa-arrow-right"></i> Supply to
+                                MCD</a></li>
+                        <li><a href="#" class="gov-link"><i class="fas fa-arrow-right"></i> Become an Affiliate</a></li>
+                        <li><a href="advertising.html" class="gov-link"><i class="fas fa-arrow-right"></i> Advertise
+                                with Us</a></li>
+                    </ul>
+                </div>
+
+                <!-- Column 4: Let Us Help You -->
+                <div class="gov-col">
+                    <h4>Let Us Help You</h4>
+                    <ul class="gov-links">
+                        <li><a href="account.html" class="gov-link"><i class="fas fa-arrow-right"></i> Your Account</a>
+                        </li>
+                        <li><a href="https://mcd.everythingcivic.com/citizen/createissue?app_id=U2FsdGVkX180J3mGnJmT5QpgtPjhfjtzyXAAccBUxGU%3D&api_key=e34ba86d3943bd6db9120313da011937189e6a9625170905750f649395bcd68312cf10d264c9305d57c23688cc2e5120"
+                                target="_blank" class="gov-link"><i class="fas fa-arrow-right"></i> Complaints
+                                Centre</a></li>
+                        <li><a href="safety.html" class="gov-link"><i class="fas fa-arrow-right"></i> Safety Alerts</a>
+                        </li>
+                        <li><a href="help.html" class="gov-link"><i class="fas fa-arrow-right"></i> MCD Help</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Info Grid Row -->
+            <div class="gov-grid"
+                style="margin-bottom: 30px; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
+                <div class="gov-contact-item">
+                    <div class="gov-icon-box"><i class="fas fa-map-marker-alt"></i></div>
+                    <div class="gov-contact-text">
+                        <div>Office Address</div>
+                        <div>Dr. S.P.M. Civic Centre, Minto Rd, SKD Basti, Press Enclave, Ajmeri Gate, New Delhi, Delhi,
+                            110002</div>
+                    </div>
+                </div>
+
+                <div class="gov-contact-item">
+                    <div class="gov-icon-box"><i class="fas fa-mobile-screen"></i></div>
+                    <div class="gov-contact-text">
+                        <div>Mobile Apps</div>
+                        <div>Unified Mobile App, MCD311 App<br><span style="font-size: 11px; color:#60a5fa;">Available
+                                on iOS/Android</span></div>
+                    </div>
+                </div>
+
+                <div class="gov-contact-item">
+                    <div class="gov-icon-box"><i class="fas fa-envelope"></i></div>
+                    <div class="gov-contact-text">
+                        <div>Email Support</div>
+                        <div><a href="mailto:mcd-ithelpdesk@mcd.nic.in"
+                                style="color:#94a3b8; text-decoration:none;">mcd-ithelpdesk[at]mcd.nic.in</a><br><span
+                                style="font-size: 11px;">(24/7 Technical Bureau)</span></div>
+                    </div>
+                </div>
+
+                <div class="gov-contact-item">
+                    <div class="gov-icon-box"><i class="fas fa-headset"></i></div>
+                    <div class="gov-contact-text">
+                        <div>Helpline Number</div>
+                        <div><a href="tel:155305"
+                                style="color:#e2e8f0; text-decoration:none; font-size:16px;">155305</a><br><span
+                                style="font-size: 11px;">(Toll-free across Delhi NCR)</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bottom Bar -->
+            <div class="gov-bottom-bar">
+                <div class="gov-branding-row">
+                    <img src="MCDlogo.png" alt="MCD Logo">
+                    <span class="gov-interactive"><i class="fas fa-globe"></i> English</span>
+                    <span class="gov-interactive"><i class="fas fa-map-marker-alt"></i> <a
+                            href="https://en.wikipedia.org/wiki/New_Delhi" target="_blank"
+                            style="color: inherit; text-decoration: none;">New Delhi</a>, India</span>
+                </div>
+
+                <div class="gov-legal-links">
+                    <a href="conditions.html" class="gov-legal-link">Conditions of Use</a>
+                    <a href="privacy.html" class="gov-legal-link">Privacy Notice</a>
+                    <a href="ads.html" class="gov-legal-link">Interest-Based Ads</a>
+                    <a href="feedback.html" target="_blank" class="gov-legal-link"
+                        style="color: #fbbf24; font-weight: 700;">Consumer Feedback</a>
+                </div>
+
+                <div class="gov-copyright">
+                    © 1996-2026, MCD Smart Parking, Inc. or its affiliates
+                </div>
+            </div>
+        </div>
+    </footer>
+</body>
+
+</html>

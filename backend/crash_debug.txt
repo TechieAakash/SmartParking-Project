@@ -1,0 +1,110 @@
+Executing (default): SELECT 1+1 AS result
+Γ£à Database connection established successfully
+≡ƒôè Connected to: smartparking@localhost:3306
+≡ƒº╣ Synchronizing database (Clean Start)...
+Executing (default): SET FOREIGN_KEY_CHECKS = 0
+Executing (default): DROP TABLE IF EXISTS `subscriptions`;
+Executing (default): DROP TABLE IF EXISTS `wallets`;
+Executing (default): DROP TABLE IF EXISTS `bookings`;
+Executing (default): DROP TABLE IF EXISTS `vehicles`;
+Executing (default): DROP TABLE IF EXISTS `chat_messages`;
+Executing (default): DROP TABLE IF EXISTS `chat_sessions`;
+Executing (default): DROP TABLE IF EXISTS `audit_logs`;
+Executing (default): DROP TABLE IF EXISTS `settings`;
+Executing (default): DROP TABLE IF EXISTS `violations`;
+Executing (default): DROP TABLE IF EXISTS `parking_zones`;
+Executing (default): DROP TABLE IF EXISTS `users`;
+Executing (default): SELECT CONSTRAINT_NAME as constraint_name,CONSTRAINT_NAME as constraintName,CONSTRAINT_SCHEMA as constraintSchema,CONSTRAINT_SCHEMA as constraintCatalog,TABLE_NAME as tableName,TABLE_SCHEMA as tableSchema,TABLE_SCHEMA as tableCatalog,COLUMN_NAME as columnName,REFERENCED_TABLE_SCHEMA as referencedTableSchema,REFERENCED_TABLE_SCHEMA as referencedTableCatalog,REFERENCED_TABLE_NAME as referencedTableName,REFERENCED_COLUMN_NAME as referencedColumnName FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE where TABLE_NAME = 'users' AND CONSTRAINT_NAME!='PRIMARY' AND CONSTRAINT_SCHEMA='smartparking' AND REFERENCED_TABLE_NAME IS NOT NULL;
+Executing (default): SELECT CONSTRAINT_NAME as constraint_name,CONSTRAINT_NAME as constraintName,CONSTRAINT_SCHEMA as constraintSchema,CONSTRAINT_SCHEMA as constraintCatalog,TABLE_NAME as tableName,TABLE_SCHEMA as tableSchema,TABLE_SCHEMA as tableCatalog,COLUMN_NAME as columnName,REFERENCED_TABLE_SCHEMA as referencedTableSchema,REFERENCED_TABLE_SCHEMA as referencedTableCatalog,REFERENCED_TABLE_NAME as referencedTableName,REFERENCED_COLUMN_NAME as referencedColumnName FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE where TABLE_NAME = 'parking_zones' AND CONSTRAINT_NAME!='PRIMARY' AND CONSTRAINT_SCHEMA='smartparking' AND REFERENCED_TABLE_NAME IS NOT NULL;
+Executing (default): SELECT CONSTRAINT_NAME as constraint_name,CONSTRAINT_NAME as constraintName,CONSTRAINT_SCHEMA as constraintSchema,CONSTRAINT_SCHEMA as constraintCatalog,TABLE_NAME as tableName,TABLE_SCHEMA as tableSchema,TABLE_SCHEMA as tableCatalog,COLUMN_NAME as columnName,REFERENCED_TABLE_SCHEMA as referencedTableSchema,REFERENCED_TABLE_SCHEMA as referencedTableCatalog,REFERENCED_TABLE_NAME as referencedTableName,REFERENCED_COLUMN_NAME as referencedColumnName FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE where TABLE_NAME = 'violations' AND CONSTRAINT_NAME!='PRIMARY' AND CONSTRAINT_SCHEMA='smartparking' AND REFERENCED_TABLE_NAME IS NOT NULL;
+Executing (default): SELECT CONSTRAINT_NAME as constraint_name,CONSTRAINT_NAME as constraintName,CONSTRAINT_SCHEMA as constraintSchema,CONSTRAINT_SCHEMA as constraintCatalog,TABLE_NAME as tableName,TABLE_SCHEMA as tableSchema,TABLE_SCHEMA as tableCatalog,COLUMN_NAME as columnName,REFERENCED_TABLE_SCHEMA as referencedTableSchema,REFERENCED_TABLE_SCHEMA as referencedTableCatalog,REFERENCED_TABLE_NAME as referencedTableName,REFERENCED_COLUMN_NAME as referencedColumnName FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE where TABLE_NAME = 'settings' AND CONSTRAINT_NAME!='PRIMARY' AND CONSTRAINT_SCHEMA='smartparking' AND REFERENCED_TABLE_NAME IS NOT NULL;
+Executing (default): SELECT CONSTRAINT_NAME as constraint_name,CONSTRAINT_NAME as constraintName,CONSTRAINT_SCHEMA as constraintSchema,CONSTRAINT_SCHEMA as constraintCatalog,TABLE_NAME as tableName,TABLE_SCHEMA as tableSchema,TABLE_SCHEMA as tableCatalog,COLUMN_NAME as columnName,REFERENCED_TABLE_SCHEMA as referencedTableSchema,REFERENCED_TABLE_SCHEMA as referencedTableCatalog,REFERENCED_TABLE_NAME as referencedTableName,REFERENCED_COLUMN_NAME as referencedColumnName FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE where TABLE_NAME = 'audit_logs' AND CONSTRAINT_NAME!='PRIMARY' AND CONSTRAINT_SCHEMA='smartparking' AND REFERENCED_TABLE_NAME IS NOT NULL;
+Executing (default): SELECT CONSTRAINT_NAME as constraint_name,CONSTRAINT_NAME as constraintName,CONSTRAINT_SCHEMA as constraintSchema,CONSTRAINT_SCHEMA as constraintCatalog,TABLE_NAME as tableName,TABLE_SCHEMA as tableSchema,TABLE_SCHEMA as tableCatalog,COLUMN_NAME as columnName,REFERENCED_TABLE_SCHEMA as referencedTableSchema,REFERENCED_TABLE_SCHEMA as referencedTableCatalog,REFERENCED_TABLE_NAME as referencedTableName,REFERENCED_COLUMN_NAME as referencedColumnName FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE where TABLE_NAME = 'chat_sessions' AND CONSTRAINT_NAME!='PRIMARY' AND CONSTRAINT_SCHEMA='smartparking' AND REFERENCED_TABLE_NAME IS NOT NULL;
+Executing (default): SELECT CONSTRAINT_NAME as constraint_name,CONSTRAINT_NAME as constraintName,CONSTRAINT_SCHEMA as constraintSchema,CONSTRAINT_SCHEMA as constraintCatalog,TABLE_NAME as tableName,TABLE_SCHEMA as tableSchema,TABLE_SCHEMA as tableCatalog,COLUMN_NAME as columnName,REFERENCED_TABLE_SCHEMA as referencedTableSchema,REFERENCED_TABLE_SCHEMA as referencedTableCatalog,REFERENCED_TABLE_NAME as referencedTableName,REFERENCED_COLUMN_NAME as referencedColumnName FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE where TABLE_NAME = 'chat_messages' AND CONSTRAINT_NAME!='PRIMARY' AND CONSTRAINT_SCHEMA='smartparking' AND REFERENCED_TABLE_NAME IS NOT NULL;
+Executing (default): SELECT CONSTRAINT_NAME as constraint_name,CONSTRAINT_NAME as constraintName,CONSTRAINT_SCHEMA as constraintSchema,CONSTRAINT_SCHEMA as constraintCatalog,TABLE_NAME as tableName,TABLE_SCHEMA as tableSchema,TABLE_SCHEMA as tableCatalog,COLUMN_NAME as columnName,REFERENCED_TABLE_SCHEMA as referencedTableSchema,REFERENCED_TABLE_SCHEMA as referencedTableCatalog,REFERENCED_TABLE_NAME as referencedTableName,REFERENCED_COLUMN_NAME as referencedColumnName FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE where TABLE_NAME = 'vehicles' AND CONSTRAINT_NAME!='PRIMARY' AND CONSTRAINT_SCHEMA='smartparking' AND REFERENCED_TABLE_NAME IS NOT NULL;
+Executing (default): SELECT CONSTRAINT_NAME as constraint_name,CONSTRAINT_NAME as constraintName,CONSTRAINT_SCHEMA as constraintSchema,CONSTRAINT_SCHEMA as constraintCatalog,TABLE_NAME as tableName,TABLE_SCHEMA as tableSchema,TABLE_SCHEMA as tableCatalog,COLUMN_NAME as columnName,REFERENCED_TABLE_SCHEMA as referencedTableSchema,REFERENCED_TABLE_SCHEMA as referencedTableCatalog,REFERENCED_TABLE_NAME as referencedTableName,REFERENCED_COLUMN_NAME as referencedColumnName FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE where TABLE_NAME = 'bookings' AND CONSTRAINT_NAME!='PRIMARY' AND CONSTRAINT_SCHEMA='smartparking' AND REFERENCED_TABLE_NAME IS NOT NULL;
+Executing (default): SELECT CONSTRAINT_NAME as constraint_name,CONSTRAINT_NAME as constraintName,CONSTRAINT_SCHEMA as constraintSchema,CONSTRAINT_SCHEMA as constraintCatalog,TABLE_NAME as tableName,TABLE_SCHEMA as tableSchema,TABLE_SCHEMA as tableCatalog,COLUMN_NAME as columnName,REFERENCED_TABLE_SCHEMA as referencedTableSchema,REFERENCED_TABLE_SCHEMA as referencedTableCatalog,REFERENCED_TABLE_NAME as referencedTableName,REFERENCED_COLUMN_NAME as referencedColumnName FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE where TABLE_NAME = 'wallets' AND CONSTRAINT_NAME!='PRIMARY' AND CONSTRAINT_SCHEMA='smartparking' AND REFERENCED_TABLE_NAME IS NOT NULL;
+Executing (default): SELECT CONSTRAINT_NAME as constraint_name,CONSTRAINT_NAME as constraintName,CONSTRAINT_SCHEMA as constraintSchema,CONSTRAINT_SCHEMA as constraintCatalog,TABLE_NAME as tableName,TABLE_SCHEMA as tableSchema,TABLE_SCHEMA as tableCatalog,COLUMN_NAME as columnName,REFERENCED_TABLE_SCHEMA as referencedTableSchema,REFERENCED_TABLE_SCHEMA as referencedTableCatalog,REFERENCED_TABLE_NAME as referencedTableName,REFERENCED_COLUMN_NAME as referencedColumnName FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE where TABLE_NAME = 'subscriptions' AND CONSTRAINT_NAME!='PRIMARY' AND CONSTRAINT_SCHEMA='smartparking' AND REFERENCED_TABLE_NAME IS NOT NULL;
+Executing (default): DROP TABLE IF EXISTS `users`;
+Executing (default): DROP TABLE IF EXISTS `parking_zones`;
+Executing (default): DROP TABLE IF EXISTS `violations`;
+Executing (default): DROP TABLE IF EXISTS `settings`;
+Executing (default): DROP TABLE IF EXISTS `audit_logs`;
+Executing (default): DROP TABLE IF EXISTS `chat_sessions`;
+Executing (default): DROP TABLE IF EXISTS `chat_messages`;
+Executing (default): DROP TABLE IF EXISTS `vehicles`;
+Executing (default): DROP TABLE IF EXISTS `bookings`;
+Executing (default): DROP TABLE IF EXISTS `wallets`;
+Executing (default): DROP TABLE IF EXISTS `subscriptions`;
+Executing (default): DROP TABLE IF EXISTS `users`;
+Executing (default): CREATE TABLE IF NOT EXISTS `users` (`id` INTEGER auto_increment , `username` VARCHAR(50) NOT NULL UNIQUE, `email` VARCHAR(100) NOT NULL UNIQUE, `password_hash` VARCHAR(255) NOT NULL, `full_name` VARCHAR(100) NOT NULL, `role` ENUM('admin', 'officer', 'contractor', 'viewer', 'user', 'driver') NOT NULL DEFAULT 'viewer', `phone` VARCHAR(20), `otp_code` VARCHAR(10), `otp_expiry` DATETIME, `refresh_token` VARCHAR(512), `mcd_govt_id` VARCHAR(50), `officer_badge_id` VARCHAR(50) UNIQUE, `department` VARCHAR(100), `is_verified` TINYINT(1) DEFAULT false, `verified_at` DATETIME, `profile_photo` VARCHAR(255), `registration_ip` VARCHAR(45), `status` ENUM('active', 'inactive', 'suspended') NOT NULL DEFAULT 'active', `last_login` DATETIME, `created_at` DATETIME NOT NULL, `updated_at` DATETIME NOT NULL, PRIMARY KEY (`id`)) ENGINE=InnoDB;
+Executing (default): SHOW INDEX FROM `users`
+Executing (default): DROP TABLE IF EXISTS `parking_zones`;
+Executing (default): CREATE TABLE IF NOT EXISTS `parking_zones` (`id` INTEGER auto_increment , `zone_name` VARCHAR(100) NOT NULL, `address` VARCHAR(255) NOT NULL, `latitude` DECIMAL(10,8) NOT NULL, `longitude` DECIMAL(11,8) NOT NULL, `total_capacity` INTEGER NOT NULL, `current_occupancy` INTEGER NOT NULL DEFAULT 0, `contractor_limit` INTEGER NOT NULL, `contractor_name` VARCHAR(255) NOT NULL, `contractor_contact` VARCHAR(255), `contractor_email` VARCHAR(255), `hourly_rate` DECIMAL(10,2) DEFAULT 50, `penalty_per_vehicle` DECIMAL(10,2) DEFAULT 500, `operating_hours` VARCHAR(255) DEFAULT '06:00 - 22:00', `status` ENUM('active', 'inactive', 'maintenance') DEFAULT 'active', `created_at` DATETIME NOT NULL, `updated_at` DATETIME NOT NULL, PRIMARY KEY (`id`)) ENGINE=InnoDB;
+Executing (default): SHOW INDEX FROM `parking_zones`
+Executing (default): DROP TABLE IF EXISTS `violations`;
+Executing (default): CREATE TABLE IF NOT EXISTS `violations` (`id` INTEGER auto_increment , `zone_id` INTEGER, `severity` ENUM('critical', 'warning') NOT NULL DEFAULT 'warning', `status` ENUM('pending', 'resolved', 'paid') NOT NULL DEFAULT 'pending', `excess_vehicles` INTEGER NOT NULL DEFAULT 0, `penalty_amount` DECIMAL(10,2) NOT NULL DEFAULT 0, `unique_code` VARCHAR(20) UNIQUE, `resolved_at` DATETIME, `notes` TEXT, `is_paid` TINYINT(1) DEFAULT false, `auto_generated` TINYINT(1) DEFAULT true, `timestamp` DATETIME, `updated_at` DATETIME NOT NULL, `resolved_by` INTEGER, PRIMARY KEY (`id`), FOREIGN KEY (`zone_id`) REFERENCES `parking_zones` (`id`) ON DELETE SET NULL ON UPDATE CASCADE, FOREIGN KEY (`resolved_by`) REFERENCES `users` (`id`) ON DELETE SET NULL ON UPDATE CASCADE) ENGINE=InnoDB;
+Executing (default): SHOW INDEX FROM `violations`
+Executing (default): DROP TABLE IF EXISTS `settings`;
+Executing (default): CREATE TABLE IF NOT EXISTS `settings` (`id` INTEGER UNSIGNED auto_increment , `setting_key` VARCHAR(100) NOT NULL UNIQUE, `setting_value` TEXT, `setting_type` ENUM('string', 'number', 'boolean', 'json') DEFAULT 'string', `category` VARCHAR(50) DEFAULT 'general', `description` TEXT, PRIMARY KEY (`id`)) ENGINE=InnoDB;
+Executing (default): SHOW INDEX FROM `settings`
+Executing (default): DROP TABLE IF EXISTS `audit_logs`;
+Executing (default): CREATE TABLE IF NOT EXISTS `audit_logs` (`id` INTEGER UNSIGNED auto_increment , `user_id` INTEGER UNSIGNED, `action` VARCHAR(100) NOT NULL, `table_name` VARCHAR(50) NOT NULL, `record_id` INTEGER UNSIGNED NOT NULL, `old_values` JSON, `new_values` JSON, `ip_address` VARCHAR(45), `user_agent` TEXT, `created_at` DATETIME NOT NULL, PRIMARY KEY (`id`)) ENGINE=InnoDB;
+Executing (default): SHOW INDEX FROM `audit_logs`
+Executing (default): DROP TABLE IF EXISTS `chat_sessions`;
+Executing (default): CREATE TABLE IF NOT EXISTS `chat_sessions` (`id` CHAR(36) BINARY , `user_id` INTEGER, `started_at` DATETIME, `ended_at` DATETIME, `message_count` INTEGER DEFAULT 0, `satisfaction_rating` INTEGER, `escalated` TINYINT(1) DEFAULT false COMMENT 'Whether session was escalated to human agent', `language` ENUM('en', 'hi') DEFAULT 'en', `metadata` JSON COMMENT 'Session metadata: user_agent, ip_address, etc.', `created_at` DATETIME NOT NULL, `updated_at` DATETIME NOT NULL, PRIMARY KEY (`id`), FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE SET NULL ON UPDATE CASCADE) ENGINE=InnoDB;
+Executing (default): SHOW INDEX FROM `chat_sessions`
+Executing (default): DROP TABLE IF EXISTS `chat_messages`;
+Executing (default): CREATE TABLE IF NOT EXISTS `chat_messages` (`id` CHAR(36) BINARY , `session_id` CHAR(36) BINARY, `user_id` INTEGER, `message` TEXT NOT NULL, `response` TEXT, `intent` VARCHAR(100) COMMENT 'Detected intent: faq, help, violation_query, payment, etc.', `confidence` FLOAT COMMENT 'Confidence score of intent detection (0-1)', `language` ENUM('en', 'hi') DEFAULT 'en', `metadata` JSON COMMENT 'Additional metadata: quick_replies, attachments, etc.', `timestamp` DATETIME NOT NULL, PRIMARY KEY (`id`), FOREIGN KEY (`session_id`) REFERENCES `chat_sessions` (`id`) ON DELETE SET NULL ON UPDATE CASCADE, FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE SET NULL ON UPDATE CASCADE) ENGINE=InnoDB;
+Executing (default): SHOW INDEX FROM `chat_messages`
+Executing (default): DROP TABLE IF EXISTS `vehicles`;
+Executing (default): CREATE TABLE IF NOT EXISTS `vehicles` (`id` INTEGER auto_increment , `user_id` INTEGER NOT NULL, `license_plate` VARCHAR(20) NOT NULL UNIQUE, `type` ENUM('car', 'bike', 'truck', 'auto', 'other') NOT NULL DEFAULT 'car', `model` VARCHAR(100), `color` VARCHAR(30), `photo` VARCHAR(255), `created_at` DATETIME NOT NULL, `updated_at` DATETIME NOT NULL, PRIMARY KEY (`id`), FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE) ENGINE=InnoDB;
+Executing (default): CREATE TABLE IF NOT EXISTS `vehicles` (`id` INTEGER auto_increment , `user_id` INTEGER NOT NULL, `license_plate` VARCHAR(20) NOT NULL UNIQUE, `type` ENUM('car', 'bike', 'truck', 'auto', 'other') NOT NULL DEFAULT 'car', `model` VARCHAR(100), `color` VARCHAR(30), `photo` VARCHAR(255), `created_at` DATETIME NOT NULL, `updated_at` DATETIME NOT NULL, PRIMARY KEY (`id`), FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE) ENGINE=InnoDB;
+Executing (default): CREATE TABLE IF NOT EXISTS `vehicles` (`id` INTEGER auto_increment , `user_id` INTEGER NOT NULL, `license_plate` VARCHAR(20) NOT NULL UNIQUE, `type` ENUM('car', 'bike', 'truck', 'auto', 'other') NOT NULL DEFAULT 'car', `model` VARCHAR(100), `color` VARCHAR(30), `photo` VARCHAR(255), `created_at` DATETIME NOT NULL, `updated_at` DATETIME NOT NULL, PRIMARY KEY (`id`), FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE) ENGINE=InnoDB;
+Γ¥î Error starting server: Error
+    at Query.run (C:\Users\AAKASH\OneDrive\Desktop\folder12\backend\node_modules\sequelize\lib\dialects\mysql\query.js:52:25)
+    at C:\Users\AAKASH\OneDrive\Desktop\folder12\backend\node_modules\sequelize\lib\sequelize.js:315:28
+    at async MySQLQueryInterface.createTable (C:\Users\AAKASH\OneDrive\Desktop\folder12\backend\node_modules\sequelize\lib\dialects\abstract\query-interface.js:98:12)
+    at async Vehicle.sync (C:\Users\AAKASH\OneDrive\Desktop\folder12\backend\node_modules\sequelize\lib\model.js:942:7)
+    at async Sequelize.sync (C:\Users\AAKASH\OneDrive\Desktop\folder12\backend\node_modules\sequelize\lib\sequelize.js:377:9)
+    at async startServer (C:\Users\AAKASH\OneDrive\Desktop\folder12\backend\src\server.js:34:7) {
+  name: 'SequelizeDatabaseError',
+  parent: Error: Referencing column 'vehicle_id' and referenced column 'id' in foreign key constraint 'passes_ibfk_3' are incompatible.
+      at Packet.asError (C:\Users\AAKASH\OneDrive\Desktop\folder12\backend\node_modules\mysql2\lib\packets\packet.js:740:17)
+      at Query.execute (C:\Users\AAKASH\OneDrive\Desktop\folder12\backend\node_modules\mysql2\lib\commands\command.js:29:26)
+      at Connection.handlePacket (C:\Users\AAKASH\OneDrive\Desktop\folder12\backend\node_modules\mysql2\lib\base\connection.js:508:34)
+      at PacketParser.onPacket (C:\Users\AAKASH\OneDrive\Desktop\folder12\backend\node_modules\mysql2\lib\base\connection.js:93:12)
+      at PacketParser.executeStart (C:\Users\AAKASH\OneDrive\Desktop\folder12\backend\node_modules\mysql2\lib\packet_parser.js:75:16)
+      at Socket.<anonymous> (C:\Users\AAKASH\OneDrive\Desktop\folder12\backend\node_modules\mysql2\lib\base\connection.js:100:25)
+      at Socket.emit (node:events:508:28)
+      at addChunk (node:internal/streams/readable:559:12)
+      at readableAddChunkPushByteMode (node:internal/streams/readable:510:3)
+      at Readable.push (node:internal/streams/readable:390:5) {
+    code: 'ER_FK_INCOMPATIBLE_COLUMNS',
+    errno: 3780,
+    sqlState: 'HY000',
+    sqlMessage: "Referencing column 'vehicle_id' and referenced column 'id' in foreign key constraint 'passes_ibfk_3' are incompatible.",
+    sql: "CREATE TABLE IF NOT EXISTS `vehicles` (`id` INTEGER auto_increment , `user_id` INTEGER NOT NULL, `license_plate` VARCHAR(20) NOT NULL UNIQUE, `type` ENUM('car', 'bike', 'truck', 'auto', 'other') NOT NULL DEFAULT 'car', `model` VARCHAR(100), `color` VARCHAR(30), `photo` VARCHAR(255), `created_at` DATETIME NOT NULL, `updated_at` DATETIME NOT NULL, PRIMARY KEY (`id`), FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE) ENGINE=InnoDB;",
+    parameters: undefined
+  },
+  original: Error: Referencing column 'vehicle_id' and referenced column 'id' in foreign key constraint 'passes_ibfk_3' are incompatible.
+      at Packet.asError (C:\Users\AAKASH\OneDrive\Desktop\folder12\backend\node_modules\mysql2\lib\packets\packet.js:740:17)
+      at Query.execute (C:\Users\AAKASH\OneDrive\Desktop\folder12\backend\node_modules\mysql2\lib\commands\command.js:29:26)
+      at Connection.handlePacket (C:\Users\AAKASH\OneDrive\Desktop\folder12\backend\node_modules\mysql2\lib\base\connection.js:508:34)
+      at PacketParser.onPacket (C:\Users\AAKASH\OneDrive\Desktop\folder12\backend\node_modules\mysql2\lib\base\connection.js:93:12)
+      at PacketParser.executeStart (C:\Users\AAKASH\OneDrive\Desktop\folder12\backend\node_modules\mysql2\lib\packet_parser.js:75:16)
+      at Socket.<anonymous> (C:\Users\AAKASH\OneDrive\Desktop\folder12\backend\node_modules\mysql2\lib\base\connection.js:100:25)
+      at Socket.emit (node:events:508:28)
+      at addChunk (node:internal/streams/readable:559:12)
+      at readableAddChunkPushByteMode (node:internal/streams/readable:510:3)
+      at Readable.push (node:internal/streams/readable:390:5) {
+    code: 'ER_FK_INCOMPATIBLE_COLUMNS',
+    errno: 3780,
+    sqlState: 'HY000',
+    sqlMessage: "Referencing column 'vehicle_id' and referenced column 'id' in foreign key constraint 'passes_ibfk_3' are incompatible.",
+    sql: "CREATE TABLE IF NOT EXISTS `vehicles` (`id` INTEGER auto_increment , `user_id` INTEGER NOT NULL, `license_plate` VARCHAR(20) NOT NULL UNIQUE, `type` ENUM('car', 'bike', 'truck', 'auto', 'other') NOT NULL DEFAULT 'car', `model` VARCHAR(100), `color` VARCHAR(30), `photo` VARCHAR(255), `created_at` DATETIME NOT NULL, `updated_at` DATETIME NOT NULL, PRIMARY KEY (`id`), FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE) ENGINE=InnoDB;",
+    parameters: undefined
+  },
+  sql: "CREATE TABLE IF NOT EXISTS `vehicles` (`id` INTEGER auto_increment , `user_id` INTEGER NOT NULL, `license_plate` VARCHAR(20) NOT NULL UNIQUE, `type` ENUM('car', 'bike', 'truck', 'auto', 'other') NOT NULL DEFAULT 'car', `model` VARCHAR(100), `color` VARCHAR(30), `photo` VARCHAR(255), `created_at` DATETIME NOT NULL, `updated_at` DATETIME NOT NULL, PRIMARY KEY (`id`), FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE) ENGINE=InnoDB;",
+  parameters: {}
+}

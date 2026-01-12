@@ -1,0 +1,209 @@
+<!-- Enhanced Authentication & Kuro Chatbot Components -->
+
+<!-- Note: Styles are now in css/style.css and logic in js/auth.js & js/chatbot.js -->
+
+<!-- Enhanced Authentication Modal -->
+<div id="auth-modal" class="auth-modal">
+    <div class="auth-modal-content">
+        <span class="auth-close"
+            onclick="document.getElementById('auth-modal').classList.remove('active')">&times;</span>
+        <div class="auth-modal-header">
+            <img src="MCDlogo.png" alt="MCD Logo" style="width: 64px; margin-bottom: 12px;">
+            <h2 style="margin: 0; font-size: 24px;">MCD Smart Parking</h2>
+            <p style="margin: 8px 0 0 0; opacity: 0.9; font-size: 14px;">Secure Access Portal</p>
+        </div>
+
+        <div class="auth-modal-body">
+            <div class="auth-tab-buttons">
+                <button class="auth-tab-btn active" onclick="switchAuthTab('login')">
+                    <i class="fas fa-sign-in-alt"></i> Login
+                </button>
+                <button class="auth-tab-btn" onclick="switchAuthTab('register')">
+                    <i class="fas fa-user-plus"></i> Register
+                </button>
+            </div>
+
+            <!-- Login Form -->
+            <form id="login-form" class="auth-form active" onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label class="form-label">Email or Username <span class="required">*</span></label>
+                    <input type="text" class="form-input" id="login-identifier" required
+                        placeholder="Enter your email or username">
+                </div>
+
+                <div id="login-password-group" class="form-group">
+                    <label class="form-label">Password <span class="required">*</span></label>
+                    <input type="password" class="form-input" id="login-password" placeholder="Enter your password">
+                </div>
+
+                <div id="login-otp-group" class="form-group" style="display: none;">
+                    <label class="form-label">OTP Code <span class="required">*</span></label>
+                    <div style="display: flex; gap: 10px;">
+                        <input type="text" class="form-input" id="login-otp" placeholder="6-digit code">
+                        <button type="button" class="btn btn-outline btn-sm" onclick="handleRequestOTP()">Get
+                            OTP</button>
+                    </div>
+                </div>
+
+                <div style="margin-bottom: 20px; text-align: right;">
+                    <a href="#" class="form-help-text" onclick="toggleLoginMethod(event)"
+                        style="color: #4299e1; text-decoration: none; font-weight: 600;">
+                        Login via OTP?
+                    </a>
+                </div>
+
+                <button type="submit" class="btn btn-primary" id="login-btn"
+                    style="width: 100%; justify-content: center;">
+                    <i class="fas fa-lock"></i> Login Securely
+                </button>
+
+                <!-- Social Logins -->
+                <div style="margin-top: 24px;">
+                    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 16px;">
+                        <div style="flex: 1; height: 1px; background: #e2e8f0;"></div>
+                        <span
+                            style="font-size: 12px; color: #718096; text-transform: uppercase; letter-spacing: 1px;">Or
+                            continue with</span>
+                        <div style="flex: 1; height: 1px; background: #e2e8f0;"></div>
+                    </div>
+                    <div style="display: flex; gap: 12px;">
+                        <button type="button" class="btn btn-outline"
+                            style="flex: 1; justify-content: center; font-size: 14px;"
+                            onclick="handleSocialLogin('Google')">
+                            <i class="fab fa-google" style="color: #ea4335;"></i> Google
+                        </button>
+                        <button type="button" class="btn btn-outline"
+                            style="flex: 1; justify-content: center; font-size: 14px;"
+                            onclick="handleSocialLogin('Facebook')">
+                            <i class="fab fa-facebook" style="color: #1877f2;"></i> Facebook
+                        </button>
+                    </div>
+                </div>
+            </form>
+
+            <!-- Register Form -->
+            <form id="register-form" class="auth-form" onsubmit="handleRegister(event)">
+                <div class="form-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                    <div class="form-group">
+                        <label class="form-label">Full Name <span class="required">*</span></label>
+                        <input type="text" class="form-input" id="reg-fullname" required placeholder="Aakash Sharma">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Username <span class="required">*</span></label>
+                        <input type="text" class="form-input" id="reg-username" required placeholder="aakash_park">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Email <span class="required">*</span></label>
+                    <input type="email" class="form-input" id="reg-email" required placeholder="name@example.com">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Phone <span class="required">*</span></label>
+                    <input type="tel" class="form-input" id="reg-phone" required placeholder="+91 XXXXXXXXXX">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Select Role <span class="required">*</span></label>
+                    <select class="form-input form-select" id="reg-role" required onchange="handleRoleChange()">
+                        <option value="user">Driver / Individual</option>
+                        <option value="contractor">Parking Contractor</option>
+                        <option value="officer">MCD Officer</option>
+                        <option value="viewer">Guest Viewer</option>
+                    </select>
+                </div>
+
+                <!-- Officer Badge Fields -->
+                <div id="officer-fields" class="conditional-field">
+                    <div class="form-group">
+                        <label class="form-label">Officer Badge ID <span class="required">*</span></label>
+                        <input type="text" class="form-input" id="reg-badge" placeholder="MCD-OFF-1234"
+                            pattern="MCD-OFF-\d{4}" required>
+                        <p class="form-help-text" style="font-size: 10px; color: #718096; margin-top: 4px;">
+                            <i class="fas fa-info-circle"></i> Format: <strong>MCD-OFF-XXXX</strong> (e.g.,
+                            MCD-OFF-1001)
+                        </p>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Department <span class="required">*</span></label>
+                        <select class="form-input form-select" id="reg-department">
+                            <option value="Enforcement">Enforcement</option>
+                            <option value="Operations">Operations</option>
+                            <option value="Administration">Administration</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Password <span class="required">*</span></label>
+                    <input type="password" class="form-input" id="reg-password" required placeholder="••••••••"
+                        oninput="checkPasswordStrength()">
+                    <div class="password-strength">
+                        <div id="password-strength-bar" class="password-strength-bar"></div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Confirm Password <span class="required">*</span></label>
+                    <input type="password" class="form-input" id="reg-confirm-password" required placeholder="••••••••">
+                </div>
+
+                <!-- OTP Verification Container (Initially Hidden) -->
+                <div id="otp-verification-section"
+                    style="display: none; background: #ebf8ff; padding: 15px; border-radius: 12px; margin-bottom: 20px; border: 1px solid #bee3f8;">
+                    <p style="font-size: 13px; color: #2b6cb0; margin-bottom: 10px; font-weight: 600;">
+                        <i class="fas fa-shield-alt"></i> Verify your account via OTP
+                    </p>
+                    <div style="display: flex; gap: 10px;">
+                        <input type="text" class="form-input" id="reg-otp" placeholder="6-digit OTP">
+                        <button type="button" class="btn btn-success" onclick="handleVerifyRegOTP()">Verify</button>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-success" id="register-btn"
+                    style="width: 100%; justify-content: center;">
+                    <i class="fas fa-user-check"></i> Create Account
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Kuro AI Chatbot UI -->
+<div class="chatbot-fab" onclick="toggleKuroChat()">
+    <i class="fas fa-robot"></i>
+    <span class="bot-badge">Need Help ??</span>
+</div>
+
+<div id="kuro-chat-window" class="chat-window">
+    <div class="chat-header">
+        <div class="bot-avatar">🤖</div>
+        <div class="bot-info">
+            <h4>Kuro AI</h4>
+            <span class="bot-status">Online</span>
+        </div>
+        <div class="chat-controls">
+            <button onclick="minimizeKuroChat()">&minus;</button>
+            <button onclick="closeKuroChat()">&times;</button>
+        </div>
+    </div>
+
+    <div class="chat-messages" id="kuro-messages">
+        <div class="chat-message">
+            <div class="message-bubble bot">👋 Hello! How can I help you today?</div>
+        </div>
+    </div>
+
+    <div class="chat-typing" id="kuro-typing"><span class="typing-dot"></span><span class="typing-dot"></span><span
+            class="typing-dot"></span></div>
+
+    <div class="quick-replies" id="kuro-quick-replies"></div>
+
+    <div class="chat-input-area">
+        <input type="text" class="chat-input" id="kuro-chat-input" placeholder="Type a message..."
+            onkeypress="handleChatKeyPress(event)">
+        <button class="chat-send-btn" id="kuro-send-btn" onclick="sendKuroMessage()"><i
+                class="fas fa-paper-plane"></i></button>
+    </div>
+</div>

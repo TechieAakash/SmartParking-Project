@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MCD Smart Advertising Network</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        :root {
+            --ad-purple: #7c3aed;
+            --ad-dark: #0f172a;
+        }
+
+        body {
+            background: #fdfdfd;
+            color: #1e293b;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .hero {
+            background: linear-gradient(135deg, #7c3aed 0%, #4338ca 100%);
+            padding: 120px 40px;
+            text-align: center;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 80px 20px;
+        }
+
+        .ad-type-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            margin-top: 60px;
+        }
+
+        .ad-card {
+            background: white;
+            border-radius: 30px;
+            padding: 50px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+            transition: all 0.3s;
+        }
+
+        .ad-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--ad-purple);
+        }
+
+        .tag-premium {
+            background: #f5f3ff;
+            color: #7c3aed;
+            padding: 6px 15px;
+            border-radius: 6px;
+            font-weight: 800;
+            font-size: 12px;
+            margin-bottom: 20px;
+            display: inline-block;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="hero">
+        <h1 style="font-size: 64px; font-weight: 950; letter-spacing: -2px;">Hyper-Local <br><span
+                style="color: #a78bfa;">Contextual Advertising</span></h1>
+        <p style="font-size: 22px; opacity: 0.9; max-width: 800px; margin: 20px auto;">Reach Delhi’s premium commuters
+            exactly where they park, dine, and shop.</p>
+    </div>
+
+    <div class="container">
+        <section style="text-align: center; margin-bottom: 80px;">
+            <h2 style="font-size: 40px; font-weight: 900; color: var(--ad-dark);">DOOH: Digital Out-Of-Home</h2>
+            <p style="font-size: 18px; color: #64748b; max-width: 800px; margin: 20px auto;">
+                Don't just show ads on a screen—own the physical parking experience. Our **Smart Kiosks** located in
+                prime areas like Connaught Place, Lajpat Nagar, and South Ext allow for high-impact visual storytelling.
+            </p>
+        </section>
+
+        <div class="ad-type-grid">
+            <div class="ad-card">
+                <span class="tag-premium">PHYSICAL KIOSKS</span>
+                <i class="fas fa-tv" style="font-size: 40px; color: var(--ad-purple); margin-bottom: 25px;"></i>
+                <h3 style="font-size: 28px; font-weight: 800; margin-bottom: 20px;">Contextual Flash Offers</h3>
+                <p style="color: #64748b; font-size: 17px; line-height: 1.8;">
+                    A user parks in Connaught Place; your restaurant's 10% discount coupon flashes on the kiosk exactly
+                    when they step out. Capture their intent in the moment.
+                </p>
+            </div>
+            <div class="ad-card">
+                <span class="tag-premium">IN-APP EXPERIENCE</span>
+                <i class="fas fa-mobile-alt" style="font-size: 40px; color: var(--ad-purple); margin-bottom: 25px;"></i>
+                <h3 style="font-size: 28px; font-weight: 800; margin-bottom: 20px;">Active Parking Mode</h3>
+                <p style="color: #64748b; font-size: 17px; line-height: 1.8;">
+                    While the user is in "active parking mode," we show them auto-insurance, car detailing, or premium
+                    fuel offers relevant to their vehicle class.
+                </p>
+            </div>
+        </div>
+
+        <div
+            style="background: var(--ad-dark); color: white; padding: 80px; border-radius: 40px; margin-top: 80px; text-align: center;">
+            <h2 style="font-size: 36px; font-weight: 900; margin-bottom: 25px;">Ready to Advertise with Delhi's Largest
+                Parking Network?</h2>
+            <div style="display: flex; justify-content: center; gap: 40px; margin-bottom: 40px;">
+                <div>
+                    <div style="font-size: 40px; font-weight: 900;">2M+</div>
+                    <div style="font-size: 14px; opacity: 0.6;">Monthly Sessions</div>
+                </div>
+                <div>
+                    <div style="font-size: 40px; font-weight: 900;">500+</div>
+                    <div style="font-size: 14px; opacity: 0.6;">Smart Kiosks</div>
+                </div>
+                <div>
+                    <div style="font-size: 40px; font-weight: 900;">98%</div>
+                    <div style="font-size: 14px; opacity: 0.6;">Retention Rate</div>
+                </div>
+            </div>
+            <button class="btn"
+                style="background: var(--ad-purple); border: none; padding: 20px 60px; font-weight: 900; border-radius: 100px; color: white;"
+                onclick="window.close()">Get Ad Campaign Quote</button>
+        </div>
+    </div>
+</body>
+
+</html>

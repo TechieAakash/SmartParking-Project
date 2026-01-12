@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MCD Smart Parking Enforcement System</title>
+    <link rel="icon" type="image/png" href="MCDlogo.png">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="js/config.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/map.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/render.js"></script>
+    <script src="js/chatbot.js"></script>
+    <script src="js/i18n.js"></script>
+    <script src="js/app.js"></script>
+</head>
+
+<body>
+    <div id="toast-container"></div>
+    <!-- Top Navigation -->
+    <div class="top-nav">
+        <div class="nav-container">
+            <div class="logo">
+                <img src="MCDlogo.png" alt="MCD Logo" class="logo-img">
+                <div class="logo-text">
+                    <h1>MCD Smart Parking System</h1>
+                    <p class="logo-subtitle">Real-time Monitoring & Enforcement</p>
+                </div>
+            </div>
+            <div class="nav-tabs">
+                <button class="nav-tab active" onclick="switchView('home')">
+                    <i class="fas fa-home"></i> Home
+                </button>
+                <button class="nav-tab" onclick="switchView('dashboard')">
+                    <i class="fas fa-tachometer-alt"></i> Dashboard
+                </button>
+                <button class="nav-tab" onclick="switchView('zones')">
+                    <i class="fas fa-map-marker-alt"></i> Zones
+                </button>
+                <button class="nav-tab" onclick="switchView('violations')">
+                    <i class="fas fa-exclamation-triangle"></i> Violations
+                    <span class="nav-badge" id="violation-count">0</span>
+                </button>
+                <button class="nav-tab" onclick="location.href='booking.html'"
+                    style="background: rgba(59, 130, 246, 0.1); border-color: #3b82f6; color: #3b82f6;">
+                    <i class="fas fa-plus-circle"></i> Find Parking
+                </button>
+            </div>
+            <div class="nav-actions">
+                <button class="btn btn-outline" onclick="refreshAllData()">
+                    <i class="fas fa-sync-alt"></i> <span>Refresh</span>
+                </button>
+
+                <!-- Notifications Dropdown -->
+                <div class="notification-dropdown">
+                    <button class="notification-btn">
+                        <i class="fas fa-bell"></i>
+                        <span class="notification-badge" id="notif-count">3</span>
+                    </button>
+                    <div class="notification-menu">
+                        <div class="notification-header">
+                            <strong>Notifications</strong>
+                            <a href="#" onclick="markAllRead()"
+                                style="font-size: 11px; color: #3182ce; text-decoration: none;">Mark all read</a>
+                        </div>
+                        <div class="notification-items" id="notification-items">
+                            <div class="notification-item unread">
+                                <div class="notif-icon info"><i class="fas fa-info-circle"></i></div>
+                                <div class="notif-body">
+                                    <p>Welcome to MCD Smart Parking! Register your vehicle to get started.</p>
+                                    <span>2 mins ago</span>
+                                </div>
+                            </div>
+                            <div class="notification-item unread">
+                                <div class="notif-icon warning"><i class="fas fa-exclamation-triangle"></i></div>
+                                <div class="notif-body">
+                                    <p>Low balance in your parking wallet. Top up now.</p>
+                                    <span>1 hour ago</span>
+                                </div>
+                            </div>
+                            <div class="notification-item">
+                                <div class="notif-icon success"><i class="fas fa-check-circle"></i></div>
+                                <div class="notif-body">
+                                    <p>Your vehicle DL 01 AB 1234 has been registered successfully.</p>
+                                    <span>3 hours ago</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="notification-footer">
+                            <a href="#">See all notifications</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Language Dropdown -->
+                <div class="lang-dropdown">
+                    <button class="lang-btn">
+                        <i class="fas fa-globe"></i> <span id="current-lang-text">English</span>
+                        <i class="fas fa-chevron-down" style="font-size: 10px;"></i>
+                    </button>
+                    <div class="lang-menu">
+                        <div class="lang-option" onclick="changeLanguage('en')">English</div>
+                        <div class="lang-option" onclick="changeLanguage('hi')">हिन्दी (Hindi)</div>
+                        <div class="lang-option" onclick="changeLanguage('pa')">ਪੰਜਾਬੀ (Punjabi)</div>
+                        <div class="lang-option" onclick="changeLanguage('ur')">اردو (Urdu)</div>
+                    </div>
+                </div>
+                <!-- User Dropdown -->
+                <div class="user-dropdown">
+                    <button class="user-profile-btn">
+                        <i class="fas fa-user-circle"></i>
+                        <span id="user-name-display">Guest</span>
+                        <i class="fas fa-chevron-down" style="font-size: 10px;"></i>
+                    </button>
+                    <div class="user-menu">
+                        <div class="user-menu-header">
+                            <strong id="user-fullname-display">MCD Guest</strong>
+                            <p id="user-role-display">Viewer</p>
+                        </div>
+                        <hr>
+                        <a href="profile-driver.html" class="user-menu-item">
+                            <i class="fas fa-user-edit"></i> My Profile
+                        </a>
+                        <a href="booking.html" class="user-menu-item"
+                            style="background: #ebf8ff; color: #2b6cb0; border-radius: 8px; margin: 5px 10px;">
+                            <i class="fas fa-calendar-check"></i> Book Parking
+                        </a>
+                        <a href="profile-driver.html#vehicles" class="user-menu-item">
+                            <i class="fas fa-car"></i> My Vehicles
+                        </a>
+                        <a href="account.html" class="user-menu-item">
+                            <i class="fas fa-history"></i> Account History
+                        </a>
+                        <a href="safety.html" class="user-menu-item">
+                            <i class="fas fa-shield-alt"></i> Safety Alerts
+                        </a>
+                        <hr>
+                        <div class="user-menu-item logout" onclick="logout()" style="color: #e53e3e;">
+                            <i class="fas fa-sign-out-alt"></i> Logout
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Home Page View (New) -->
+        <div id="home" class="view-section active">
+            <!-- Personalized Welcome Banner (Dynamic) -->
+            <div id="user-welcome-banner"
+                style="display: none; margin-bottom: 25px; background: linear-gradient(135deg, #3b82f6, #6366f1); border-radius: 20px; padding: 25px; color: white; box-shadow: 0 10px 25px rgba(59, 130, 246, 0.2);">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <h2 style="margin: 0; font-size: 22px;">Welcome back, <span id="welcome-name">User</span>! 👋
+                        </h2>
+                        <p style="margin: 5px 0 0 0; opacity: 0.9; font-size: 14px;">Your parking status is clear. No
+                            active violations for your registered vehicles.</p>
+                    </div>
+                    <div style="display: flex; gap: 15px;">
+                        <div style="text-align: center;">
+                            <div style="font-size: 18px; font-weight: 800;" id="user-vehicle-count">0</div>
+                            <div style="font-size: 10px; opacity: 0.8; text-transform: uppercase;">Vehicles</div>
+                        </div>
+                        <div style="text-align: center;">
+                            <div style="font-size: 18px; font-weight: 800;" id="home-wallet-balance">₹0.00</div>
+                            <div style="font-size: 10px; opacity: 0.8; text-transform: uppercase;">Wallet</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="hero-section">
+                <div class="hero-content">
+                    <h1 class="hero-title">Digital Parking Infrastructure for <br><span id="typewriter-text"
+                            style="color: #3b82f6;"></span><span class="typewriter-cursor"></span></h1>
+                    <p class="hero-subtitle">
+                        Empowering Delhi with smart, automated, and efficient parking management solutions. Real-time
+                        monitoring and citizen-centric services.
+                    </p>
+                    <div class="hero-buttons">
+                        <button class="cta-btn cta-primary" onclick="switchView('dashboard')">
+                            Open Dashboard <i class="fas fa-arrow-right"></i>
+                        </button>
+                        <button class="cta-btn"
+                            style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white;">
+                            <i class="fas fa-info-circle"></i> Learn More
+                        </button>
+                    </div>
+                </div>
+                <div class="hero-map" id="home-hero-map"></div>
+            </div>
+
+            <!-- Animated Stats -->
+            <div class="home-stats">
+                <div class="home-stat-item">
+                    <div id="home-stat-slots" class="home-stat-number" data-target="15000">0</div>
+                    <div class="home-stat-label">Total Parking Slots</div>
+                </div>
+                <div class="home-stat-item">
+                    <div id="home-stat-users" class="home-stat-number" data-target="45000">0</div>
+                    <div class="home-stat-label">Daily Users</div>
+                </div>
+                <div class="home-stat-item">
+                    <div id="home-stat-zones" class="home-stat-number" data-target="128">0</div>
+                    <div class="home-stat-label">Monitored Zones</div>
+                </div>
+                <div class="home-stat-item">
+                    <div id="home-stat-uptime" class="home-stat-number" data-target="98">0%</div>
+                    <div class="home-stat-label">Uptime Reliability</div>
+                </div>
+            </div>
+
+            <!-- 3D Portal Cards -->
+            <h2
+                style="font-size: 24px; font-weight: 800; color: #1e293b; margin-bottom: 25px; display: flex; align-items: center; gap: 10px;">
+                <i class="fas fa-th-large" style="color: #3b82f6;"></i> Service Portals
+            </h2>
+            <div class="portal-grid">
+                <div class="portal-card" onclick="switchView('zones')">
+                    <div class="portal-icon"><i class="fas fa-map-marked-alt"></i></div>
+                    <h3 class="portal-title">Zone Management</h3>
+                    <p class="portal-desc">Comprehensive tools for managing parking zones, setting capacities, and
+                        monitoring enforcement in real-time.</p>
+                    <a href="#" class="portal-link">Access Portal <i class="fas fa-arrow-right"></i></a>
+                </div>
+                <div class="portal-card" onclick="switchView('violations')">
+                    <div class="portal-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                    <h3 class="portal-title">Violation Control</h3>
+                    <p class="portal-desc">Monitor reporting, track critical violations, and manage resolution workflows
+                        with automated systems.</p>
+                    <a href="#" class="portal-link">View Violations <i class="fas fa-arrow-right"></i></a>
+                </div>
+                <div class="portal-card" onclick="showLogin()">
+                    <div class="portal-icon"><i class="fas fa-user-shield"></i></div>
+                    <h3 class="portal-title">Officer Admin</h3>
+                    <p class="portal-desc">Restricted access for administrative tasks, zone allocation, and officer
+                        performance tracking.</p>
+                    <a href="javascript:void(0)" class="portal-link">Admin Login <i class="fas fa-lock"></i></a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dashboard View (Existing) -->
+        <div id="dashboard" class="view-section">
+            <div class="hero-stats">
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fas fa-city"></i></div>
+                    <div class="stat-content">
+                        <div class="stat-label">Active Zones</div>
+                        <div class="stat-value" id="total-zones">0</div>
+                        <div class="stat-change"><i class="fas fa-check-circle"></i> All monitored</div>
+                    </div>
+                </div>
+                <div class="stat-card warning">
+                    <div class="stat-icon"><i class="fas fa-car"></i></div>
+                    <div class="stat-content">
+                        <div class="stat-label">Total Vehicles</div>
+                        <div class="stat-value" id="total-vehicles">0</div>
+                        <div class="stat-change"><i class="fas fa-arrow-up"></i> Live updates</div>
+                    </div>
+                </div>
+                <div class="stat-card danger">
+                    <div class="stat-icon"><i class="fas fa-exclamation-circle"></i></div>
+                    <div class="stat-content">
+                        <div class="stat-label">Active Violations</div>
+                        <div class="stat-value" id="active-violations">0</div>
+                        <div class="stat-change"><i class="fas fa-clock"></i> Real-time detection</div>
+                    </div>
+                </div>
+                <div class="stat-card success">
+                    <div class="stat-icon"><i class="fas fa-rupee-sign"></i></div>
+                    <div class="stat-content">
+                        <div class="stat-label">Revenue Today</div>
+                        <div class="stat-value">₹0</div>
+                        <div class="stat-change"><i class="fas fa-chart-line"></i> Automated</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="main-grid">
+                <div class="card map-container">
+                    <div class="card-header">
+                        <h2 class="card-title"><i class="fas fa-map-marked-alt"></i> Parking Map</h2>
+                        <div class="map-controls">
+                            <span class="badge success"><span class="pulse-dot"></span> Live</span>
+                        </div>
+                    </div>
+
+                    <div class="weather-widget">
+                        <div class="weather-header">
+                            <div class="weather-location"><i class="fas fa-map-pin"></i> Delhi, India</div>
+                            <div class="weather-time" id="current-time"></div>
+                        </div>
+                        <div class="weather-content">
+                            <div class="weather-main">
+                                <div class="temp" id="temperature">--°C</div>
+                                <div class="weather-desc" id="weather-desc">--</div>
+                                <div class="weather-details">
+                                    <span><i class="fas fa-wind"></i> <span id="wind-speed">--</span></span>
+                                    <span><i class="fas fa-tint"></i> <span id="humidity">--</span></span>
+                                </div>
+                            </div>
+                            <div class="weather-icon" id="weather-icon"><i class="fas fa-sun"></i></div>
+                        </div>
+                    </div>
+
+                    <div class="map-search-container">
+                        <div class="search-box">
+                            <i class="fas fa-search"></i>
+                            <input type="text" id="map-search" placeholder="Search Parking Zones by name or address..."
+                                oninput="handleMapSearch()">
+                        </div>
+                    </div>
+                    <div id="map"></div>
+
+                    <!-- New MCD Insights Section below map -->
+                    <div style="padding: 20px; border-top: 1px solid #e2e8f0; background: #fff;">
+                        <div
+                            style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                            <h3 style="font-size: 14px; color: #2d3748; font-weight: 700; margin: 0;">
+                                <i class="fas fa-lightbulb" style="color: #ecc94b;"></i> MCD Smart Insights
+                            </h3>
+                            <span
+                                style="font-size: 10px; color: #718096; background: #ebf4ff; padding: 2px 8px; border-radius: 10px;">LIVE
+                                ANALYSIS</span>
+                        </div>
+                        <div class="insights-grid" id="insights-container">
+                            <div class="loading">Analyzing real-time data...</div>
+                        </div>
+                        <p style="margin-top: 15px; font-size: 11px; color: #a0aec0; font-style: italic;">
+                            * Data reflects real-time enforcement activity across all monitored Delhi parking zones.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="right-column">
+                    <div class="card violations-card">
+                        <div class="card-header">
+                            <h2 class="card-title"><i class="fas fa-exclamation-triangle"></i> Live Violations</h2>
+                            <span class="badge danger" id="live-violation-count">0</span>
+                        </div>
+                        <div class="violations-list" id="violations-list">
+                            <div class="loading">Loading...</div>
+                        </div>
+                    </div>
+
+                    <div class="card activity-card">
+                        <div class="card-header">
+                            <h2 class="card-title"><i class="fas fa-history"></i> Recent Activity</h2>
+                        </div>
+                        <div class="activity-list" id="activity-list">
+                            <div class="loading">Loading...</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card zone-overview-card">
+                <div class="card-header">
+                    <h2 class="card-title"><i class="fas fa-layer-group"></i> All Parking Zones</h2>
+                    <div style="font-size: 11px; color: #718096;"><i class="fas fa-map-pin"></i> Region: Delhi Capital
+                    </div>
+                </div>
+                <div class="zone-overview" id="zone-overview">
+                    <div class="loading">Loading...</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Zones Management View -->
+        <div id="zones" class="view-section">
+            <div class="card">
+                <div class="card-header" style="justify-content: space-between;">
+                    <h2 class="card-title"><i class="fas fa-tasks"></i> Zone Management</h2>
+                    <div class="admin-actions" id="admin-zone-actions">
+                        <button class="btn btn-primary" onclick="openZoneModal()">
+                            <i class="fas fa-plus"></i> Add New Zone
+                        </button>
+                    </div>
+                </div>
+
+                <div
+                    style="overflow-x: auto; margin-top: 24px; background: rgba(255,255,255,0.5); border-radius: 12px; padding: 10px;">
+                    <table class="modern-table">
+                        <thead>
+                            <tr>
+                                <th>Zone Name</th>
+                                <th>Contractor</th>
+                                <th>Capacity</th>
+                                <th>Limit</th>
+                                <th>Rate/Hr</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="zones-table-body">
+                            <!-- Dynamically populated -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Violations Dashboard View -->
+        <div id="violations" class="view-section">
+            <div class="card">
+                <div class="card-header" style="justify-content: space-between;">
+                    <h2 class="card-title"><i class="fas fa-exclamation-triangle"></i> Violations Dashboard</h2>
+                    <button class="export-btn" onclick="exportViolationsData()">
+                        <i class="fas fa-file-csv"></i> Export CSV
+                    </button>
+                </div>
+
+                <div class="hero-stats" style="grid-template-columns: repeat(4, 1fr); margin-top: 16px;">
+                    <div class="stat-card" style="padding: 12px;">
+                        <div class="stat-icon"><i class="fas fa-clock"></i></div>
+                        <div class="stat-content">
+                            <div class="stat-label">Pending</div>
+                            <div class="stat-value" id="stats-pending">0</div>
+                        </div>
+                    </div>
+                    <div class="stat-card danger" style="padding: 12px;">
+                        <div class="stat-icon"><i class="fas fa-radiation"></i></div>
+                        <div class="stat-content">
+                            <div class="stat-label">Critical</div>
+                            <div class="stat-value" id="stats-critical">0</div>
+                        </div>
+                    </div>
+                    <div class="stat-card success" style="padding: 12px;">
+                        <div class="stat-icon"><i class="fas fa-check-double"></i></div>
+                        <div class="stat-content">
+                            <div class="stat-label">Resolved</div>
+                            <div class="stat-value" id="stats-resolved">0</div>
+                        </div>
+                    </div>
+                    <div class="stat-card success" style="padding: 12px;">
+                        <div class="stat-icon"><i class="fas fa-indian-rupee-sign"></i></div>
+                        <div class="stat-content">
+                            <div class="stat-label">Revenue</div>
+                            <div class="stat-value" id="stats-revenue" style="font-size: 20px;">0</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div
+                    style="overflow-x: auto; margin-top: 24px; background: rgba(255,255,255,0.5); border-radius: 12px; padding: 10px;">
+                    <table class="modern-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Parking Zone</th>
+                                <th>Severity</th>
+                                <th>Excess Assets</th>
+                                <th>Penalty Due</th>
+                                <th>Status</th>
+                                <th>Detection Time</th>
+                                <th>Management</th>
+                            </tr>
+                        </thead>
+                        <tbody id="violations-table-body"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Enhanced UI Components (Auth & Chatbot) Loaded Dynamically via js/app.js -->
+    <div id="auth-chatbot-container"></div>
+    <!-- Zone Creation Modal -->
+    <div id="zone-modal" class="auth-modal">
+        <div class="auth-modal-content">
+            <div class="auth-modal-header">
+                <i class="fas fa-map-marker-alt fa-3x" style="margin-bottom: 12px;"></i>
+                <h2 style="margin: 0; font-size: 24px;">Create New Parking Zone</h2>
+                <p style="margin: 8px 0 0 0; opacity: 0.9; font-size: 14px;">Expand the Smart Parking Network</p>
+                <button class="close-btn" onclick="closeZoneModal()"
+                    style="position: absolute; top: 20px; right: 20px; background: none; border: none; color: white; cursor: pointer; font-size: 20px;">×</button>
+            </div>
+
+            <div class="auth-modal-body">
+                <form id="zone-form" onsubmit="handleZoneCreate(event)">
+                    <div class="form-grid">
+                        <div class="form-group full-width">
+                            <label class="form-label">Zone Name <span class="required">*</span></label>
+                            <input type="text" class="form-input" id="zone-name" required
+                                placeholder="e.g. Connaught Place Block A">
+                        </div>
+                        <div class="form-group full-width">
+                            <label class="form-label">Address <span class="required">*</span></label>
+                            <input type="text" class="form-input" id="zone-address" required
+                                placeholder="Full street address in Delhi">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Latitude <span class="required">*</span></label>
+                            <input type="number" step="0.000001" class="form-input" id="zone-lat" required
+                                placeholder="28.xxxxxx">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Longitude <span class="required">*</span></label>
+                            <input type="number" step="0.000001" class="form-input" id="zone-lng" required
+                                placeholder="77.xxxxxx">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Total Capacity <span class="required">*</span></label>
+                            <input type="number" class="form-input" id="zone-capacity" required placeholder="Max slots">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Contractor Limit <span class="required">*</span></label>
+                            <input type="number" class="form-input" id="zone-limit" required
+                                placeholder="Violation threshold">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Contractor Name <span class="required">*</span></label>
+                            <input type="text" class="form-input" id="zone-contractor" required
+                                placeholder="Name of agency">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Hourly Rate (₹) <span class="required">*</span></label>
+                            <input type="number" class="form-input" id="zone-rate" required value="50">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Penalty Per Vehicle (₹) <span class="required">*</span></label>
+                            <input type="number" class="form-input" id="zone-penalty" required value="500">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Contractor Contact</label>
+                            <input type="text" class="form-input" id="zone-contractor-contact"
+                                placeholder="+91 XXXXXXXXXX">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Contractor Email</label>
+                            <input type="email" class="form-input" id="zone-contractor-email"
+                                placeholder="agency@example.com">
+                        </div>
+                        <div class="form-group full-width">
+                            <label class="form-label">Operating Hours</label>
+                            <input type="text" class="form-input" id="zone-hours" value="06:00 - 22:00">
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary" id="zone-submit-btn"
+                        style="width: 100%; justify-content: center; margin-top: 20px;">
+                        <i class="fas fa-plus-circle"></i> Create Parking Zone
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Violation Resolution Modal -->
+    <div id="resolve-modal" class="auth-modal">
+        <div class="auth-modal-content"
+            style="max-width: 550px; overflow: hidden; border: 1px solid rgba(255,255,255,0.2);">
+            <div class="auth-modal-header"
+                style="background: linear-gradient(135deg, #2d3748, #1a202c); padding: 40px 30px; position: relative;">
+                <div class="header-icon-ring"
+                    style="width: 80px; height: 80px; background: rgba(255,255,255,0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; border: 1px solid rgba(255,255,255,0.2);">
+                    <i class="fas fa-shield-halved fa-3x"
+                        style="color: #fbbf24; text-shadow: 0 0 20px rgba(251, 191, 36, 0.4);"></i>
+                </div>
+                <h2 style="margin: 0; font-size: 26px; font-weight: 800; letter-spacing: -0.5px;">Violation Command</h2>
+                <div style="margin-top: 10px; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                    <span id="resolve-code"
+                        style="background: rgba(251, 191, 36, 0.2); color: #fbbf24; padding: 4px 12px; border-radius: 20px; font-size: 14px; font-weight: 700; border: 1px solid rgba(251, 191, 36, 0.3);">#VIO-XXX</span>
+                    <span style="opacity: 0.7; font-size: 13px;">Official Enforcement Action</span>
+                </div>
+                <button class="close-btn" onclick="closeResolveModal()"
+                    style="position: absolute; top: 20px; right: 20px; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); color: white; cursor: pointer; font-size: 18px; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all 0.3s;">&times;</button>
+            </div>
+
+            <div class="auth-modal-body" style="padding: 30px;">
+                <form id="resolve-form" onsubmit="handleViolationResolve(event)">
+                    <input type="hidden" id="resolve-violation-id">
+
+                    <div class="form-group" style="margin-bottom: 25px;">
+                        <label class="form-label"
+                            style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px; font-weight: 700; color: #4a5568;">
+                            <i class="fas fa-list-check" style="color: #3b82f6;"></i> Select Resolution Type
+                        </label>
+                        <div class="resolution-options"
+                            style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                            <label class="res-opt">
+                                <input type="radio" name="res-status" value="resolved" checked style="display: none;">
+                                <div class="res-opt-card" onclick="selectResOption(this)">
+                                    <i class="fas fa-hand-holding-hand"></i>
+                                    <span>Waive Penalty</span>
+                                </div>
+                            </label>
+                            <label class="res-opt">
+                                <input type="radio" name="res-status" value="paid" style="display: none;">
+                                <div class="res-opt-card" onclick="selectResOption(this)">
+                                    <i class="fas fa-indian-rupee-sign"></i>
+                                    <span>Fine Collected</span>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="form-group" style="margin-bottom: 30px;">
+                        <label class="form-label"
+                            style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px; font-weight: 700; color: #4a5568;">
+                            <i class="fas fa-pen-nib" style="color: #3b82f6;"></i> Official Intervention Notes
+                        </label>
+                        <textarea class="form-input" id="resolve-notes" required rows="4"
+                            style="resize: none; border-radius: 12px; border: 1px solid #e2e8f0; padding: 15px; font-family: inherit;"
+                            placeholder="Provide a detailed explanation for this resolution..."></textarea>
+                    </div>
+
+                    <div style="display: flex; gap: 15px;">
+                        <button type="button" class="btn btn-outline" onclick="closeResolveModal()"
+                            style="flex: 1; border-radius: 12px; height: 55px; font-weight: 700;">
+                            Discard
+                        </button>
+                        <button type="submit" class="btn btn-primary" id="resolve-submit-btn"
+                            style="flex: 2; border-radius: 12px; height: 55px; font-weight: 700; background: #2d3748; box-shadow: 0 10px 15px -3px rgba(45, 55, 72, 0.3);">
+                            <i class="fas fa-check-double" style="margin-right: 8px;"></i> Commit Resolution
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- Zone Details Modal -->
+    <div id="view-zone-modal" class="auth-modal">
+        <div class="auth-modal-content" style="max-width: 800px;">
+            <div class="auth-modal-header" style="background: linear-gradient(135deg, #3b82f6, #1e40af);">
+                <i class="fas fa-map-marker-alt fa-3x" style="margin-bottom: 12px;"></i>
+                <h2 id="modal-zone-name" style="margin: 0; font-size: 24px;">Zone Details</h2>
+                <p id="modal-zone-address" style="margin: 8px 0 0 0; opacity: 0.9; font-size: 14px;">Loading
+                    address...</p>
+                <button class="close-btn" onclick="closeViewZoneModal()"
+                    style="position: absolute; top: 20px; right: 20px; background: none; border: none; color: white; cursor: pointer; font-size: 20px;">×</button>
+            </div>
+
+            <div class="auth-modal-body">
+                <div class="zone-details-grid"
+                    style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 30px;">
+                    <div class="detail-card"
+                        style="background: #f8fafc; padding: 15px; border-radius: 12px; border-left: 4px solid #3b82f6;">
+                        <div style="font-size: 12px; color: #64748b; text-transform: uppercase; font-weight: 600;">
+                            Contractor</div>
+                        <div id="modal-zone-contractor" style="font-size: 16px; font-weight: 700; color: #1e293b;">-
+                        </div>
+                    </div>
+                    <div class="detail-card"
+                        style="background: #f8fafc; padding: 15px; border-radius: 12px; border-left: 4px solid #10b981;">
+                        <div style="font-size: 12px; color: #64748b; text-transform: uppercase; font-weight: 600;">
+                            Occupancy</div>
+                        <div id="modal-zone-occupancy" style="font-size: 16px; font-weight: 700; color: #1e293b;">
+                            0/0</div>
+                    </div>
+                    <div class="detail-card"
+                        style="background: #f8fafc; padding: 15px; border-radius: 12px; border-left: 4px solid #f59e0b;">
+                        <div style="font-size: 12px; color: #64748b; text-transform: uppercase; font-weight: 600;">
+                            Hourly Rate</div>
+                        <div id="modal-zone-rate" style="font-size: 16px; font-weight: 700; color: #1e293b;">₹0
+                        </div>
+                    </div>
+                    <div class="detail-card"
+                        style="background: #f8fafc; padding: 15px; border-radius: 12px; border-left: 4px solid #ef4444;">
+                        <div style="font-size: 12px; color: #64748b; text-transform: uppercase; font-weight: 600;">
+                            Hours</div>
+                        <div id="modal-zone-hours" style="font-size: 16px; font-weight: 700; color: #1e293b;">-
+                        </div>
+                    </div>
+                </div>
+
+                <div class="slot-management">
+                    <h3
+                        style="font-size: 18px; font-weight: 700; color: #1e293b; margin-bottom: 15px; display: flex; align-items: center; gap: 10px;">
+                        <i class="fas fa-th" style="color: #3b82f6;"></i> Real-time Slot Status
+                    </h3>
+                    <div id="modal-slots-grid"
+                        style="display: grid; grid-template-columns: repeat(auto-fill, minmax(60px, 1fr)); gap: 10px; max-height: 400px; overflow-y: auto; padding: 10px; background: #f1f5f9; border-radius: 12px;">
+                        <!-- Slots will be populated here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Download App Section -->
+    <section class="app-banner"
+        style="background: linear-gradient(135deg, #1e293b, #0f172a); padding: 60px 20px; text-align: center; color: white;">
+        <div style="max-width: 800px; margin: 0 auto;">
+            <h2
+                style="font-size: 32px; font-weight: 800; margin-bottom: 15px; background: linear-gradient(90deg, #38bdf8, #818cf8); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+                Get the MCD Smart Parking App</h2>
+            <p style="color: #cbd5e1; margin-bottom: 30px; font-size: 18px; line-height: 1.6;">
+                Seamless parking payments, real-time violation tracking, and instant slot availability at your
+                fingertips.
+                <br>Available now for iOS and Android.
+            </p>
+            <div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;">
+                <a href="https://apps.apple.com/in/app/mcd-app/id6450366872" target="_blank" class="btn"
+                    style="padding: 14px 30px; display: flex; align-items: center; gap: 12px; background: white; color: #0f172a; border-radius: 100px; font-weight: 700; text-decoration: none;">
+                    <i class="fab fa-apple fa-xl"></i> App Store
+                </a>
+                <a href="https://play.google.com/store/search?q=mcd%20app&c=apps&hl=en" target="_blank" class="btn"
+                    style="padding: 14px 30px; display: flex; align-items: center; gap: 12px; background: rgba(255,255,255,0.1); color: white; border: 1px solid rgba(255,255,255,0.2); border-radius: 100px; font-weight: 700; backdrop-filter: blur(10px); text-decoration: none;">
+                    <i class="fab fa-google-play fa-xl"></i> Google Play
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Premium Footer -->
+    <div class="footer-back-to-top" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
+        Back to top
+    </div>
+
+    <footer class="gov-footer">
+        <!-- Watermark Logo -->
+        <img src="MCDlogo.png" class="gov-footer-watermark" alt="">
+        <div class="gov-footer-content">
+            <div class="gov-grid">
+                <!-- Column 1: Get to Know Us -->
+                <div class="gov-col">
+                    <h4>Get to Know Us</h4>
+                    <ul class="gov-links">
+                        <li><a href="https://mcdonline.nic.in/" target="_blank" class="gov-link"><i
+                                    class="fas fa-arrow-right"></i> About MCD</a></li>
+                        <li><a href="about.html" class="gov-link"><i class="fas fa-arrow-right"></i> Smart City
+                                Mission</a></li>
+                        <li><a href="#" class="gov-link"><i class="fas fa-arrow-right"></i> Press Releases</a></li>
+                        <li><a href="mcd-science.html" class="gov-link"><i class="fas fa-arrow-right"></i> MCD
+                                Science</a></li>
+                    </ul>
+                </div>
+
+                <!-- Column 2: Connect with Us -->
+                <div class="gov-col">
+                    <h4>Connect with Us</h4>
+                    <ul class="gov-links">
+                        <li><a href="https://www.facebook.com/off.MCD/" target="_blank" class="gov-link"><i
+                                    class="fab fa-facebook"></i> Facebook</a></li>
+                        <li><a href="https://twitter.com/MCD_Delhi" target="_blank" class="gov-link"><i
+                                    class="fab fa-twitter"></i> Twitter</a></li>
+                        <li><a href="https://www.instagram.com/mcd_delhi" target="_blank" class="gov-link"><i
+                                    class="fab fa-instagram"></i> Instagram</a></li>
+                    </ul>
+                </div>
+
+                <!-- Column 3: Make Money with Us -->
+                <div class="gov-col">
+                    <h4>Make Money with Us</h4>
+                    <ul class="gov-links">
+                        <li><a href="contractors.html" class="gov-link"><i class="fas fa-arrow-right"></i> Apply as
+                                Contractor</a></li>
+                        <li><a href="sensors.html" class="gov-link"><i class="fas fa-arrow-right"></i> Sell Smart
+                                Sensors</a></li>
+                        <li><a href="procurement.html" class="gov-link"><i class="fas fa-arrow-right"></i> Supply to
+                                MCD</a></li>
+                        <li><a href="#" class="gov-link"><i class="fas fa-arrow-right"></i> Become an Affiliate</a></li>
+                        <li><a href="advertising.html" class="gov-link"><i class="fas fa-arrow-right"></i> Advertise
+                                with Us</a></li>
+                    </ul>
+                </div>
+
+                <!-- Column 4: Let Us Help You -->
+                <div class="gov-col">
+                    <h4>Let Us Help You</h4>
+                    <ul class="gov-links">
+                        <li><a href="account.html" class="gov-link"><i class="fas fa-arrow-right"></i> Your Account</a>
+                        </li>
+                        <li><a href="https://mcd.everythingcivic.com/citizen/createissue?app_id=U2FsdGVkX180J3mGnJmT5QpgtPjhfjtzyXAAccBUxGU%3D&api_key=e34ba86d3943bd6db9120313da011937189e6a9625170905750f649395bcd68312cf10d264c9305d57c23688cc2e5120"
+                                target="_blank" class="gov-link"><i class="fas fa-arrow-right"></i> Complaints
+                                Centre</a></li>
+                        <li><a href="safety.html" class="gov-link"><i class="fas fa-arrow-right"></i> Safety Alerts</a>
+                        </li>
+                        <li><a href="help.html" class="gov-link"><i class="fas fa-arrow-right"></i> MCD Help</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Info Grid Row -->
+            <div class="gov-grid"
+                style="margin-bottom: 30px; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
+                <div class="gov-contact-item">
+                    <div class="gov-icon-box"><i class="fas fa-map-marker-alt"></i></div>
+                    <div class="gov-contact-text">
+                        <div>Office Address</div>
+                        <div>Dr. S.P.M. Civic Centre, Minto Rd, SKD Basti, Press Enclave, Ajmeri Gate, New Delhi, Delhi,
+                            110002</div>
+                    </div>
+                </div>
+
+                <div class="gov-contact-item">
+                    <div class="gov-icon-box"><i class="fas fa-mobile-screen"></i></div>
+                    <div class="gov-contact-text">
+                        <div>Mobile Apps</div>
+                        <div>Unified Mobile App, MCD311 App<br><span style="font-size: 11px; color:#60a5fa;">Available
+                                on iOS/Android</span></div>
+                    </div>
+                </div>
+
+                <div class="gov-contact-item">
+                    <div class="gov-icon-box"><i class="fas fa-envelope"></i></div>
+                    <div class="gov-contact-text">
+                        <div>Email Support</div>
+                        <div><a href="mailto:mcd-ithelpdesk@mcd.nic.in"
+                                style="color:#94a3b8; text-decoration:none;">mcd-ithelpdesk[at]mcd.nic.in</a><br><span
+                                style="font-size: 11px;">(24/7 Technical Bureau)</span></div>
+                    </div>
+                </div>
+
+                <div class="gov-contact-item">
+                    <div class="gov-icon-box"><i class="fas fa-headset"></i></div>
+                    <div class="gov-contact-text">
+                        <div>Helpline Number</div>
+                        <div><a href="tel:155305"
+                                style="color:#e2e8f0; text-decoration:none; font-size:16px;">155305</a><br><span
+                                style="font-size: 11px;">(Toll-free across Delhi NCR)</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bottom Bar -->
+            <div class="gov-bottom-bar">
+                <div class="gov-branding-row">
+                    <img src="MCDlogo.png" alt="MCD Logo">
+                    <span class="gov-interactive"><i class="fas fa-globe"></i> English</span>
+                    <span class="gov-interactive"><i class="fas fa-map-marker-alt"></i> <a
+                            href="https://en.wikipedia.org/wiki/New_Delhi" target="_blank"
+                            style="color: inherit; text-decoration: none;">New Delhi</a>, India</span>
+                </div>
+
+                <div class="gov-legal-links">
+                    <a href="conditions.html" class="gov-legal-link">Conditions of Use</a>
+                    <a href="privacy.html" class="gov-legal-link">Privacy Notice</a>
+                    <a href="ads.html" class="gov-legal-link">Interest-Based Ads</a>
+                    <a href="feedback.html" target="_blank" class="gov-legal-link"
+                        style="color: #fbbf24; font-weight: 700;">Consumer Feedback</a>
+                </div>
+
+                <div class="gov-copyright">
+                    © 1996-2026, MCD Smart Parking, Inc. or its affiliates
+                </div>
+            </div>
+        </div>
+    </footer>
+</body>
+
+</html>

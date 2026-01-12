@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Privacy Notice | MCD Smart Parking</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Merriweather:wght@300;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --mcd-blue: #1e3a8a;
+            --mcd-teal: #0f766e;
+            --text-dark: #1e293b;
+            --text-light: #64748b;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            color: var(--text-dark);
+            margin: 0;
+            background: #f8fafc;
+        }
+
+        .header {
+            background: white;
+            padding: 20px 0;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            color: var(--mcd-blue);
+        }
+
+        .page-content {
+            padding: 60px 0 100px;
+        }
+
+        h1 {
+            font-family: 'Merriweather', serif;
+            font-size: 42px;
+            color: var(--mcd-blue);
+            margin-bottom: 20px;
+        }
+
+        .intro {
+            font-size: 18px;
+            color: var(--text-light);
+            margin-bottom: 40px;
+            max-width: 700px;
+        }
+
+        .privacy-card {
+            background: white;
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+            border-top: 4px solid var(--mcd-blue);
+        }
+
+        h3 {
+            font-size: 20px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        h3 i {
+            color: var(--mcd-teal);
+        }
+
+        .btn-back {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            background: #edf2f7;
+            color: var(--text-dark);
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.2s;
+            margin-bottom: 30px;
+        }
+
+        .btn-back:hover {
+            background: #e2e8f0;
+            transform: translateX(-2px);
+        }
+    </style>
+</head>
+
+<body>
+    <header class="header">
+        <div class="container">
+            <a href="index.html" class="nav-brand">
+                <img src="MCDlogo.png" alt="MCD" style="height: 40px;">
+                <span style="font-weight: 700; font-size: 20px;">MCD Smart Parking</span>
+            </a>
+        </div>
+    </header>
+
+    <div class="container page-content">
+        <a href="index.html" class="btn-back"><i class="fas fa-arrow-left"></i> Back to Home</a>
+
+        <h1>Privacy Notice</h1>
+        <p class="intro">The Municipal Corporation of Delhi (MCD) is committed to protecting your privacy and ensuring
+            the security of your personal data.</p>
+
+        <div class="privacy-card">
+            <h3><i class="fas fa-database"></i> What Information We Collect</h3>
+            <p>We collect information necessary to provide smart parking services, including:</p>
+            <ul>
+                <li>Vehicle Registration Number (License Plate)</li>
+                <li>Contact details (Name, Phone Number, Email)</li>
+                <li>Payment transaction history (Note: We do not store full credit card details)</li>
+                <li>Location data when using the "Find Parking" or "Navigation" features</li>
+            </ul>
+        </div>
+
+        <div class="privacy-card">
+            <h3><i class="fas fa-user-shield"></i> How We Use Your Data</h3>
+            <p>Your data is used strictly for:</p>
+            <ul>
+                <li>Processing parking reservations and payments.</li>
+                <li>Enforcing parking regulations and issuing penalty notices.</li>
+                <li>Improving traffic management across New Delhi.</li>
+                <li>Sending service notifications and alerts.</li>
+            </ul>
+        </div>
+
+        <div class="privacy-card">
+            <h3><i class="fas fa-share-alt"></i> Information Sharing</h3>
+            <p>We do not sell your personal data. Data may be shared with:</p>
+            <ul>
+                <li>Law enforcement agencies (e.g., Delhi Traffic Police) when required by law.</li>
+                <li>Authorized payment gateways for transaction processing.</li>
+                <li>Third-party contractors strictly for operational maintenance under NDA.</li>
+            </ul>
+        </div>
+
+        <div class="privacy-card">
+            <h3><i class="fas fa-lock"></i> Data Security</h3>
+            <p>All data is transmitted via secure SSL encryption. We employ industry-standard firewalls and access
+                controls to prevent unauthorized access to our systems.</p>
+        </div>
+    </div>
+</body>
+
+</html>

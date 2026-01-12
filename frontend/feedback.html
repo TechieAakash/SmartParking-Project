@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MCD Consumer Feedback</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        :root {
+            --f-teal: #0d9488;
+        }
+
+        body {
+            background: #f0fdfa;
+            color: #1e293b;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .hero {
+            background: var(--f-teal);
+            padding: 80px 20px;
+            text-align: center;
+            color: white;
+            border-bottom: 5px solid #2dd4bf;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 40px auto 100px;
+            padding: 0 20px;
+        }
+
+        .feedback-card {
+            background: white;
+            border-radius: 20px;
+            padding: 50px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 800;
+            margin-bottom: 10px;
+            font-size: 14px;
+            text-transform: uppercase;
+            color: #64748b;
+        }
+
+        .form-control {
+            width: 100%;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 15px;
+            font-size: 15px;
+            background: #f8fafc;
+            transition: all 0.3s;
+        }
+
+        .form-control:focus {
+            border-color: var(--f-teal);
+            background: #fff;
+            outline: none;
+        }
+
+        .rating {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            font-size: 24px;
+            color: #d1d5db;
+        }
+
+        .rating i {
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .rating i:hover,
+        .rating i.active {
+            color: #fbbf24;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="hero">
+        <h1 style="font-size: 40px; font-weight: 950;">Citizen Feedback Bureau</h1>
+        <p style="opacity: 0.9;">Your input helps us build a smarter, traffic-free New Delhi.</p>
+    </div>
+
+    <div class="container">
+        <div class="feedback-card">
+            <h2 style="font-size: 28px; font-weight: 900; margin-bottom: 10px;">Experience Survey</h2>
+            <p style="color: #64748b; margin-bottom: 40px;">Please take a moment to rate your last parking session
+                experience.</p>
+
+            <form
+                onsubmit="event.preventDefault(); alert('Success! Your feedback has been logged in MCD Bureau.'); window.close();">
+                <div class="form-group">
+                    <label>Rate Overall Experience</label>
+                    <div class="rating">
+                        <i class="fas fa-star active"></i>
+                        <i class="fas fa-star active"></i>
+                        <i class="fas fa-star active"></i>
+                        <i class="fas fa-star active"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Zone Name (Optional)</label>
+                    <input type="text" class="form-control" placeholder="e.g. Connaught Place Block A">
+                </div>
+                <div class="form-group">
+                    <label>Detailed Feedback</label>
+                    <textarea class="form-control" rows="5" placeholder="Tell us how we can improve..."></textarea>
+                </div>
+                <button type="submit" class="btn"
+                    style="width: 100%; background: var(--f-teal); color: white; border-radius: 100px; padding: 18px; font-weight: 900; font-size: 16px;">
+                    Send Feedback to Bureau
+                </button>
+            </form>
+        </div>
+
+        <div style="text-align: center; margin-top: 40px;">
+            <a href="#" onclick="window.close()"
+                style="color: var(--f-teal); font-weight: 800; text-decoration: none;">Maybe Later</a>
+        </div>
+    </div>
+
+    <!-- Download App Section -->
+    <section class="app-banner"
+        style="background: linear-gradient(135deg, #1e293b, #0f172a); padding: 60px 20px; text-align: center; color: white;">
+        <div style="max-width: 800px; margin: 0 auto;">
+            <h2
+                style="font-size: 32px; font-weight: 800; margin-bottom: 15px; background: linear-gradient(90deg, #38bdf8, #818cf8); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">
+                Get the MCD Smart Parking App</h2>
+            <p style="color: #cbd5e1; margin-bottom: 30px; font-size: 18px; line-height: 1.6;">
+                Seamless parking payments, real-time violation tracking, and instant slot availability at your
+                fingertips.
+                <br>Available now for iOS and Android.
+            </p>
+            <div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;">
+                <a href="https://apps.apple.com/in/app/mcd-app/id6450366872" target="_blank" class="btn"
+                    style="padding: 14px 30px; display: flex; align-items: center; gap: 12px; background: white; color: #0f172a; border-radius: 100px; font-weight: 700; text-decoration: none;">
+                    <i class="fab fa-apple fa-xl"></i> App Store
+                </a>
+                <a href="https://play.google.com/store/search?q=mcd%20app&c=apps&hl=en" target="_blank" class="btn"
+                    style="padding: 14px 30px; display: flex; align-items: center; gap: 12px; background: rgba(255,255,255,0.1); color: white; border: 1px solid rgba(255,255,255,0.2); border-radius: 100px; font-weight: 700; backdrop-filter: blur(10px); text-decoration: none;">
+                    <i class="fab fa-google-play fa-xl"></i> Google Play
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Premium Footer -->
+    <div class="footer-back-to-top" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
+        Back to top
+    </div>
+
+    <footer class="gov-footer">
+        <!-- Watermark Logo -->
+        <img src="MCDlogo.png" class="gov-footer-watermark" alt="">
+        <div class="gov-footer-content">
+            <div class="gov-grid">
+                <!-- Column 1: Get to Know Us -->
+                <div class="gov-col">
+                    <h4>Get to Know Us</h4>
+                    <ul class="gov-links">
+                        <li><a href="https://mcdonline.nic.in/" target="_blank" class="gov-link"><i
+                                    class="fas fa-arrow-right"></i> About MCD</a></li>
+                        <li><a href="about.html" class="gov-link"><i class="fas fa-arrow-right"></i> Smart City
+                                Mission</a></li>
+                        <li><a href="#" class="gov-link"><i class="fas fa-arrow-right"></i> Press Releases</a></li>
+                        <li><a href="mcd-science.html" class="gov-link"><i class="fas fa-arrow-right"></i> MCD
+                                Science</a></li>
+                    </ul>
+                </div>
+
+                <!-- Column 2: Connect with Us -->
+                <div class="gov-col">
+                    <h4>Connect with Us</h4>
+                    <ul class="gov-links">
+                        <li><a href="https://www.facebook.com/off.MCD/" target="_blank" class="gov-link"><i
+                                    class="fab fa-facebook"></i> Facebook</a></li>
+                        <li><a href="https://twitter.com/MCD_Delhi" target="_blank" class="gov-link"><i
+                                    class="fab fa-twitter"></i> Twitter</a></li>
+                        <li><a href="https://www.instagram.com/mcd_delhi" target="_blank" class="gov-link"><i
+                                    class="fab fa-instagram"></i> Instagram</a></li>
+                    </ul>
+                </div>
+
+                <!-- Column 3: Make Money with Us -->
+                <div class="gov-col">
+                    <h4>Make Money with Us</h4>
+                    <ul class="gov-links">
+                        <li><a href="contractors.html" class="gov-link"><i class="fas fa-arrow-right"></i> Apply as
+                                Contractor</a></li>
+                        <li><a href="sensors.html" class="gov-link"><i class="fas fa-arrow-right"></i> Sell Smart
+                                Sensors</a></li>
+                        <li><a href="procurement.html" class="gov-link"><i class="fas fa-arrow-right"></i> Supply to
+                                MCD</a></li>
+                        <li><a href="#" class="gov-link"><i class="fas fa-arrow-right"></i> Become an Affiliate</a></li>
+                        <li><a href="advertising.html" class="gov-link"><i class="fas fa-arrow-right"></i> Advertise
+                                with Us</a></li>
+                    </ul>
+                </div>
+
+                <!-- Column 4: Let Us Help You -->
+                <div class="gov-col">
+                    <h4>Let Us Help You</h4>
+                    <ul class="gov-links">
+                        <li><a href="account.html" class="gov-link"><i class="fas fa-arrow-right"></i> Your Account</a>
+                        </li>
+                        <li><a href="https://mcd.everythingcivic.com/citizen/createissue?app_id=U2FsdGVkX180J3mGnJmT5QpgtPjhfjtzyXAAccBUxGU%3D&api_key=e34ba86d3943bd6db9120313da011937189e6a9625170905750f649395bcd68312cf10d264c9305d57c23688cc2e5120"
+                                target="_blank" class="gov-link"><i class="fas fa-arrow-right"></i> Complaints
+                                Centre</a></li>
+                        <li><a href="safety.html" class="gov-link"><i class="fas fa-arrow-right"></i> Safety Alerts</a>
+                        </li>
+                        <li><a href="help.html" class="gov-link"><i class="fas fa-arrow-right"></i> MCD Help</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Info Grid Row -->
+            <div class="gov-grid"
+                style="margin-bottom: 30px; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
+                <div class="gov-contact-item">
+                    <div class="gov-icon-box"><i class="fas fa-map-marker-alt"></i></div>
+                    <div class="gov-contact-text">
+                        <div>Office Address</div>
+                        <div>Dr. S.P.M. Civic Centre, Minto Rd, SKD Basti, Press Enclave, Ajmeri Gate, New Delhi, Delhi,
+                            110002</div>
+                    </div>
+                </div>
+
+                <div class="gov-contact-item">
+                    <div class="gov-icon-box"><i class="fas fa-mobile-screen"></i></div>
+                    <div class="gov-contact-text">
+                        <div>Mobile Apps</div>
+                        <div>Unified Mobile App, MCD311 App<br><span style="font-size: 11px; color:#60a5fa;">Available
+                                on iOS/Android</span></div>
+                    </div>
+                </div>
+
+                <div class="gov-contact-item">
+                    <div class="gov-icon-box"><i class="fas fa-envelope"></i></div>
+                    <div class="gov-contact-text">
+                        <div>Email Support</div>
+                        <div><a href="mailto:mcd-ithelpdesk@mcd.nic.in"
+                                style="color:#94a3b8; text-decoration:none;">mcd-ithelpdesk[at]mcd.nic.in</a><br><span
+                                style="font-size: 11px;">(24/7 Technical Bureau)</span></div>
+                    </div>
+                </div>
+
+                <div class="gov-contact-item">
+                    <div class="gov-icon-box"><i class="fas fa-headset"></i></div>
+                    <div class="gov-contact-text">
+                        <div>Helpline Number</div>
+                        <div><a href="tel:155305"
+                                style="color:#e2e8f0; text-decoration:none; font-size:16px;">155305</a><br><span
+                                style="font-size: 11px;">(Toll-free across Delhi NCR)</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bottom Bar -->
+            <div class="gov-bottom-bar">
+                <div class="gov-branding-row">
+                    <img src="MCDlogo.png" alt="MCD Logo">
+                    <span class="gov-interactive"><i class="fas fa-globe"></i> English</span>
+                    <span class="gov-interactive"><i class="fas fa-map-marker-alt"></i> <a
+                            href="https://en.wikipedia.org/wiki/New_Delhi" target="_blank"
+                            style="color: inherit; text-decoration: none;">New Delhi</a>, India</span>
+                </div>
+
+                <div class="gov-legal-links">
+                    <a href="conditions.html" class="gov-legal-link">Conditions of Use</a>
+                    <a href="privacy.html" class="gov-legal-link">Privacy Notice</a>
+                    <a href="ads.html" class="gov-legal-link">Interest-Based Ads</a>
+                    <a href="feedback.html" target="_blank" class="gov-legal-link"
+                        style="color: #fbbf24; font-weight: 700;">Consumer Feedback</a>
+                </div>
+
+                <div class="gov-copyright">
+                    © 1996-2026, MCD Smart Parking, Inc. or its affiliates
+                </div>
+            </div>
+        </div>
+    </footer>
+</body>
+
+</html>

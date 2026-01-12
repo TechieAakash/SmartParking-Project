@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MCD Smart Sensor Marketplace</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        :root {
+            --market-blue: #0ea5e9;
+            --market-dark: #0f172a;
+        }
+
+        body {
+            background: #fafafa;
+            color: #334155;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .hero {
+            background: linear-gradient(rgba(15, 23, 42, 0.9), rgba(15, 23, 42, 0.7)), url('sensors.png');
+            background-size: cover;
+            background-position: center;
+            padding: 120px 40px;
+            text-align: center;
+            color: white;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 80px 20px;
+        }
+
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 40px;
+        }
+
+        .product-card {
+            background: white;
+            border-radius: 24px;
+            padding: 40px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.02);
+        }
+
+        .sensor-badge {
+            background: #f0f9ff;
+            color: #0ea5e9;
+            padding: 6px 14px;
+            border-radius: 6px;
+            font-weight: 800;
+            font-size: 12px;
+            margin-bottom: 20px;
+            display: inline-block;
+        }
+
+        .market-features {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+            margin-bottom: 100px;
+        }
+
+        .feature-icon {
+            width: 60px;
+            height: 60px;
+            background: var(--market-blue);
+            color: white;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        .commission-box {
+            background: var(--market-dark);
+            color: white;
+            padding: 60px;
+            border-radius: 30px;
+            text-align: center;
+            margin-top: 80px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="hero">
+        <h1 style="font-size: 64px; font-weight: 900; letter-spacing: -2px;">The Smart <span
+                style="color: var(--market-blue);">Hardware</span> Marketplace</h1>
+        <p style="font-size: 20px; opacity: 0.8; max-width: 600px; margin: 20px auto;">Connecting certified hardware
+            manufacturers with MCD-designated parking zones and private developers.</p>
+    </div>
+
+    <div class="container">
+        <div class="market-features">
+            <div>
+                <div class="feature-icon"><i class="fas fa-microchip"></i></div>
+                <h2 style="font-size: 36px; font-weight: 900; margin-bottom: 20px;">Act as a Quality Gatekeeper</h2>
+                <p style="font-size: 18px; color: #64748b; line-height: 1.8;">
+                    MCD maintain rigorous standards for Delhi's extreme weather and high traffic. We allow manufacturers
+                    of Geomagnetic, Ultrasonic, and AI ANPR cameras to list their products—but only after passing the
+                    **"MCD Compatibility Rigor Test."**
+                </p>
+                <div style="margin-top: 30px;">
+                    <div style="display: flex; gap: 15px; margin-bottom: 15px;">
+                        <i class="fas fa-check-circle" style="color: #10b981; margin-top: 5px;"></i>
+                        <div><strong>Zero-Latency Sync:</strong> All hardware must interface directly with our Backend
+                            API.</div>
+                    </div>
+                    <div style="display: flex; gap: 15px;">
+                        <i class="fas fa-check-circle" style="color: #10b981; margin-top: 5px;"></i>
+                        <div><strong>Weather Hardening:</strong> Rated for Delhi's heat (up to 50°C) and monsoon floods.
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div
+                style="background: white; border-bottom: 8px solid var(--market-blue); border-radius: 20px; box-shadow: 0 30px 60px rgba(0,0,0,0.05); overflow: hidden;">
+                <img src="sensors.png" alt="Sensing Tech" style="width: 100%; display: block; filter: contrast(1.1);">
+            </div>
+        </div>
+
+        <section class="product-grid">
+            <div class="product-card">
+                <span class="sensor-badge">IOT CERTIFIED</span>
+                <h3 style="font-size: 24px; font-weight: 800; margin-bottom: 10px;">MagPulse-900 (Geomagnetic)</h3>
+                <p style="color: #64748b; margin-bottom: 30px;">Double-induction sensor with 10-year battery life.
+                    Perfect for surface parking across MCD zones.</p>
+                <div style="font-size: 28px; font-weight: 900; color: var(--market-dark); margin-bottom: 25px;">₹4,200 /
+                    unit <span style="font-size: 14px; font-weight: 500; color: #94a3b8;">(Bulk Only)</span></div>
+                <button class="btn" style="width: 100%;" onclick="window.close()">Request Batch Quote</button>
+            </div>
+            <div class="product-card">
+                <span class="sensor-badge">AI ENABLED</span>
+                <h3 style="font-size: 24px; font-weight: 800; margin-bottom: 10px;">VisionGuard ANPR Hub</h3>
+                <p style="color: #64748b; margin-bottom: 30px;">Deep-learning camera with edge processing. Identifies
+                    HSRP plates with 99.8% accuracy.</p>
+                <div style="font-size: 28px; font-weight: 900; color: var(--market-dark); margin-bottom: 25px;">₹18,500
+                    / unit <span style="font-size: 14px; font-weight: 500; color: #94a3b8;">(Certified Install)</span>
+                </div>
+                <button class="btn" style="width: 100%; border-color: var(--market-blue); color: var(--market-blue);"
+                    onclick="window.close()">View Tech Specs</button>
+            </div>
+        </section>
+
+        <div class="commission-box">
+            <h2 style="font-size: 36px; font-weight: 900; margin-bottom: 20px;">Monetize Your Innovation</h2>
+            <p style="font-size: 18px; opacity: 0.8; max-width: 700px; margin: 0 auto 40px;">
+                MCD takes a fixed percentage commission on bulk sales to private developers. List your hardware and tap
+                into Delhi's massive urban development pipeline.
+            </p>
+            <button class="btn"
+                style="background: white; color: var(--market-dark); font-weight: 900; padding: 20px 50px; border-radius: 40px;"
+                onclick="window.close()">Register as Manufacturer</button>
+        </div>
+    </div>
+</body>
+
+</html>

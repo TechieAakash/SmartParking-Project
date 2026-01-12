@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MCD Science & Urban Mobility - Smart Parking</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        :root {
+            --govt-navy: #1a2980;
+            --govt-blue: #26d0ce;
+            --govt-accent: #3b82f6;
+            --premium-gold: #fbbf24;
+            --glass-bg: rgba(255, 255, 255, 0.85);
+            --glass-border: rgba(255, 255, 255, 0.5);
+        }
+
+        body {
+            background: #f0f4f8;
+            color: #1e293b;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        /* Animated Background Mesh */
+        .bg-mesh {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: radial-gradient(circle at 50% 50%, rgba(59, 130, 246, 0.05) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(38, 208, 206, 0.05) 0%, transparent 40%);
+        }
+
+        .science-hero {
+            position: relative;
+            padding: 120px 40px;
+            text-align: center;
+            background: linear-gradient(135deg, rgba(26, 41, 128, 0.95) 0%, rgba(38, 208, 206, 0.85) 100%), url('mcd-science.png');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            border-bottom: 8px solid var(--premium-gold);
+            clip-path: polygon(0 0, 100% 0, 100% 85%, 0% 100%);
+        }
+
+        .hero-tag {
+            background: rgba(251, 191, 36, 0.2);
+            color: var(--premium-gold);
+            padding: 8px 24px;
+            border-radius: 50px;
+            font-size: 14px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            border: 1px solid rgba(251, 191, 36, 0.4);
+            display: inline-block;
+            margin-bottom: 30px;
+            backdrop-filter: blur(10px);
+        }
+
+        .hero-title {
+            font-size: 64px;
+            font-weight: 900;
+            line-height: 1.1;
+            margin-bottom: 30px;
+            text-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            letter-spacing: -2px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: -60px auto 0;
+            padding: 0 20px 100px;
+        }
+
+        .science-section {
+            margin-bottom: 100px;
+        }
+
+        .section-title {
+            font-size: 36px;
+            font-weight: 900;
+            color: var(--govt-navy);
+            margin-bottom: 50px;
+            text-align: center;
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            left: 50%;
+            bottom: -15px;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 5px;
+            background: var(--premium-gold);
+            border-radius: 10px;
+        }
+
+        .physics-box {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 30px;
+            padding: 60px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .physics-box p {
+            font-size: 22px;
+            color: #334155;
+            margin-bottom: 40px;
+            font-weight: 500;
+        }
+
+        .goal-indicator {
+            display: inline-flex;
+            gap: 20px;
+            align-items: center;
+            color: white;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--govt-navy), var(--govt-accent));
+            padding: 20px 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(26, 41, 128, 0.3);
+        }
+
+        .iot-layers {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 40px;
+        }
+
+        .iot-card {
+            background: white;
+            border-radius: 30px;
+            padding: 40px;
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border: 1px solid #e2e8f0;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
+        }
+
+        .iot-card:hover {
+            transform: translateY(-15px) scale(1.02);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.1);
+            border-color: var(--govt-accent);
+        }
+
+        .iot-card i.card-bg-icon {
+            position: absolute;
+            right: -20px;
+            bottom: -20px;
+            font-size: 150px;
+            opacity: 0.03;
+            color: var(--govt-navy);
+            transform: rotate(-15deg);
+        }
+
+        .iot-title {
+            font-size: 28px;
+            font-weight: 950;
+            color: var(--govt-navy);
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .iot-list li {
+            padding: 15px 0;
+            border-bottom: 1px solid #f1f5f9;
+            font-size: 17px;
+            font-weight: 500;
+            color: #475569;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .iot-list i.check-icon {
+            width: 32px;
+            height: 32px;
+            background: #eff6ff;
+            color: var(--govt-accent);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+        }
+
+        .premium-table-wrapper {
+            background: white;
+            border-radius: 30px;
+            padding: 10px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+            border: 1px solid #e2e8f0;
+        }
+
+        .science-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+
+        .science-table th {
+            background: #f8fafc;
+            color: var(--govt-navy);
+            padding: 25px;
+            font-weight: 800;
+            text-transform: uppercase;
+            font-size: 12px;
+            letter-spacing: 2px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .science-table td {
+            padding: 25px;
+            border-bottom: 1px solid #f1f5f9;
+            font-size: 16px;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        .science-table tr:hover td {
+            background: #f0f9ff;
+            color: var(--govt-accent);
+        }
+
+        .iccc-section {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            padding: 80px;
+            border-radius: 40px;
+            color: white;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.2);
+        }
+
+        .iccc-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('https://www.transparenttextures.com/patterns/carbon-fibre.png');
+            opacity: 0.1;
+        }
+
+        .security-badge {
+            background: rgba(16, 185, 129, 0.15);
+            color: #34d399;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            padding: 15px 35px;
+            border-radius: 100px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-size: 14px;
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            margin-top: 40px;
+        }
+
+        .btn-exit {
+            background: linear-gradient(135deg, var(--premium-gold) 0%, #f59e0b 100%);
+            color: var(--govt-navy);
+            padding: 20px 60px;
+            border-radius: 100px;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 16px;
+            box-shadow: 0 10px 30px rgba(245, 158, 11, 0.3);
+        }
+
+        .btn-exit:hover {
+            transform: scale(1.05);
+            box-shadow: 0 15px 40px rgba(245, 158, 11, 0.4);
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(0px);
+            }
+
+            50% {
+                transform: translateY(-10px);
+            }
+
+            100% {
+                transform: translateY(0px);
+            }
+        }
+
+        .float {
+            animation: float 3s ease-in-out infinite;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="bg-mesh"></div>
+
+    <div class="science-hero">
+        <div class="hero-tag float">Official MCD Data Intelligence</div>
+        <h1 class="hero-title">The Science of <br><span style="color: var(--premium-gold);">Urban Mobility</span></h1>
+        <p
+            style="font-size: 24px; opacity: 0.95; max-width: 800px; margin: 0 auto; font-weight: 600; letter-spacing: 1px;">
+            Empowering the Delhi Smart City Roadmap with IoT-driven Physics and Real-time Data Analytics.
+        </p>
+    </div>
+
+    <div class="container">
+        <!-- Section 1 -->
+        <section class="science-section">
+            <h2 class="section-title">01 / The Physics of Congestion</h2>
+            <div class="physics-box">
+                <p>
+                    In a metropolis like Delhi, 30% of traffic congestion is caused by vehicles <span
+                        style="color: var(--govt-accent); font-weight: 800;">"cruising"</span> for parking.
+                    This creates a <span style="color: var(--govt-navy); font-weight: 800;">laminar-to-turbulent flow
+                        transition</span> that stalls the city's kinetic movement.
+                </p>
+                <div class="goal-indicator">
+                    <i class="fas fa-atom fa-spin" style="font-size: 28px;"></i>
+                    <span>MISSION: Eliminate the search phase via Real-time Data Science to restore optimal city
+                        flow.</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 2 -->
+        <section class="science-section">
+            <h2 class="section-title">02 / IoT Integration Layers</h2>
+            <div class="iot-layers">
+                <div class="iot-card">
+                    <i class="fas fa-satellite card-bg-icon"></i>
+                    <div class="iot-title">
+                        <i class="fas fa-microchip" style="color: var(--govt-accent);"></i> Perception Layer
+                    </div>
+                    <ul class="iot-list" style="list-style: none; padding: 0;">
+                        <li><i class="fas fa-check check-icon"></i> Geomagnetic Induction (Magnetic Field Flux)</li>
+                        <li><i class="fas fa-check check-icon"></i> Computer Vision AI (Real-time ANPR)</li>
+                        <li><i class="fas fa-check check-icon"></i> Ultrasonic Wave Propagation Mapping</li>
+                    </ul>
+                </div>
+                <div class="iot-card">
+                    <i class="fas fa-wifi card-bg-icon"></i>
+                    <div class="iot-title">
+                        <i class="fas fa-tower-broadcast" style="color: var(--premium-gold);"></i> Connectivity Layer
+                    </div>
+                    <ul class="iot-list" style="list-style: none; padding: 0;">
+                        <li><i class="fas fa-check check-icon"></i> High-Speed RFID (FASTag) Pulse Tech</li>
+                        <li><i class="fas fa-check check-icon"></i> LoRaWAN (Low-Power Wide-Area Network)</li>
+                        <li><i class="fas fa-check check-icon"></i> Terabit-Scale Municipal fiber Backbone</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 3 -->
+        <section class="science-section">
+            <h2 class="section-title">03 / Environmental Thermodynamics</h2>
+            <div class="premium-table-wrapper">
+                <table class="science-table">
+                    <thead>
+                        <tr>
+                            <th>Scientific Metric</th>
+                            <th>Environmental Equilibrium</th>
+                            <th>SDG Alignment</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>CO₂ / NOx Reduction</strong></td>
+                            <td>Lowering thermal concentration in urban canyons.</td>
+                            <td>Goal 11: Sustainable Cities</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Kinetic Efficiency</strong></td>
+                            <td>Preserving energy by optimizing vehicle pathing.</td>
+                            <td>Goal 7: Affordable & Clean Energy</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Urban Land Science</strong></td>
+                            <td>Maximized Area Efficiency through smart induction.</td>
+                            <td>Goal 12: Responsible Consumption</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Section 4 -->
+        <section class="science-section">
+            <div class="iccc-section">
+                <i class="fas fa-brain fa-pulse"
+                    style="font-size: 60px; color: var(--premium-gold); margin-bottom: 30px;"></i>
+                <h2 style="font-size: 40px; font-weight: 900; margin-bottom: 25px;">Predictive Governance Hub</h2>
+                <p style="font-size: 20px; color: #94a3b8; max-width: 800px; margin: 0 auto; line-height: 1.8;">
+                    Applying <span style="color: white; font-weight: 700;">Deep Learning Algorithms</span> to historical
+                    traffic patterns, allowing the MCD to predict
+                    demand spikes during national events and Diwali with 98.4% accuracy.
+                </p>
+                <div class="security-badge">
+                    <i class="fas fa-user-shield"></i> AES-256 Quantum-Resistant Intelligence Encryption
+                </div>
+            </div>
+        </section>
+
+        <div style="text-align: center;">
+            <button onclick="window.close()" class="btn-exit">
+                <i class="fas fa-door-open"></i> Return to Main Portal
+            </button>
+        </div>
+    </div>
+</body>
+
+</html>

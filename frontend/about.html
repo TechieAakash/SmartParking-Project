@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart City Mission - MCD Smart Parking</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .mission-hero {
+            background: linear-gradient(135deg, rgba(26, 41, 128, 0.85) 0%, rgba(38, 208, 206, 0.7) 100%), url('smart-city-mission.png');
+            background-size: cover;
+            background-position: center;
+            padding: 100px 40px;
+            color: white;
+            text-align: center;
+            border-radius: 0 0 40px 40px;
+            margin-bottom: 50px;
+        }
+
+        .mission-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .quote-section {
+            background: #f8fafc;
+            padding: 40px;
+            border-radius: 20px;
+            border-left: 8px solid #3b82f6;
+            margin-bottom: 60px;
+            font-style: italic;
+            font-size: 20px;
+            color: #1e293b;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+        }
+
+        .pillar-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin-bottom: 80px;
+        }
+
+        .pillar-card {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            border: 1px solid #e2e8f0;
+            transition: all 0.3s ease;
+        }
+
+        .pillar-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            border-color: #3b82f6;
+        }
+
+        .pillar-icon {
+            font-size: 40px;
+            color: #3b82f6;
+            margin-bottom: 20px;
+        }
+
+        .pillar-title {
+            font-weight: 800;
+            font-size: 20px;
+            margin-bottom: 15px;
+            color: #0f172a;
+        }
+
+        .pillar-desc {
+            color: #64748b;
+            line-height: 1.6;
+            font-size: 15px;
+        }
+
+        .stats-banner {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: white;
+            padding: 60px 40px;
+            border-radius: 30px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 40px;
+            text-align: center;
+            margin-bottom: 80px;
+        }
+
+        .stat-item h2 {
+            font-size: 48px;
+            font-weight: 900;
+            margin-bottom: 10px;
+            background: linear-gradient(to right, #60a5fa, #3b82f6);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .stat-item p {
+            color: #94a3b8;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .feature-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 80px;
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+        }
+
+        .feature-table th {
+            background: #3b82f6;
+            color: white;
+            padding: 20px;
+            text-align: left;
+        }
+
+        .feature-table td {
+            padding: 20px;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .feature-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .feature-table tr:hover {
+            background: #f8fafc;
+        }
+
+        .final-cta {
+            text-align: center;
+            padding: 100px 40px;
+            background: #3b82f6;
+            color: white;
+            border-radius: 40px;
+            margin-bottom: 100px;
+        }
+
+        .final-cta h2 {
+            font-size: 36px;
+            font-weight: 800;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+
+<body style="background: white;">
+    <div class="mission-hero">
+        <h1 style="font-size: 56px; font-weight: 900; margin-bottom: 20px;">Digital Parking Infrastructure for <span
+                id="typewriter" style="color: #60a5fa;">Delhi NCT</span></h1>
+        <p style="font-size: 20px; max-width: 800px; margin: 0 auto; opacity: 0.9;">
+            Revolutionizing urban mobility under the Smart City Mission. We are transforming MCD parking lots into
+            data-driven, IoT-enabled hubs to reduce congestion and carbon emissions.
+        </p>
+    </div>
+
+    <div class="mission-content">
+        <div class="quote-section">
+            <i class="fas fa-quote-left"
+                style="font-size: 40px; color: #3b82f6; opacity: 0.2; margin-bottom: 20px; display: block;"></i>
+            "The objective is to promote cities that provide core infrastructure and give a decent quality of life to
+            its citizens, a clean and sustainable environment and application of ‘Smart’ Solutions."
+            <footer style="margin-top: 20px; font-weight: 700; color: #64748b; font-style: normal;">— Ministry of
+                Housing and Urban Affairs</footer>
+        </div>
+
+        <h2 style="font-size: 32px; font-weight: 800; color: #0f172a; margin-bottom: 40px; text-align: center;">Our
+            Strategic Pillars</h2>
+        <div class="pillar-grid">
+            <div class="pillar-card">
+                <div class="pillar-icon"><i class="fas fa-landmark"></i></div>
+                <div class="pillar-title">E-Governance</div>
+                <div class="pillar-desc">Transparent, paperless revenue collection for MCD through digital audits,
+                    ensuring fiscal responsibility and zero leakage.</div>
+            </div>
+            <div class="pillar-card">
+                <div class="pillar-icon"><i class="fas fa-route"></i></div>
+                <div class="pillar-title">Smart Mobility</div>
+                <div class="pillar-desc">Real-time parking availability to reduce "cruising time" for vehicles, directly
+                    lowering fuel consumption and traffic congestion.</div>
+            </div>
+            <div class="pillar-card">
+                <div class="pillar-icon"><i class="fas fa-leaf"></i></div>
+                <div class="pillar-title">Sustainable Environment</div>
+                <div class="pillar-desc">Integration with EV charging stations to support Delhi's green transition and
+                    reduce urban air pollution.</div>
+            </div>
+            <div class="pillar-card">
+                <div class="pillar-icon"><i class="fas fa-shield-alt"></i></div>
+                <div class="pillar-title">Safety & Security</div>
+                <div class="pillar-desc">AI-based ANPR (Automatic Number Plate Recognition) and 24/7 surveillance for a
+                    safer city environment.</div>
+            </div>
+        </div>
+
+        <h2 style="font-size: 32px; font-weight: 800; color: #0f172a; margin-bottom: 40px; text-align: center;">Key
+            Features: The 'Smart' Solutions</h2>
+        <table class="feature-table">
+            <thead>
+                <tr>
+                    <th>Feature</th>
+                    <th>Benefit for Delhi Citizens</th>
+                    <th>Impact for MCD</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Real-time Occupancy</strong></td>
+                    <td>Zero time wasted searching for spots.</td>
+                    <td>Dynamic traffic load management.</td>
+                </tr>
+                <tr>
+                    <td><strong>Cashless Payments</strong></td>
+                    <td>Pay via UPI, FASTag, or Mobile Wallet.</td>
+                    <td>100% revenue leakage prevention.</td>
+                </tr>
+                <tr>
+                    <td><strong>Advanced Analytics</strong></td>
+                    <td>Predict peak hour availability.</td>
+                    <td>Data-driven urban planning.</td>
+                </tr>
+                <tr>
+                    <td><strong>Citizen App</strong></td>
+                    <td>Pre-book slots in areas like Chandni Chowk.</td>
+                    <td>Reduced on-street illegal parking.</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="stats-banner">
+            <div class="stat-item">
+                <h2>25%</h2>
+                <p>Reduced Congestion</p>
+            </div>
+            <div class="stat-item">
+                <h2>Lower</h2>
+                <p>CO2 Emissions</p>
+            </div>
+            <div class="stat-item">
+                <h2>Enhanced</h2>
+                <p>Ease of Living</p>
+            </div>
+        </div>
+
+        <div class="final-cta">
+            <h2>A Smarter Delhi, A Greener Tomorrow</h2>
+            <p style="font-size: 18px; max-width: 800px; margin: 0 auto; opacity: 0.9; line-height: 1.8;">
+                Our system isn't just about finding a place to leave your car; it’s a vital component of the Delhi Smart
+                City Roadmap. By digitizing the curb, we provide the MCD with the tools needed to manage the city's
+                growth, ensuring that the heart of India remains a world-class metropolis.
+            </p>
+            <button onclick="window.close()" class="btn"
+                style="margin-top: 40px; background: white; color: #3b82f6; padding: 15px 40px; border-radius: 30px; font-weight: 800; border: none; cursor: pointer;">
+                Return to Dashboard
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Typewriter effect
+        const text = "Delhi NCT";
+        let i = 0;
+        const target = document.getElementById('typewriter');
+        function type() {
+            if (i < text.length) {
+                target.innerHTML += text.charAt(i);
+                i++;
+                setTimeout(type, 200);
+            }
+        }
+        target.innerHTML = '';
+        type();
+    </script>
+</body>
+
+</html>
