@@ -19,7 +19,7 @@ const walletRoutes = require('./wallet.routes');
 router.use('/auth', authRoutes);
 router.use('/zones', zonesRoutes);
 router.use('/violations', violationsRoutes);
-router.use('/chat', chatbotRoutes);
+router.use('/chatbot', chatbotRoutes);
 router.use('/vehicles', vehicleRoutes);
 router.use('/bookings', bookingRoutes);
 router.use('/wallet', walletRoutes);

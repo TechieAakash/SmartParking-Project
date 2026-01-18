@@ -8,7 +8,7 @@ const getBalance = async (req, res, next) => {
     if (!wallet) {
       wallet = await Wallet.create({ userId: req.user.id, balance: 0 });
     }
-    successResponse(res, { balance: wallet.balance, currency: wallet.currency });
+    successResponse(res, { balance: parseFloat(wallet.balance) });
   } catch (error) {
     next(error);
   }
@@ -17,25 +17,38 @@ const getBalance = async (req, res, next) => {
 const topUp = async (req, res, next) => {
   try {
     const { amount } = req.body;
+    
+    // Validate amount
+    if (!amount || parseFloat(amount) <= 0) {
+      return res.status(400).json({ success: false, message: 'Invalid amount' });
+    }
+    
     let wallet = await Wallet.findOne({ where: { userId: req.user.id } });
     if (!wallet) {
       wallet = await Wallet.create({ userId: req.user.id, balance: 0 });
     }
     
+    // Calculate new balance
+    const newBalance = parseFloat(wallet.balance) + parseFloat(amount);
+    
     // Update Balance
-    await wallet.update({ balance: parseFloat(wallet.balance) + parseFloat(amount) });
+    await wallet.update({ balance: newBalance });
+    
+    // Reload to get updated balance
+    await wallet.reload();
     
     // Create Transaction Record
     await WalletTransaction.create({
       userId: req.user.id,
+      walletId: wallet.id,
+      transactionType: 'credit',
       amount: parseFloat(amount),
-      type: 'CREDIT',
+      balanceAfter: parseFloat(wallet.balance),
       description: 'Wallet Top Up via Online Payment',
-      status: 'SUCCESS',
       referenceId: 'TXN' + Date.now()
     });
 
-    successResponse(res, { balance: wallet.balance }, 'Wallet topped up successfully');
+    successResponse(res, { balance: parseFloat(wallet.balance) }, 'Wallet topped up successfully');
   } catch (error) {
     next(error);
   }

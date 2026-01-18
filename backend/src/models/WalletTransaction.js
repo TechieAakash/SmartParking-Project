@@ -3,37 +3,47 @@ const { sequelize } = require('../config/database');
 
 const WalletTransaction = sequelize.define('WalletTransaction', {
   id: {
-    type: DataTypes.INTEGER,
+    type: DataTypes.INTEGER.UNSIGNED,
     primaryKey: true,
     autoIncrement: true
   },
   userId: {
-    type: DataTypes.INTEGER,
-    allowNull: false
+    type: DataTypes.INTEGER.UNSIGNED,
+    allowNull: false,
+    field: 'user_id'
+  },
+  walletId: {
+    type: DataTypes.INTEGER.UNSIGNED,
+    allowNull: false,
+    field: 'wallet_id'
+  },
+  transactionType: {
+    type: DataTypes.ENUM('credit', 'debit', 'refund'),
+    allowNull: false,
+    field: 'transaction_type'
   },
   amount: {
     type: DataTypes.DECIMAL(10, 2),
     allowNull: false
   },
-  type: {
-    type: DataTypes.ENUM('CREDIT', 'DEBIT'),
-    allowNull: false
+  balanceAfter: {
+    type: DataTypes.DECIMAL(10, 2),
+    allowNull: false,
+    field: 'balance_after'
   },
   description: {
-    type: DataTypes.STRING,
+    type: DataTypes.STRING(255),
     allowNull: true
-  },
-  status: {
-    type: DataTypes.ENUM('SUCCESS', 'FAILED', 'PENDING'),
-    defaultValue: 'SUCCESS'
   },
   referenceId: {
-    type: DataTypes.STRING, // Payment Gateway Ref ID
-    allowNull: true
+    type: DataTypes.STRING(100),
+    allowNull: true,
+    field: 'reference_id'
   }
 }, {
   timestamps: true,
-  tableName: 'wallet_transactions'
+  tableName: 'wallet_transactions',
+  underscored: true
 });
 
 module.exports = WalletTransaction;

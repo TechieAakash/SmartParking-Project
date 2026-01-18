@@ -34,9 +34,15 @@ const register = async (req, res, next) => {
     const { fullName, email, username, password, phone, role, officerBadgeId, department } = req.body;
 
     // Check if user already exists
+    const orConditions = [{ email }];
+    if (username) {
+      orConditions.push({ username });
+    }
+
+    // Check if user already exists
     const existingUser = await User.findOne({ 
       where: { 
-        [Op.or]: [{ email }, { username }] 
+        [Op.or]: orConditions 
       } 
     });
 
@@ -68,7 +74,7 @@ const register = async (req, res, next) => {
     }
 
     // Role validation
-    const validRoles = ['officer', 'contractor', 'viewer', 'user'];
+    const validRoles = ['officer', 'viewer', 'user', 'driver'];
     const assignedRole = (role && validRoles.includes(role)) ? role : 'viewer';
 
     // Get registration IP

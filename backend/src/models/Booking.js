@@ -3,69 +3,66 @@ const { sequelize } = require('../config/database');
 
 const Booking = sequelize.define('Booking', {
   id: {
-    type: DataTypes.INTEGER,
+    type: DataTypes.INTEGER.UNSIGNED,
     primaryKey: true,
     autoIncrement: true
   },
-  bookingCode: {
-    type: DataTypes.STRING(20),
-    allowNull: false,
-    unique: true,
-    field: 'booking_code'
-  },
   userId: {
-    type: DataTypes.INTEGER,
+    type: DataTypes.INTEGER.UNSIGNED,
     allowNull: false,
     field: 'user_id'
   },
   zoneId: {
-    type: DataTypes.INTEGER,
+    type: DataTypes.INTEGER.UNSIGNED,
     allowNull: false,
     field: 'zone_id'
   },
-  vehicleId: {
-    type: DataTypes.INTEGER,
+  // Use slot_id for database but accept zoneId from frontend
+  slotId: {
+    type: DataTypes.INTEGER.UNSIGNED,
     allowNull: false,
+    field: 'slot_id'
+  },
+  vehicleId: {
+    type: DataTypes.INTEGER.UNSIGNED,
+    allowNull: true,
     field: 'vehicle_id'
   },
-  startTime: {
+  bookingStart: {
     type: DataTypes.DATE,
     allowNull: false,
-    field: 'start_time'
+    field: 'booking_start'
   },
-  endTime: {
+  bookingEnd: {
     type: DataTypes.DATE,
     allowNull: false,
-    field: 'end_time'
+    field: 'booking_end'
   },
-  duration: {
-    type: DataTypes.INTEGER, // in minutes
-    allowNull: false
+  entryTime: {
+    type: DataTypes.DATE,
+    allowNull: true,
+    field: 'entry_time'
   },
-  totalPrice: {
-    type: DataTypes.DECIMAL(10, 2),
-    allowNull: false,
-    field: 'total_price'
+  bookingType: {
+    type: DataTypes.ENUM('hourly', 'daily', 'monthly', 'yearly'),
+    defaultValue: 'hourly',
+    field: 'booking_type'
   },
   status: {
     type: DataTypes.ENUM('active', 'completed', 'cancelled', 'expired'),
     defaultValue: 'active'
   },
-  paymentStatus: {
-    type: DataTypes.ENUM('pending', 'paid', 'refunded'),
-    defaultValue: 'pending',
-    field: 'payment_status'
-  },
-  qrCode: {
-    type: DataTypes.TEXT,
-    allowNull: true,
-    field: 'qr_code'
+  totalPrice: {
+    type: DataTypes.DECIMAL(10, 2),
+    defaultValue: 0.00,
+    field: 'total_price'
   }
 }, {
   tableName: 'bookings',
   timestamps: true,
   createdAt: 'created_at',
-  updatedAt: 'updated_at'
+  updatedAt: 'updated_at',
+  underscored: true
 });
 
 module.exports = Booking;

@@ -16,11 +16,19 @@ const getAllZones = async (req, res, next) => {
     const where = {};
     if (search) {
       where[Op.or] = [
-        { zoneName: { [Op.like]: `%${search}%` } },
+        { name: { [Op.like]: `%${search}%` } },
         { address: { [Op.like]: `%${search}%` } }
       ];
     }
     if (status) where.status = status;
+
+
+    // Filter by contractor ONLY if explicitly requested via scope='owned'
+    // This allows contractors to see ALL zones on the main dashboard, 
+    // but filter to just their own on the management page.
+    if (req.user && req.user.role === 'contractor' && req.query.scope === 'owned') {
+       where.contractorId = req.user.id;
+    }
 
     const zones = await ParkingZone.findAll({ where });
     successResponse(res, zones, 'Zones retrieved successfully');
@@ -58,6 +66,10 @@ const createZone = async (req, res, next) => {
       throw new ValidationError('Parking zone must be located within Delhi NCR boundaries.');
     }
 
+    if (req.user && req.user.role === 'contractor') {
+      req.body.contractorId = req.user.id;
+    }
+
     const zone = await ParkingZone.create(req.body);
     successResponse(res, zone, 'Zone created successfully', 201);
   } catch (error) {
@@ -71,8 +83,15 @@ const createZone = async (req, res, next) => {
 const updateZone = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const zone = await ParkingZone.findByPk(id);
+    
+    const where = { id };
+    if (req.user && req.user.role === 'contractor') {
+      where.contractorId = req.user.id;
+    }
+
+    const zone = await ParkingZone.findOne({ where });
     if (!zone) throw new NotFoundError('Parking zone not found');
+    
     await zone.update(req.body);
     successResponse(res, zone, 'Zone updated successfully');
   } catch (error) {

@@ -3,160 +3,87 @@ const { sequelize } = require('../config/database');
 
 const ParkingZone = sequelize.define('ParkingZone', {
   id: {
-    type: DataTypes.INTEGER,
+    type: DataTypes.INTEGER.UNSIGNED,
     primaryKey: true,
     autoIncrement: true
   },
   name: {
     type: DataTypes.STRING(100),
-    allowNull: false,
-    field: 'zone_name', // Explicitly map to snake_case column
-    validate: {
-      notEmpty: {
-        msg: 'Zone name is required'
-      },
-      len: {
-        args: [1, 100],
-        msg: 'Zone name cannot exceed 100 characters'
-      }
-    }
+    allowNull: false
   },
   address: {
-    type: DataTypes.STRING,
-    allowNull: false,
-    validate: {
-      notEmpty: {
-        msg: 'Address is required'
-      }
-    }
+    type: DataTypes.STRING(255),
+    allowNull: false
   },
   latitude: {
-    type: DataTypes.DECIMAL(10, 8),
-    allowNull: false,
-    validate: {
-      min: -90,
-      max: 90
-    }
+    type: DataTypes.DECIMAL(10, 7),
+    allowNull: false
   },
   longitude: {
-    type: DataTypes.DECIMAL(11, 8),
-    allowNull: false,
-    validate: {
-      min: -180,
-      max: 180
-    }
+    type: DataTypes.DECIMAL(10, 7),
+    allowNull: false
   },
   totalCapacity: {
     type: DataTypes.INTEGER,
     allowNull: false,
-    field: 'total_capacity',
-    validate: {
-      min: {
-        args: [1],
-        msg: 'Capacity must be at least 1'
-      },
-      max: {
-        args: [5000],
-        msg: 'Capacity cannot exceed 5000'
-      }
-    }
+    field: 'total_capacity'
   },
   currentOccupancy: {
     type: DataTypes.INTEGER,
-    allowNull: false,
     defaultValue: 0,
-    field: 'current_occupancy',
-    validate: {
-      min: 0,
-      customValidator(value) {
-        if (value > this.totalCapacity) {
-          throw new Error('Occupancy cannot exceed total capacity');
-        }
-      }
-    }
+    field: 'current_occupancy'
   },
   contractorLimit: {
     type: DataTypes.INTEGER,
     allowNull: false,
-    field: 'contractor_limit',
-    validate: {
-      min: {
-        args: [1],
-        msg: 'Contractor limit must be at least 1'
-      },
-      customValidator(value) {
-        if (value > this.totalCapacity) {
-          throw new Error('Contractor limit cannot exceed total capacity');
-        }
-      }
-    }
+    field: 'contractor_limit'
   },
   contractorName: {
-    type: DataTypes.STRING,
+    type: DataTypes.STRING(100),
     allowNull: false,
-    field: 'contractor_name',
-    validate: {
-      notEmpty: {
-        msg: 'Contractor name is required'
-      }
-    }
+    field: 'contractor_name'
   },
   contractorContact: {
-    type: DataTypes.STRING,
-    allowNull: true,
+    type: DataTypes.STRING(20),
     field: 'contractor_contact'
   },
   contractorEmail: {
-    type: DataTypes.STRING,
-    allowNull: true,
-    field: 'contractor_email',
-    validate: {
-      isEmail: {
-        msg: 'Please enter a valid email'
-      }
-    }
+    type: DataTypes.STRING(100),
+    field: 'contractor_email'
   },
   hourlyRate: {
     type: DataTypes.DECIMAL(10, 2),
     defaultValue: 50.00,
-    field: 'hourly_rate',
-    validate: {
-      min: {
-        args: [0],
-        msg: 'Hourly rate cannot be negative'
-      }
-    }
+    field: 'hourly_rate'
   },
   penaltyPerVehicle: {
     type: DataTypes.DECIMAL(10, 2),
     defaultValue: 500.00,
-    field: 'penalty_per_vehicle',
-    validate: {
-      min: {
-        args: [0],
-        msg: 'Penalty cannot be negative'
-      }
-    }
+    field: 'penalty_per_vehicle'
   },
   operatingHours: {
-    type: DataTypes.STRING,
+    type: DataTypes.STRING(50),
     defaultValue: '06:00 - 22:00',
     field: 'operating_hours'
   },
   status: {
     type: DataTypes.ENUM('active', 'inactive', 'maintenance'),
     defaultValue: 'active'
+  },
+  createdAt: {
+    type: DataTypes.DATE,
+    defaultValue: DataTypes.NOW,
+    field: 'created_at'
+  },
+  updatedAt: {
+    type: DataTypes.DATE,
+    defaultValue: DataTypes.NOW,
+    field: 'updated_at'
   }
 }, {
   tableName: 'parking_zones',
   timestamps: true,
-  createdAt: 'created_at',
-  updatedAt: 'updated_at',
-  hooks: {
-    beforeUpdate: (zone) => {
-      zone.updatedAt = new Date();
-    }
-  }
+  underscored: true
 });
 
 // Instance methods

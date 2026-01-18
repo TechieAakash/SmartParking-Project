@@ -1,67 +1,38 @@
-/**
- * ChatMessage Model
- * Stores individual chat messages and bot responses
- */
-
 const { DataTypes } = require('sequelize');
 const { sequelize } = require('../config/database');
 
 const ChatMessage = sequelize.define('ChatMessage', {
   id: {
-    type: DataTypes.UUID,
-    defaultValue: DataTypes.UUIDV4,
-    primaryKey: true
+    type: DataTypes.INTEGER.UNSIGNED,
+    primaryKey: true,
+    autoIncrement: true
   },
   sessionId: {
-    type: DataTypes.UUID,
+    type: DataTypes.INTEGER.UNSIGNED,
     allowNull: false,
-    field: 'session_id',
-    references: {
-      model: 'chat_sessions',
-      key: 'id'
-    }
+    field: 'session_id'
   },
   userId: {
-    type: DataTypes.INTEGER,
+    type: DataTypes.INTEGER.UNSIGNED,
     allowNull: true,
-    field: 'user_id',
-    references: {
-      model: 'users',
-      key: 'id'
-    }
+    field: 'user_id'
   },
-  message: {
+  role: {
+    type: DataTypes.ENUM('user', 'assistant', 'system'),
+    allowNull: false
+  },
+  content: {
     type: DataTypes.TEXT,
     allowNull: false
   },
-  response: {
-    type: DataTypes.TEXT,
-    allowNull: true
-  },
-  intent: {
-    type: DataTypes.STRING(100),
-    allowNull: true,
-    comment: 'Detected intent: faq, help, violation_query, payment, etc.'
-  },
-  confidence: {
-    type: DataTypes.FLOAT,
-    allowNull: true,
-    comment: 'Confidence score of intent detection (0-1)'
-  },
-  language: {
-    type: DataTypes.ENUM('en', 'hi'),
-    defaultValue: 'en'
-  },
-  metadata: {
-    type: DataTypes.JSON,
-    allowNull: true,
-    comment: 'Additional metadata: quick_replies, attachments, etc.'
+  createdAt: {
+    type: DataTypes.DATE,
+    defaultValue: DataTypes.NOW,
+    field: 'created_at'
   }
 }, {
   tableName: 'chat_messages',
-  timestamps: true,
-  createdAt: 'timestamp',
-  updatedAt: false,
+  timestamps: false,
   underscored: true
 });
 

@@ -17,9 +17,11 @@ const getAllViolations = async (req, res, next) => {
     
     const where = {};
     
-    // Filter by status
-    if (status) {
-      where.status = status;
+    // Filter by resolution status
+    if (status === 'pending') {
+      where.resolved = false;
+    } else if (status === 'resolved' || status === 'paid') {
+      where.resolved = true;
     }
     
     // Filter by severity
@@ -69,21 +71,17 @@ const getAllViolations = async (req, res, next) => {
  */
 const getViolationStats = async (req, res, next) => {
   try {
-    // Count violations by status
-    const pendingViolations = await Violation.count({ where: { status: 'pending' } });
-    const resolvedViolations = await Violation.count({ where: { status: 'resolved' } });
-    const paidViolations = await Violation.count({ where: { status: 'paid' } });
+    // Count violations by resolved status
+    const pendingViolations = await Violation.count({ where: { resolved: false } });
+    const resolvedViolations = await Violation.count({ where: { resolved: true } });
     
     // Count critical violations
     const criticalViolations = await Violation.count({ 
-      where: { severity: 'critical', status: 'pending' } 
+      where: { severity: 'critical', resolved: false } 
     });
     
-    // Calculate total penalty and collected amounts
+    // Calculate total penalty amounts
     const totalPenalty = await Violation.sum('penaltyAmount') || 0;
-    const totalCollected = await Violation.sum('penaltyAmount', { 
-      where: { status: 'paid' } 
-    }) || 0;
     
     res.json({
       success: true,
@@ -91,10 +89,10 @@ const getViolationStats = async (req, res, next) => {
         summary: {
           pendingViolations,
           resolvedViolations,
-          paidViolations,
+          paidViolations: 0, // Field not in DB
           criticalViolations,
           totalPenalty: parseFloat(totalPenalty),
-          totalCollected: parseFloat(totalCollected)
+          totalCollected: 0 // Field not in DB
         }
       }
     });
@@ -109,8 +107,7 @@ const getViolationStats = async (req, res, next) => {
 const resolveViolation = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const { notes, status = 'resolved' } = req.body;
-    const userId = req.user?.id;
+    const { notes } = req.body;
     
     const violation = await Violation.findByPk(id);
     
@@ -118,22 +115,20 @@ const resolveViolation = async (req, res, next) => {
       return errorResponse(res, 'Violation not found', 404);
     }
     
-    if (violation.status !== 'pending') {
+    if (violation.resolved) {
       return errorResponse(res, 'Violation already resolved', 400);
     }
     
     // Update violation
     await violation.update({
-      status: status === 'paid' ? 'paid' : 'resolved',
-      isPaid: status === 'paid',
-      resolvedBy: userId,
+      resolved: true,
       resolvedAt: new Date(),
       notes: notes || ''
     });
     
     res.json({
       success: true,
-      message: `Violation marked as ${status}`,
+      message: 'Violation marked as resolved',
       data: { violation }
     });
   } catch (error) {
@@ -157,17 +152,13 @@ const createViolation = async (req, res, next) => {
     // Calculate penalty (₹500 per excess vehicle)
     const penaltyAmount = (excessVehicles || 0) * 500;
     
-    // Generate unique code
-    const uniqueCode = `VIO${Date.now()}${Math.floor(Math.random() * 1000)}`;
-    
     const violation = await Violation.create({
       zoneId,
-      uniqueCode,
       severity: severity || 'warning',
       excessVehicles: excessVehicles || 0,
       penaltyAmount,
-      status: 'pending',
-      description: description || `Excess parking detected at ${zone.name}`,
+      resolved: false,
+      notes: description || `Excess parking detected at ${zone.name}`,
       timestamp: new Date()
     });
     
@@ -219,7 +210,7 @@ const exportViolations = async (req, res, next) => {
     });
 
     // Define CSV header
-    let csv = 'ID,Unique Code,Zone Name,Severity,Excess Vehicles,Penalty Amount,Status,Is Paid,Timestamp,Notes\n';
+    let csv = 'ID,Zone Name,Severity,Excess Vehicles,Penalty Amount,Resolved,Timestamp,Notes\n';
 
     // Add data rows
     violations.forEach(v => {
@@ -227,7 +218,7 @@ const exportViolations = async (req, res, next) => {
       const notes = v.notes ? `"${v.notes.replace(/"/g, '""')}"` : '';
       const timestamp = new Date(v.timestamp).toLocaleString();
       
-      csv += `${v.id},${v.uniqueCode || ''},${zoneName},${v.severity},${v.excessVehicles},${v.penaltyAmount},${v.status},${v.isPaid ? 'Yes' : 'No'},"${timestamp}",${notes}\n`;
+      csv += `${v.id},${zoneName},${v.severity},${v.excessVehicles},${v.penaltyAmount},${v.resolved ? 'Yes' : 'No'},"${timestamp}",${notes}\n`;
     });
 
     res.header('Content-Type', 'text/csv');

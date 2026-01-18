@@ -14,15 +14,14 @@ const ValidOfficerBadge = sequelize.define('ValidOfficerBadge', {
     field: 'is_claimed'
   },
   claimedBy: {
-    type: DataTypes.INTEGER,
+    type: DataTypes.INTEGER.UNSIGNED,
     allowNull: true,
     field: 'claimed_by'
   }
 }, {
   tableName: 'valid_officer_badges',
-  timestamps: true,
-  createdAt: 'created_at',
-  updatedAt: 'updated_at'
+  timestamps: false,
+  underscored: true
 });
 
 module.exports = ValidOfficerBadge;

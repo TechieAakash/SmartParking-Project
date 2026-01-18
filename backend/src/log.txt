@@ -1,0 +1,42 @@
+≡ƒöæ Initializing Gemini AI with API key...
+Γ£à Gemini AI initialized successfully
+Executing (default): SELECT 1+1 AS result
+Γ£à Database connection established successfully
+≡ƒôè Connected to: smartparking@localhost:3306
+≡ƒöä Synchronizing database (Updating schema)...
+Executing (default): SET FOREIGN_KEY_CHECKS = 0
+Executing (default): SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_TYPE = 'BASE TABLE' AND TABLE_NAME = 'users' AND TABLE_SCHEMA = 'smartparking'
+Executing (default): SHOW INDEX FROM `users`
+Executing (default): SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_TYPE = 'BASE TABLE' AND TABLE_NAME = 'parking_zones' AND TABLE_SCHEMA = 'smartparking'
+Executing (default): SHOW INDEX FROM `parking_zones`
+Executing (default): SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_TYPE = 'BASE TABLE' AND TABLE_NAME = 'violations' AND TABLE_SCHEMA = 'smartparking'
+Executing (default): SHOW INDEX FROM `violations`
+Executing (default): SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_TYPE = 'BASE TABLE' AND TABLE_NAME = 'settings' AND TABLE_SCHEMA = 'smartparking'
+Executing (default): SHOW INDEX FROM `settings`
+Executing (default): SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_TYPE = 'BASE TABLE' AND TABLE_NAME = 'audit_logs' AND TABLE_SCHEMA = 'smartparking'
+Executing (default): SHOW INDEX FROM `audit_logs`
+Executing (default): SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_TYPE = 'BASE TABLE' AND TABLE_NAME = 'chat_sessions' AND TABLE_SCHEMA = 'smartparking'
+Executing (default): SHOW INDEX FROM `chat_sessions`
+Executing (default): SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_TYPE = 'BASE TABLE' AND TABLE_NAME = 'chat_messages' AND TABLE_SCHEMA = 'smartparking'
+Executing (default): SHOW INDEX FROM `chat_messages`
+Executing (default): SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_TYPE = 'BASE TABLE' AND TABLE_NAME = 'vehicles' AND TABLE_SCHEMA = 'smartparking'
+Executing (default): SHOW INDEX FROM `vehicles`
+Executing (default): SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_TYPE = 'BASE TABLE' AND TABLE_NAME = 'bookings' AND TABLE_SCHEMA = 'smartparking'
+Executing (default): SHOW INDEX FROM `bookings`
+Executing (default): SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_TYPE = 'BASE TABLE' AND TABLE_NAME = 'wallets' AND TABLE_SCHEMA = 'smartparking'
+Executing (default): SHOW INDEX FROM `wallets`
+Executing (default): SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_TYPE = 'BASE TABLE' AND TABLE_NAME = 'wallet_transactions' AND TABLE_SCHEMA = 'smartparking'
+Executing (default): SHOW INDEX FROM `wallet_transactions`
+Executing (default): SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_TYPE = 'BASE TABLE' AND TABLE_NAME = 'subscriptions' AND TABLE_SCHEMA = 'smartparking'
+Executing (default): SHOW INDEX FROM `subscriptions`
+Executing (default): SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_TYPE = 'BASE TABLE' AND TABLE_NAME = 'parking_slots' AND TABLE_SCHEMA = 'smartparking'
+Executing (default): SHOW INDEX FROM `parking_slots`
+Executing (default): SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_TYPE = 'BASE TABLE' AND TABLE_NAME = 'valid_officer_badges' AND TABLE_SCHEMA = 'smartparking'
+Executing (default): SHOW INDEX FROM `valid_officer_badges`
+Executing (default): SET FOREIGN_KEY_CHECKS = 1
+Γ£à Database schema updated
+Executing (default): SELECT count(*) AS `count` FROM `users` AS `User`;
+≡ƒôè Database already contains data, skipping seeding
+Executing (default): SELECT count(*) AS `count` FROM `valid_officer_badges` AS `ValidOfficerBadge`;
+Attempting to recover in 3 seconds...
+Γ¥î Port 5000 is already in use.

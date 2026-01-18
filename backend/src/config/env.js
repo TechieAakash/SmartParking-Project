@@ -12,7 +12,8 @@ const requiredEnvVars = [
   'DB_NAME',
   'DB_USER',
   'DB_PASSWORD',
-  'JWT_SECRET'
+  'JWT_SECRET',
+  'GEMINI_API_KEY'
 ];
 
 // Validate required environment variables
@@ -48,6 +49,11 @@ const config = {
 
   // CORS
   corsOrigin: process.env.CORS_ORIGIN || '*',
+
+  // Gemini AI
+  gemini: {
+    apiKey: process.env.GEMINI_API_KEY
+  },
 
   // Logging
   logLevel: process.env.LOG_LEVEL || 'info',

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Smart Parking Management System
 
 A comprehensive, production-ready Smart Parking Management System with a robust Node.js backend and a modern, visually stunning frontend.
@@ -328,3 +329,7 @@ For issues or questions:
 ---
 
 **Built with ❤️ for Smart Cities**
+=======
+# SmartPark
+SmartPark is a smart parking management system that automates parking operations using a secure and scalable backend. It enables parking zone management, vehicle registration, advance slot booking, violation handling, digital wallet payments, and chatbot support through API-driven architecture, making it suitable for smart city and solutions.
+>>>>>>> d7205199541ecc568cdff8b861fe35b57bf14510

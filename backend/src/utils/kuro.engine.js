@@ -1,12 +1,37 @@
-/**
- * Kuro AI Engine
- * Intelligent chatbot with NLP, context awareness, and multi-language support
- */
+const { GoogleGenerativeAI } = require("@google/generative-ai");
+const config = require('../config/env');
 
 class KuroEngine {
   constructor() {
     this.knowledgeBase = this.initializeKnowledgeBase();
     this.context = new Map(); // Store conversation context
+    
+    // Initialize Gemini AI
+    if (config.gemini.apiKey) {
+      console.log('🔑 Initializing Gemini AI with API key...');
+      try {
+        this.genAI = new GoogleGenerativeAI(config.gemini.apiKey);
+        this.model = this.genAI.getGenerativeModel({ 
+          model: "gemini-1.5-flash",
+          systemInstruction: `You are Kuro AI, the intelligent assistant for the MCD (Municipal Corporation of Delhi) Smart Parking Management System. 
+        Your goal is to help citizens and drivers with parking bookings, payments, rules, and general information about Delhi parking.
+        
+        Guidelines:
+        1. Maintain a helpful, professional, and slightly friendly tone.
+        2. Prioritize safety and convenience for users.
+        3. If you're asked about specific MCD rules, provide general best practices but encourage users to check the 'MCD Guidelines' section or call 155305.
+        4. Do not provide legal or financial advice outside of parking penalties and wallet top-ups.
+        5. Keep responses concise and easy to read.
+        6. You can communicate in both English and Hindi. If the user speaks Hindi, respond in Hindi or Hinglish.`
+        });
+        console.log('✅ Gemini AI initialized successfully');
+      } catch (error) {
+        console.error('❌ Failed to initialize Gemini AI:', error.message);
+        this.model = null;
+      }
+    } else {
+      console.warn('⚠️ GEMINI_API_KEY not found - Gemini features will be disabled');
+    }
   }
 
   /**
@@ -14,7 +39,7 @@ class KuroEngine {
    */
   initializeKnowledgeBase() {
     return {
-      // --- REGISTRATION & ACCOUNT ---
+      // --- (existing knowledge base entries remain same) ---
       registration_help: {
         keywords: ['register', 'registration', 'sign up', 'create account', 'new user', 'join', 'how to join', 'start account'],
         responses: {
@@ -173,6 +198,30 @@ class KuroEngine {
   }
 
   /**
+   * Call Gemini AI for responses
+   */
+  async callGemini(message, chatHistory = []) {
+    try {
+      if (!this.model) {
+        console.warn('⚠️ Gemini model not initialized');
+        return null;
+      }
+
+      const chat = this.model.startChat({
+        history: chatHistory,
+      });
+
+      const result = await chat.sendMessage(message);
+      const response = await result.response;
+      return response.text();
+    } catch (error) {
+      console.error('❌ Gemini API error:', error.message);
+      console.error('Error details:', error);
+      return null;
+    }
+  }
+
+  /**
    * Detect intent and find best response
    */
   async detectIntent(message, language = 'en') {
@@ -190,35 +239,35 @@ class KuroEngine {
       
       // Count keyword matches
       for (const keyword of data.keywords) {
-        if (lowerMessage.includes(keyword)) {
-          score += 2; // Weight for exact keyword match
+        const keywordLower = keyword.toLowerCase();
+        
+        // Exact substring match (e.g., "parking" in "parking rules")
+        if (lowerMessage.includes(keywordLower)) {
+          score += 2;
         }
         
-        // Partial match bonus
-        const words = lowerMessage.split(' ');
-        if (words.some(word => word.includes(keyword) || keyword.includes(word))) {
-          score += 0.5;
+        // Word boundary match (whole word only, minimum 3 chars)
+        if (keywordLower.length >= 3) {
+          const words = lowerMessage.split(/\s+/);
+          if (words.includes(keywordLower)) {
+            score += 1;
+          }
         }
       }
 
       if (score > highestScore) {
         highestScore = score;
-        bestMatch = { intent, response: data.responses[language], confidence: Math.min(score / 3, 1) };
+        bestMatch = { intent, response: data.responses[language], confidence: Math.min(score / 4, 1) };
       }
     }
 
-    // Return best match or default response
-    if (bestMatch && bestMatch.confidence > 0.3) {
+    // Return best match or null if not confident (to trigger Gemini)
+    // Increased threshold to reduce false positives
+    if (bestMatch && bestMatch.confidence > 0.5) {
       return bestMatch;
     }
 
-    return {
-      intent: 'unknown',
-      response: language === 'hi' 
-        ? "क्षमा करें, मुझे यकीन नहीं है कि मैं इसमें कैसे मदद कर सकता हूं। क्या आप अधिक विशिष्ट हो सकते हैं या किसी अन्य तरीके से पूछ सकते हैं? आप 'मदद' टाइप कर सकते हैं मेरी क्षमताओं को देखने के लिए।"
-        : "I'm not sure how I can help with that. Could you be more specific or ask in a different way? You can type 'help' to see what I can assist with.",
-      confidence: 0.1
-    };
+    return null;
   }
 
   /**
@@ -236,6 +285,7 @@ class KuroEngine {
         wallet_help: ['Top Up Now', 'Transaction History', 'Booking Help'],
         contact_support: ['Email Support', 'Call Helpline', 'Office Address'],
         language_switch: ['Help', 'Parking Rules', 'My Wallet'],
+        gemini_response: ['Parking rules', 'Violations', 'Register', 'Payment help'],
         unknown: ['Parking rules', 'Violations', 'Register', 'Payment help']
       },
       hi: {
@@ -248,6 +298,7 @@ class KuroEngine {
         wallet_help: ['रिचार्ज करें', 'लेनदेन इतिहास', 'बुकिंग मदद'],
         contact_support: ['ईमेल', 'हेल्पलाइन', 'पता'],
         language_switch: ['मदद', 'पार्किंग नियम', 'मेरा वॉलेट'],
+        gemini_response: ['पार्किंग नियम', 'उल्लंघन', 'रजिस्टर', 'भुगतान सहायता'],
         unknown: ['पार्किंग नियम', 'उल्लंघन', 'रजिस्टर', 'भुगतान सहायता']
       }
     };
@@ -263,33 +314,66 @@ class KuroEngine {
       // 1. Recover Context
       let context = this.context.get(sessionId) || {};
       let language = context.language || this.detectLanguage(message);
+      let history = context.history || [];
 
-      // 2. Detect Intent
+      // 2. Detect Intent from Knowledge Base
       let detection = await this.detectIntent(message, language);
       
       // 3. Handle Explicit Language Switch
-      if (detection.forceLanguage) {
+      if (detection && detection.forceLanguage) {
           language = detection.forceLanguage;
           // Re-fetch response in new language
-          detection = await this.detectIntent(detection.intent, language); // Intent is language_switch
           detection.response = this.knowledgeBase.language_switch.responses[language];
       }
       
-      const { intent, response, confidence } = detection;
-      const quickReplies = this.getQuickReplies(intent, language);
+      let finalResponse;
+      let finalIntent;
+      let finalConfidence;
 
-      // 4. Update Context
+      if (detection) {
+        finalResponse = detection.response;
+        finalIntent = detection.intent;
+        finalConfidence = detection.confidence;
+      } else {
+        // 4. Fallback to Gemini AI
+        console.log(`🤖 Consulting Gemini for: "${message}"`);
+        const geminiResponse = await this.callGemini(message, history);
+        
+        if (geminiResponse) {
+          finalResponse = geminiResponse;
+          finalIntent = 'gemini_response';
+          finalConfidence = 0.9; // Gemini is usually confident
+        } else {
+          // Absolute fallback
+          finalResponse = language === 'hi' 
+            ? "क्षमा करें, मुझे यकीन नहीं है कि मैं इसमें कैसे मदद कर सकता हूं। क्या आप अधिक विशिष्ट हो सकते हैं? आप 'मदद' टाइप कर सकते हैं।"
+            : "I'm not sure how I can help with that. Could you be more specific? You can type 'help' to see what I can assist with.";
+          finalIntent = 'unknown';
+          finalConfidence = 0.1;
+        }
+      }
+
+      const quickReplies = this.getQuickReplies(finalIntent, language);
+
+      // 5. Update Context and History
+      history.push({ role: "user", parts: [{ text: message }] });
+      history.push({ role: "model", parts: [{ text: finalResponse }] });
+      
+      // Keep history manageable (last 10 messages)
+      if (history.length > 10) history = history.slice(-10);
+
       this.context.set(sessionId, {
-        lastIntent: intent,
-        language, // PERSIST detected/switched language
+        lastIntent: finalIntent,
+        language,
+        history,
         messageCount: (context.messageCount || 0) + 1,
         timestamp: new Date()
       });
 
       return {
-        response,
-        intent,
-        confidence,
+        response: finalResponse,
+        intent: finalIntent,
+        confidence: finalConfidence,
         language,
         quickReplies,
         metadata: {
@@ -328,3 +412,4 @@ const kuroEngine = new KuroEngine();
 setInterval(() => kuroEngine.cleanupOldContext(), 10 * 60 * 1000); // Every 10 minutes
 
 module.exports = kuroEngine;
+

@@ -15,10 +15,5 @@ router.get('/session', optionalAuth, chatbotController.getActiveSession);
 // Authenticated Routes
 router.get('/history/:sessionId', authenticate, chatbotController.getChatHistory);
 router.post('/end/:sessionId', authenticate, chatbotController.endSession);
-router.post('/rate/:sessionId', authenticate, chatbotController.rateSession);
-router.post('/escalate/:sessionId', authenticate, chatbotController.escalateSession);
-
-// Admin Routes
-router.get('/stats', authenticate, authorize('admin'), chatbotController.getChatStats);
 
 module.exports = router;

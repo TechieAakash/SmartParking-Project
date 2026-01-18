@@ -28,13 +28,10 @@ const registerValidator = [
 ];
 
 const loginValidator = [
-  body('email')
+  body('username')
     .trim()
-    .trim()
-    // .isEmail() // Removed to allow username login
-    // .withMessage('Please provide a valid email') // Removed
-    // .normalizeEmail(), // Be careful with normalizeEmail on usernames!
-    ,
+    .notEmpty()
+    .withMessage('Email or username is required'),
   body('password')
     .notEmpty()
     .withMessage('Password is required'),
@@ -42,7 +39,7 @@ const loginValidator = [
 
 // Zone validators
 const createZoneValidator = [
-  body('zoneName')
+  body('name')
     .trim()
     .notEmpty()
     .withMessage('Zone name is required')

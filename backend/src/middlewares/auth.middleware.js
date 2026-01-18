@@ -3,7 +3,7 @@ const jwt = require('jsonwebtoken');
 // Fallback secret for development
 const JWT_SECRET = process.env.JWT_SECRET || 'dev_secret_key_mcd_parking_2024';
 
-const authenticate = (req, res, next) => {
+const authenticate = async (req, res, next) => {
   try {
     const authHeader = req.headers.authorization;
 
@@ -18,7 +18,18 @@ const authenticate = (req, res, next) => {
 
     const decoded = jwt.verify(token, JWT_SECRET);
 
-    req.user = decoded;
+    // Verify user still exists in DB
+    const { User } = require('../models');
+    const user = await User.findByPk(decoded.id);
+
+    if (!user) {
+      return res.status(401).json({
+        success: false,
+        message: 'Account no longer exists'
+      });
+    }
+
+    req.user = user; // Now we have the actual user object
     next();
   } catch (error) {
     return res.status(401).json({
@@ -48,14 +59,20 @@ const authorize = (...roles) => {
   };
 };
 
-const optionalAuth = (req, res, next) => {
+const optionalAuth = async (req, res, next) => {
   try {
     const authHeader = req.headers.authorization;
 
     if (authHeader && authHeader.startsWith('Bearer ')) {
       const token = authHeader.split(' ')[1];
       const decoded = jwt.verify(token, JWT_SECRET);
-      req.user = decoded;
+      
+      const { User } = require('../models');
+      const user = await User.findByPk(decoded.id);
+      
+      if (user) {
+        req.user = user;
+      }
     }
 
     next();

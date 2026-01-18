@@ -47,37 +47,37 @@ Vehicle.belongsTo(User, { foreignKey: 'userId', as: 'owner' });
 User.hasMany(Booking, { foreignKey: 'userId', as: 'bookings' });
 Booking.belongsTo(User, { foreignKey: 'userId', as: 'user' });
 
-// ParkingZone ← → Booking
-ParkingZone.hasMany(Booking, { foreignKey: 'zoneId', as: 'bookings' });
-Booking.belongsTo(ParkingZone, { foreignKey: 'zoneId', as: 'zone' });
+// ParkingSlot ← → Booking (database uses slot_id, not zone_id)
+ParkingSlot.hasMany(Booking, { foreignKey: 'slotId', as: 'bookings' });
+Booking.belongsTo(ParkingSlot, { foreignKey: 'slotId', as: 'slot' });
 
 // Vehicle ← → Booking
 Vehicle.hasMany(Booking, { foreignKey: 'vehicleId', as: 'bookings' });
 Booking.belongsTo(Vehicle, { foreignKey: 'vehicleId', as: 'vehicle' });
 
-// User ← → Violation
-User.hasMany(Violation, { foreignKey: 'resolved_by', as: 'resolvedViolations'});
-Violation.belongsTo(User, { foreignKey: 'resolved_by', as: 'resolver' });
+// User ← → Violation (removed - resolved_by doesn't exist in finalized schema)
+// User.hasMany(Violation, { foreignKey: 'resolved_by', as: 'resolvedViolations'});
+// Violation.belongsTo(User, { foreignKey: 'resolved_by', as: 'resolver' });
 
 // ParkingZone ← → Violation
-ParkingZone.hasMany(Violation, { foreignKey: 'zone_id', as: 'violations' });
-Violation.belongsTo(ParkingZone, { foreignKey: 'zone_id', as: 'zone' });
+ParkingZone.hasMany(Violation, { foreignKey: 'zoneId', as: 'violations' });
+Violation.belongsTo(ParkingZone, { foreignKey: 'zoneId', as: 'zone' });
 
 // ParkingZone ← → ParkingSlot
-ParkingZone.hasMany(ParkingSlot, { foreignKey: 'zone_id', as: 'slots' });
-ParkingSlot.belongsTo(ParkingZone, { foreignKey: 'zone_id', as: 'zone' });
+ParkingZone.hasMany(ParkingSlot, { foreignKey: 'zoneId', as: 'slots' });
+ParkingSlot.belongsTo(ParkingZone, { foreignKey: 'zoneId', as: 'zone' });
 
 // User ← → ChatSession
-User.hasMany(ChatSession, { foreignKey: 'user_id', as: 'chatSessions' });
-ChatSession.belongsTo(User, { foreignKey: 'user_id', as: 'user' });
+User.hasMany(ChatSession, { foreignKey: 'userId', as: 'chatSessions', constraints: false });
+ChatSession.belongsTo(User, { foreignKey: 'userId', as: 'user', constraints: false });
 
 // ChatSession ← → ChatMessage
-ChatSession.hasMany(ChatMessage, { foreignKey: 'session_id', as: 'messages' });
-ChatMessage.belongsTo(ChatSession, { foreignKey: 'session_id', as: 'session' });
+ChatSession.hasMany(ChatMessage, { foreignKey: 'sessionId', as: 'messages', constraints: false });
+ChatMessage.belongsTo(ChatSession, { foreignKey: 'sessionId', as: 'session', constraints: false });
 
 // User ← → ChatMessage
-User.hasMany(ChatMessage, { foreignKey: 'user_id', as: 'chatMessages' });
-ChatMessage.belongsTo(User, { foreignKey: 'user_id', as: 'user' });
+User.hasMany(ChatMessage, { foreignKey: 'userId', as: 'chatMessages', constraints: false });
+ChatMessage.belongsTo(User, { foreignKey: 'userId', as: 'user', constraints: false });
 
 // Export all models
 module.exports = {
@@ -92,6 +92,7 @@ module.exports = {
   Vehicle,
   Booking,
   Wallet,
+  WalletTransaction,
   Subscription,
   ParkingSlot,
   ValidOfficerBadge
