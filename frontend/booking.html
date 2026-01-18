@@ -458,6 +458,7 @@
     </div>
 
     <div id="toast-container"></div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <script src="js/config.js"></script>
     <script src="js/api.js"></script>
     <script src="js/ui.js"></script>
@@ -481,6 +482,25 @@
                 return;
             }
 
+            // Resume Booking Check
+            const pending = JSON.parse(localStorage.getItem('pending_booking'));
+            if (pending && pending.zoneId) {
+                const urlParams = new URLSearchParams(window.location.search);
+                const shouldAutoResume = urlParams.get('trigger') === 'resume';
+
+                if (shouldAutoResume || confirm('You have a pending booking. Do you want to continue with it?')) {
+                    restoreBooking(pending);
+                    // Remove query param to clean URL
+                    if (shouldAutoResume) {
+                        const url = new URL(window.location);
+                        url.searchParams.delete('trigger');
+                        window.history.replaceState({}, '', url);
+                    }
+                } else {
+                    localStorage.removeItem('pending_booking');
+                }
+            }
+
             const today = new Date().toISOString().split('T')[0];
             const dateInput = document.getElementById('book-date');
             if (dateInput) {
@@ -498,8 +518,25 @@
             document.getElementById('type-hourly').className = type === 'hourly' ? 'btn btn-primary' : 'btn btn-outline';
             document.getElementById('type-subscription').className = type === 'subscription' ? 'btn btn-primary' : 'btn btn-outline';
 
+            // Update UI if already on Step 2
+            if (currentStep === 2) {
+                document.getElementById('hourly-form').style.display = type === 'hourly' ? 'grid' : 'none';
+                document.getElementById('subscription-form').style.display = type === 'subscription' ? 'grid' : 'none';
+
+                // Update Step 2 Summary Details
+                if (type === 'subscription') {
+                    document.getElementById('sum-date').textContent = 'Starts Today';
+                    document.getElementById('sum-duration').textContent = 'Monthly Pass';
+                } else {
+                    // Reset summary for hourly if switching back logic could be complex, 
+                    // but mostly it waits for input.
+                    // Re-trigger calculation to update price/duration text
+                }
+            }
+
             // Reset zone selection to force update
             if (selectedZone) calculateBookingPrice();
+            saveBookingState();
         }
 
         async function initWallet() {
@@ -525,7 +562,7 @@
                                 <div style="color: #38a169; font-weight: 700;">₹${zone.hourlyRate}/hr</div>
                                 <div style="font-size: 10px; color: #718096;">Pass: ₹${(zone.hourlyRate * 10 * 30 * 0.4).toFixed(0)}/mo</div>
                             </div>
-                            <div style="font-size: 11px; color: #4a5568;">Slots: ${zone.capacity}</div>
+                            <div style="font-size: 11px; color: #4a5568;">Slots: ${zone.totalCapacity}</div>
                         </div>
                     </div>
                 `).join('');
@@ -569,6 +606,7 @@
             event.currentTarget.classList.add('selected');
             document.getElementById('sum-zone').textContent = name;
             calculateBookingPrice();
+            saveBookingState(); // Save immediately
         }
 
         function selectVehicle(id, plate) {
@@ -576,6 +614,7 @@
             document.querySelectorAll('#section-3 .zone-card').forEach(c => c.classList.remove('selected'));
             event.currentTarget.classList.add('selected');
             document.getElementById('sum-vehicle').textContent = plate;
+            saveBookingState(); // Save immediately
         }
 
         function calculateBookingPrice() {
@@ -596,6 +635,7 @@
             }
 
             document.getElementById('sum-total').textContent = `₹${bookingData.totalPrice}`;
+            // Optional: Save here too if duration changes
         }
 
         function nextStep() {
@@ -609,7 +649,6 @@
                     document.getElementById('sum-date').textContent = `${bookingData.date} ${bookingData.startTime}`;
                 } else {
                     document.getElementById('sum-date').textContent = 'Starts Today';
-                    document.getElementById('sum-start').textContent = 'N/A';
                 }
             }
 
@@ -636,6 +675,62 @@
             document.getElementById(`step-${currentStep}-label`).classList.add('active');
 
             document.getElementById('prev-btn').style.visibility = 'visible';
+            if (currentStep === 4) document.getElementById('next-btn').innerHTML = '<i class="fas fa-check"></i> Pay & Confirm';
+
+            // Save state
+            saveBookingState();
+        }
+
+        function saveBookingState() {
+            localStorage.setItem('pending_booking', JSON.stringify({
+                step: currentStep,
+                data: bookingData,
+                type: bookingType,
+                selectedZone: selectedZone
+            }));
+        }
+
+        function restoreBooking(pending) {
+            bookingData = pending.data;
+            bookingType = pending.type;
+            selectedZone = pending.selectedZone;
+            currentStep = pending.step;
+
+            // Auto-advance to Step 2 if Zone is selected but preserved step was 1
+            if (currentStep === 1 && selectedZone) {
+                currentStep = 2;
+            }
+
+            // Restore inputs if on step 2
+            if (currentStep >= 2) {
+                setBookingType(bookingType);
+                if (bookingData.date) document.getElementById('book-date').value = bookingData.date;
+                if (bookingData.startTime) document.getElementById('book-start').value = bookingData.startTime;
+                if (bookingData.duration) document.getElementById('book-duration').value = bookingData.duration;
+            }
+
+            // Update UI to current step
+            document.querySelectorAll('.booking-section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.step').forEach((s, idx) => {
+                if (idx + 1 < currentStep) {
+                    s.classList.add('completed');
+                    s.classList.remove('active');
+                } else if (idx + 1 === currentStep) {
+                    s.classList.add('active');
+                }
+            });
+            document.getElementById(`section-${currentStep}`).classList.add('active');
+
+            // Restore Summary
+            if (selectedZone) {
+                document.getElementById('sum-zone').textContent = selectedZone.name;
+                calculateBookingPrice();
+            }
+            if (bookingData.date) {
+                document.getElementById('sum-date').textContent = `${bookingData.date} ${bookingData.startTime}`;
+            }
+
+            if (currentStep > 1) document.getElementById('prev-btn').style.visibility = 'visible';
             if (currentStep === 4) document.getElementById('next-btn').innerHTML = '<i class="fas fa-check"></i> Pay & Confirm';
         }
 
@@ -691,9 +786,29 @@
 
                 if (res.success) {
                     showToast(bookingType === 'hourly' ? 'Booking Confirmed!' : 'Subscription Activated!', 'success');
+
+                    // Determine result object
+                    const resultData = bookingType === 'hourly' ? res.data.booking : res.data.subscription;
+                    const resultId = resultData.id;
+                    const resultCode = resultData.bookingCode || resultData.qrCode;
+
+                    // Generate QR Code
+                    const qrContainer = document.getElementById('pass-qr-code');
+                    qrContainer.innerHTML = ''; // Clear previous
+                    new QRCode(qrContainer, {
+                        text: JSON.stringify({
+                            id: resultId,
+                            code: resultCode,
+                            type: bookingType
+                        }),
+                        width: 160,
+                        height: 160
+                    });
+
                     document.getElementById('section-4').classList.remove('active');
                     document.getElementById('section-5').classList.add('active');
                     document.getElementById('booking-btns').style.display = 'none';
+                    localStorage.removeItem('pending_booking'); // Clear pending state
                     initWallet(); // Refresh balance display
                 } else {
                     showToast(res.error || 'Transaction failed', 'error');

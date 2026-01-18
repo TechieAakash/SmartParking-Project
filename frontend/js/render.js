@@ -24,7 +24,7 @@ function updateDashboardStats() {
 }
 
 function updateViolationCounts() {
-    const pendingCount = violations.filter(v => v.status === 'pending').length;
+    const pendingCount = (violations || []).filter(v => !v.resolved).length;
     document.getElementById('violation-count').textContent = pendingCount;
     document.getElementById('active-violations').textContent = pendingCount;
     document.getElementById('live-violation-count').textContent = pendingCount;
@@ -65,7 +65,7 @@ function renderViolationsList() {
     const container = document.getElementById('violations-list');
     if (!container) return;
 
-    const activeViolations = (violations || []).filter(v => v.status === 'pending').slice(0, 5);
+    const activeViolations = (violations || []).filter(v => !v.resolved).slice(0, 5);
     if (activeViolations.length === 0) {
         container.innerHTML = '<div style=\"padding: 24px; text-align: center; color: #718096;\"><i class=\"fas fa-check-circle\"></i> No active violations.</div>';
         return;
@@ -128,7 +128,7 @@ function updateInsights() {
     if (!container) return;
 
     const criticalZones = parkingZones.filter(z => (z.currentOccupancy / z.totalCapacity) > 0.9);
-    const pendingViolations = violations.filter(v => v.status === 'pending');
+    const pendingViolations = (violations || []).filter(v => !v.resolved);
 
     let insightsHtml = '';
 
@@ -209,7 +209,7 @@ function renderViolationsTable() {
 
     tbody.innerHTML = violations.map(v => {
         const zone = parkingZones.find(z => z.id === v.zoneId);
-        const statusBadge = v.status === 'pending' ? 'danger' : 'success';
+        const statusBadge = !v.resolved ? 'danger' : 'success';
         const severityBadge = v.severity === 'critical' ? 'danger' : 'warning';
 
         return `
@@ -219,7 +219,7 @@ function renderViolationsTable() {
                 <td><span class="badge ${severityBadge}">${v.severity}</span></td>
                 <td>${v.excessVehicles} Vehicles</td>
                 <td><strong style=\"color: #e53e3e;\">₹${v.penaltyAmount}</strong></td>
-                <td><span class=\"badge ${statusBadge}\">${v.status}</span></td>
+                <td><span class=\"badge ${statusBadge}\">${!v.resolved ? 'PENDING' : 'RESOLVED'}</span></td>
                 <td style=\"font-size: 12px; color: #64748b;\">${new Date(v.timestamp).toLocaleString()}</td>
                 <td>
                     ${(currentUser && (currentUser.role === 'officer' || currentUser.role === 'admin')) ? `
@@ -350,29 +350,3 @@ function selectResOption(el) {
     }
 }
 
-async function exportViolationsData() {
-    try {
-        const token = localStorage.getItem('token');
-        const response = await fetch(`${API_BASE_URL}/violations/export`, {
-            headers: {
-                'Authorization': `Bearer ${token}`
-            }
-        });
-        
-        if (!response.ok) throw new Error('Export failed');
-        
-        const blob = await response.blob();
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `mcd_violations_export_${new Date().toISOString().split('T')[0]}.csv`;
-        document.body.appendChild(a);
-        a.click();
-        window.URL.revokeObjectURL(url);
-        window.document.body.removeChild(a);
-        showToast('CSV Exported successfully', 'success');
-    } catch (error) {
-        showToast('Failed to export CSV', 'error');
-        console.error(error);
-    }
-}

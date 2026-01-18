@@ -102,13 +102,17 @@ async function handleRegister(event) {
             payload.department = document.getElementById('reg-department').value;
         }
 
+        console.log('Registration payload:', payload);
+
         const response = await fetch(`${API_BASE_URL}/auth/register`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(payload)
         });
 
+        console.log('Registration response status:', response.status);
         const data = await response.json();
+        console.log('Registration response data:', data);
 
         if (data.success) {
             showToast('Registration successful! Please login.', 'success');
@@ -120,9 +124,11 @@ async function handleRegister(event) {
             if (strengthText) strengthText.textContent = '';
         } else {
             const errorMsg = data.error || data.message || 'Registration failed';
+            console.error('Registration failed:', errorMsg, data.errors);
             showToast(errorMsg, 'error');
         }
     } catch (error) {
+        console.error('Registration error:', error);
         showToast('Registration error: ' + error.message, 'error');
     } finally {
         btn.disabled = false;

@@ -59,8 +59,35 @@ async function loadSharedComponents() {
         const html = await response.text();
         document.getElementById('auth-chatbot-container').innerHTML = html;
         console.log('Shared components loaded');
+        
+        // CRITICAL: Attach event listeners after dynamic content is loaded
+        // This fixes the issue where inline onsubmit handlers don't work with dynamically loaded HTML
+        attachFormEventListeners();
     } catch (error) {
         console.error('Failed to load shared components:', error);
+    }
+}
+
+// Attach event listeners to dynamically loaded forms
+function attachFormEventListeners() {
+    console.log('Attaching event listeners to forms...');
+    
+    // Registration form
+    const registerForm = document.getElementById('register-form');
+    if (registerForm) {
+        registerForm.addEventListener('submit', handleRegister);
+        console.log('✓ Registration form listener attached');
+    } else {
+        console.warn('⚠ Registration form not found');
+    }
+    
+    // Login form
+    const loginForm = document.getElementById('login-form');
+    if (loginForm) {
+        loginForm.addEventListener('submit', handleLogin);
+        console.log('✓ Login form listener attached');
+    } else {
+        console.warn('⚠ Login form not found');
     }
 }
 

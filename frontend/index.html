@@ -414,7 +414,7 @@
             <div class="card">
                 <div class="card-header" style="justify-content: space-between;">
                     <h2 class="card-title"><i class="fas fa-exclamation-triangle"></i> Violations Dashboard</h2>
-                    <button class="export-btn" onclick="exportViolationsData()">
+                    <button class="export-btn admin-only" onclick="exportViolationsData()" style="display: none;">
                         <i class="fas fa-file-csv"></i> Export CSV
                     </button>
                 </div>
@@ -497,16 +497,6 @@
                             <label class="form-label">Address <span class="required">*</span></label>
                             <input type="text" class="form-input" id="zone-address" required
                                 placeholder="Full street address in Delhi">
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Latitude <span class="required">*</span></label>
-                            <input type="number" step="0.000001" class="form-input" id="zone-lat" required
-                                placeholder="28.xxxxxx">
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Longitude <span class="required">*</span></label>
-                            <input type="number" step="0.000001" class="form-input" id="zone-lng" required
-                                placeholder="77.xxxxxx">
                         </div>
                         <div class="form-group">
                             <label class="form-label">Total Capacity <span class="required">*</span></label>
@@ -846,6 +836,59 @@
             </div>
         </div>
     </footer>
+    <!-- Pending Booking Alert -->
+    <div id="pending-booking-alert"
+        style="display: none; position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background: rgba(255, 255, 255, 0.95); padding: 15px 30px; border-radius: 50px; box-shadow: 0 20px 40px rgba(0,0,0,0.2); z-index: 9999; flex-direction: row; align-items: center; gap: 20px; border: 1px solid rgba(255,255,255,0.5); backdrop-filter: blur(10px);">
+        <div
+            style="width: 40px; height: 40px; background: #e0f2fe; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #0284c7;">
+            <i class="fas fa-clock"></i>
+        </div>
+        <div style="display: flex; flex-direction: column;">
+            <span style="font-weight: 700; color: #0f172a; font-size: 15px;">Continue Booking?</span>
+            <span style="font-size: 13px; color: #64748b;">You have an incomplete session.</span>
+        </div>
+        <div style="display:flex; gap: 10px; margin-left: 10px;">
+            <button onclick="location.href='booking.html'"
+                style="background: linear-gradient(135deg, #0ea5e9, #2563eb); color: white; border: none; padding: 10px 20px; border-radius: 100px; font-weight: 600; cursor: pointer; box-shadow: 0 4px 12px rgba(37,99,235,0.2); transition: transform 0.2s;">Resume</button>
+            <button onclick="discardBooking()"
+                style="background: transparent; color: #64748b; border: 1px solid #cbd5e1; padding: 10px 20px; border-radius: 100px; font-weight: 600; cursor: pointer; transition: all 0.2s;">Dismiss</button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const pendingStr = localStorage.getItem('pending_booking');
+            if (pendingStr) {
+                const pending = JSON.parse(pendingStr);
+                const alert = document.getElementById('pending-booking-alert');
+
+                // Update text with zone name if available
+                if (pending.selectedZone && pending.selectedZone.name) {
+                    const titleEl = alert.querySelector('span[style*="font-weight: 700"]');
+                    const subtitleEl = alert.querySelector('span[style*="font-size: 13px"]');
+                    if (titleEl) titleEl.textContent = `Resume Booking?`;
+                    if (subtitleEl) subtitleEl.textContent = `Continue at ${pending.selectedZone.name}`;
+                }
+
+                alert.style.display = 'flex';
+                // Slide up animation
+                alert.style.transform = 'translateX(-50%) translateY(100px)';
+                alert.style.transition = 'transform 0.5s cubic-bezier(0.4, 0, 0.2, 1)';
+                setTimeout(() => {
+                    alert.style.transform = 'translateX(-50%) translateY(0)';
+                }, 100);
+            }
+        });
+
+        function discardBooking() {
+            localStorage.removeItem('pending_booking');
+            const alert = document.getElementById('pending-booking-alert');
+            alert.style.transform = 'translateX(-50%) translateY(100px)';
+            setTimeout(() => {
+                alert.style.display = 'none';
+            }, 500);
+        }
+    </script>
 </body>
 
 </html>

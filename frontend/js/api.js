@@ -71,8 +71,8 @@ async function handleZoneCreate(event) {
         const payload = {
             name: document.getElementById('zone-name').value,
             address: document.getElementById('zone-address').value,
-            latitude: parseFloat(document.getElementById('zone-lat').value),
-            longitude: parseFloat(document.getElementById('zone-lng').value),
+            latitude: 28.6139, // Default: Delhi Center
+            longitude: 77.2090, // Default: Delhi Center
             totalCapacity: parseInt(document.getElementById('zone-capacity').value),
             contractorLimit: parseInt(document.getElementById('zone-limit').value),
             contractorName: document.getElementById('zone-contractor').value,
@@ -113,10 +113,13 @@ async function handleZoneCreate(event) {
 
 async function exportViolationsData() {
     try {
+        const token = localStorage.getItem('token');
+        if (!token) throw new Error('Please login to export data');
+
         showToast('Preparing MCD violation export...', 'info');
         const response = await fetch(`${API_BASE_URL}/violations/export`, {
             headers: {
-                'Authorization': `Bearer ${localStorage.getItem('token')}`
+                'Authorization': `Bearer ${token}`
             }
         });
 
@@ -135,13 +138,15 @@ async function exportViolationsData() {
         a.href = url;
         a.download = `mcd_violations_report_${new Date().toISOString().split('T')[0]}.csv`;
         document.body.appendChild(a);
+        
+        // Trigger download
         a.click();
 
-        // Cleanup
+        // Cleanup with slight delay to ensure download starts
         setTimeout(() => {
             document.body.removeChild(a);
             window.URL.revokeObjectURL(url);
-        }, 100);
+        }, 500);
 
         showToast('Export successful! Check your downloads.', 'success');
     } catch (error) {
@@ -197,5 +202,13 @@ async function topUpWallet(amount) {
         method: 'POST',
         headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` },
         body: JSON.stringify({ amount })
+    });
+}
+
+async function purchaseSubscription(payload) {
+    return await fetchAPI('/bookings/subscription', {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` },
+        body: JSON.stringify(payload)
     });
 }

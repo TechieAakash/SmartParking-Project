@@ -190,9 +190,56 @@ function updateUIForUser(user) {
         fetchUserStats();
     }
 
-    // Toggle role-specific views if needed
+    // Toggle role-specific views
     if (user.role === 'officer' || user.role === 'admin') {
-        document.querySelectorAll('.admin-only').forEach(el => el.style.display = 'block');
+        document.querySelectorAll('.admin-only').forEach(el => {
+            el.style.display = 'flex'; // Use flex for buttons usually
+            if (el.tagName === 'BUTTON') el.style.display = 'inline-flex';
+        });
+    } else {
+        document.querySelectorAll('.admin-only').forEach(el => el.style.display = 'none');
+    }
+    
+    // Show zone actions to contractors too
+    if (user.role === 'contractor') {
+        const zoneActions = document.getElementById('admin-zone-actions');
+        if (zoneActions) zoneActions.style.display = 'block';
+    }
+
+    // Role-specific Menu Items
+    const userMenu = document.querySelector('.user-menu');
+    if (userMenu && user.role === 'contractor') {
+        // Check if links already exist
+        if (!userMenu.querySelector('a[href="contractor-zones.html"]')) {
+            // My Zones Link
+            const zonesLink = document.createElement('a');
+            zonesLink.href = 'contractor-zones.html';
+            zonesLink.className = 'user-menu-item';
+            zonesLink.innerHTML = '<i class="fas fa-map-marked-alt"></i> My Zones';
+            zonesLink.style.background = '#eef2ff';
+            zonesLink.style.color = '#4f46e5';
+            
+            // Add New Zone Link
+            const addLink = document.createElement('a');
+            addLink.href = 'contractor-zones.html#add'; // Hash to trigger modal
+            addLink.className = 'user-menu-item';
+            addLink.innerHTML = '<i class="fas fa-plus-circle"></i> Add New Zone';
+            addLink.style.background = '#f0fdf4';
+            addLink.style.color = '#16a34a';
+            addLink.style.marginTop = '5px';
+
+            const profileLink = userMenu.querySelector('a[href="profile-driver.html"]');
+            if (profileLink) {
+                profileLink.insertAdjacentElement('afterend', zonesLink);
+                zonesLink.insertAdjacentElement('afterend', addLink);
+            } else {
+                const hr = userMenu.querySelector('hr');
+                if (hr) {
+                    hr.insertAdjacentElement('afterend', zonesLink);
+                    zonesLink.insertAdjacentElement('afterend', addLink);
+                }
+            }
+        }
     }
 }
 
@@ -255,4 +302,33 @@ function closeViewZoneModal() {
 function closeResolveModal() {
     const modal = document.getElementById('resolve-modal');
     if (modal) modal.classList.remove('active');
+}
+
+function openZoneModal() {
+    const modal = document.getElementById('zone-modal');
+    if (!modal) return;
+    
+    modal.classList.add('active');
+    
+    // Pre-fill contractor info if applicable
+    if (currentUser && currentUser.role === 'contractor') {
+        const contractorField = document.getElementById('zone-contractor');
+        if (contractorField) {
+            contractorField.value = currentUser.fullName || currentUser.username;
+            contractorField.readOnly = true; // Prevent contractor from changing their own name for their zones
+        }
+        
+        const emailField = document.getElementById('zone-contractor-email');
+        if (emailField && currentUser.email) {
+            emailField.value = currentUser.email;
+        }
+    }
+}
+
+function closeZoneModal() {
+    const modal = document.getElementById('zone-modal');
+    if (modal) {
+        modal.classList.remove('active');
+        document.getElementById('zone-form')?.reset();
+    }
 }

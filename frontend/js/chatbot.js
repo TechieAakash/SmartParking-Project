@@ -52,7 +52,7 @@ async function sendKuroMessage() {
         const headers = { 'Content-Type': 'application/json' };
         if (token) headers['Authorization'] = `Bearer ${token}`;
 
-        const response = await fetch(`${API_BASE_URL}/chat/message`, {
+        const response = await fetch(`${API_BASE_URL}/chatbot/message`, {
             method: 'POST',
             headers,
             body: JSON.stringify({ message, sessionId: kuroSessionId })

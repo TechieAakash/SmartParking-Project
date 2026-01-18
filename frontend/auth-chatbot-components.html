@@ -52,8 +52,8 @@
                     </a>
                 </div>
 
-                <button type="submit" class="btn btn-primary" id="login-btn"
-                    style="width: 100%; justify-content: center;">
+                <button type="button" class="btn btn-primary" id="login-btn"
+                    style="width: 100%; justify-content: center;" onclick="handleLogin(event)">
                     <i class="fas fa-lock"></i> Login Securely
                 </button>
 
@@ -107,8 +107,8 @@
                 <div class="form-group">
                     <label class="form-label">Select Role <span class="required">*</span></label>
                     <select class="form-input form-select" id="reg-role" required onchange="handleRoleChange()">
-                        <option value="user">Driver / Individual</option>
-                        <option value="contractor">Parking Contractor</option>
+                        <option value="driver">Driver / Individual</option>
+                        <option value="user">General User</option>
                         <option value="officer">MCD Officer</option>
                         <option value="viewer">Guest Viewer</option>
                     </select>
@@ -161,8 +161,8 @@
                     </div>
                 </div>
 
-                <button type="submit" class="btn btn-success" id="register-btn"
-                    style="width: 100%; justify-content: center;">
+                <button type="button" class="btn btn-success" id="register-btn"
+                    style="width: 100%; justify-content: center;" onclick="handleRegister(event)">
                     <i class="fas fa-user-check"></i> Create Account
                 </button>
             </form>
