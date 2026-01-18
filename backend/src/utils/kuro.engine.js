@@ -1,4 +1,4 @@
-const { GoogleGenerativeAI } = require("@google/generative-ai");
+const OpenAI = require("openai");
 const config = require('../config/env');
 
 class KuroEngine {
@@ -6,14 +6,14 @@ class KuroEngine {
     this.knowledgeBase = this.initializeKnowledgeBase();
     this.context = new Map(); // Store conversation context
     
-    // Initialize Gemini AI
-    if (config.gemini.apiKey) {
-      console.log('🔑 Initializing Gemini AI with API key...');
+    // Initialize OpenAI AI
+    if (config.openai.apiKey) {
+      console.log('🔑 Initializing OpenAI AI...');
       try {
-        this.genAI = new GoogleGenerativeAI(config.gemini.apiKey);
-        this.model = this.genAI.getGenerativeModel({ 
-          model: "gemini-1.5-flash",
-          systemInstruction: `You are Kuro AI, the intelligent assistant for the MCD (Municipal Corporation of Delhi) Smart Parking Management System. 
+        this.openai = new OpenAI({
+          apiKey: config.openai.apiKey
+        });
+        this.systemPrompt = `You are Kuro AI, the intelligent assistant for the MCD (Municipal Corporation of Delhi) Smart Parking Management System. 
         Your goal is to help citizens and drivers with parking bookings, payments, rules, and general information about Delhi parking.
         
         Guidelines:
@@ -22,15 +22,14 @@ class KuroEngine {
         3. If you're asked about specific MCD rules, provide general best practices but encourage users to check the 'MCD Guidelines' section or call 155305.
         4. Do not provide legal or financial advice outside of parking penalties and wallet top-ups.
         5. Keep responses concise and easy to read.
-        6. You can communicate in both English and Hindi. If the user speaks Hindi, respond in Hindi or Hinglish.`
-        });
-        console.log('✅ Gemini AI initialized successfully');
+        6. You can communicate in both English and Hindi. If the user speaks Hindi, respond in Hindi or Hinglish.`;
+        console.log('✅ OpenAI AI initialized successfully');
       } catch (error) {
-        console.error('❌ Failed to initialize Gemini AI:', error.message);
-        this.model = null;
+        console.error('❌ Failed to initialize OpenAI AI:', error.message);
+        this.openai = null;
       }
     } else {
-      console.warn('⚠️ GEMINI_API_KEY not found - Gemini features will be disabled');
+      console.warn('⚠️ OPENAI_API_KEY not found - OpenAI features will be disabled');
     }
   }
 
@@ -198,25 +197,34 @@ class KuroEngine {
   }
 
   /**
-   * Call Gemini AI for responses
+   * Call OpenAI AI for responses
    */
-  async callGemini(message, chatHistory = []) {
+  async callOpenAI(message, chatHistory = []) {
     try {
-      if (!this.model) {
-        console.warn('⚠️ Gemini model not initialized');
+      if (!this.openai) {
+        console.warn('⚠️ OpenAI client not initialized');
         return null;
       }
 
-      const chat = this.model.startChat({
-        history: chatHistory,
+      // Convert Gemini-style history to OpenAI-style
+      const messages = [
+        { role: "system", content: this.systemPrompt },
+        ...chatHistory.map(item => ({
+          role: item.role === "model" ? "assistant" : "user",
+          content: item.parts[0].text
+        })),
+        { role: "user", content: message }
+      ];
+
+      const response = await this.openai.chat.completions.create({
+        model: "gpt-4o-mini", // Fast and cost-effective
+        messages: messages,
+        max_tokens: 500
       });
 
-      const result = await chat.sendMessage(message);
-      const response = await result.response;
-      return response.text();
+      return response.choices[0].message.content;
     } catch (error) {
-      console.error('❌ Gemini API error:', error.message);
-      console.error('Error details:', error);
+      console.error('❌ OpenAI API error:', error.message);
       return null;
     }
   }
@@ -263,7 +271,7 @@ class KuroEngine {
 
     // Return best match or null if not confident (to trigger Gemini)
     // Increased threshold to reduce false positives
-    if (bestMatch && bestMatch.confidence > 0.5) {
+    if (bestMatch && bestMatch.confidence >= 0.5) {
       return bestMatch;
     }
 
@@ -285,7 +293,7 @@ class KuroEngine {
         wallet_help: ['Top Up Now', 'Transaction History', 'Booking Help'],
         contact_support: ['Email Support', 'Call Helpline', 'Office Address'],
         language_switch: ['Help', 'Parking Rules', 'My Wallet'],
-        gemini_response: ['Parking rules', 'Violations', 'Register', 'Payment help'],
+        openai_response: ['Parking rules', 'Violations', 'Register', 'Payment help'],
         unknown: ['Parking rules', 'Violations', 'Register', 'Payment help']
       },
       hi: {
@@ -298,7 +306,7 @@ class KuroEngine {
         wallet_help: ['रिचार्ज करें', 'लेनदेन इतिहास', 'बुकिंग मदद'],
         contact_support: ['ईमेल', 'हेल्पलाइन', 'पता'],
         language_switch: ['मदद', 'पार्किंग नियम', 'मेरा वॉलेट'],
-        gemini_response: ['पार्किंग नियम', 'उल्लंघन', 'रजिस्टर', 'भुगतान सहायता'],
+        openai_response: ['पार्किंग नियम', 'उल्लंघन', 'रजिस्टर', 'भुगतान सहायता'],
         unknown: ['पार्किंग नियम', 'उल्लंघन', 'रजिस्टर', 'भुगतान सहायता']
       }
     };
@@ -335,14 +343,14 @@ class KuroEngine {
         finalIntent = detection.intent;
         finalConfidence = detection.confidence;
       } else {
-        // 4. Fallback to Gemini AI
-        console.log(`🤖 Consulting Gemini for: "${message}"`);
-        const geminiResponse = await this.callGemini(message, history);
+        // 4. Fallback to OpenAI AI
+        console.log(`🤖 Consulting OpenAI for: "${message}"`);
+        const openAIResponse = await this.callOpenAI(message, history);
         
-        if (geminiResponse) {
-          finalResponse = geminiResponse;
-          finalIntent = 'gemini_response';
-          finalConfidence = 0.9; // Gemini is usually confident
+        if (openAIResponse) {
+          finalResponse = openAIResponse;
+          finalIntent = 'openai_response';
+          finalConfidence = 0.9; // OpenAI is usually confident
         } else {
           // Absolute fallback
           finalResponse = language === 'hi' 
