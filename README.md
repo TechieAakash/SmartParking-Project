@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 # Smart Parking Management System
 
 A comprehensive, production-ready Smart Parking Management System with a robust Node.js backend and a modern, visually stunning frontend.
@@ -103,10 +103,56 @@ folder12/
 ├── DATABASE_SCHEMA.sql
 └── README.md
 ```
+=======
+# SmartParking 🚗 - Full Stack Web Application
+
+[GitHub](https://github.com/your-username) | [LinkedIn](https://linkedin.com/in/your-linkedin)
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+
+## 🌟 Features
+
+### User Roles
+- **Admin**: Full access to manage users, parking zones, and violations.  
+- **Officer**: Can manage zones and violations, but cannot manage users.  
+- **Contractor**: Can view and update only their assigned zones.  
+
+### Authentication & Security
+- JWT-based authentication  
+- Password hashing with bcrypt  
+- Role-based route protection  
+- Logout functionality and profile management
+
+### Frontend
+- Login modal and token storage in localStorage  
+- Role-based UI visibility  
+- User profile display in navbar  
+
+### Backend
+- Node.js + Express API  
+- MySQL database for persistent storage  
+- APIs: `/api/auth/login`, `/api/auth/register`, `/api/auth/me`, `/api/auth/profile`  
+- Protected routes with authentication and role-based authorization  
+
+---
+
+## 🛠 Tech Stack
+
+| Layer      | Technology                  |
+|-----------|-----------------------------|
+| Backend   | Node.js, Express, MySQL      |
+| Frontend  | HTML, CSS, JavaScript        |
+| Auth      | JWT, bcrypt                  |
+| Security  | Role-based authorization     |
+
+---
+>>>>>>> 0597540901bd0a10e63f8771a240148e4979b97d
 
 ## 🚀 Getting Started
 
 ### Prerequisites
+<<<<<<< HEAD
 - Node.js v18+ installed
 - MySQL 8.0+ installed
 - MySQL Workbench (optional but recommended)
@@ -332,4 +378,13 @@ For issues or questions:
 =======
 # SmartPark
 SmartPark is a smart parking management system that automates parking operations using a secure and scalable backend. It enables parking zone management, vehicle registration, advance slot booking, violation handling, digital wallet payments, and chatbot support through API-driven architecture, making it suitable for smart city and solutions.
->>>>>>> d7205199541ecc568cdff8b861fe35b57bf14510
+=======
+- Node.js & npm installed  
+- MySQL database
+
+### Installation
+1. Clone the repository:
+```bash
+git clone https://github.com/your-username/smart-parking.git
+cd smart-parking
+
