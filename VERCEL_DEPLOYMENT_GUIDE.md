@@ -26,9 +26,12 @@ This project is optimized for deployment on **Vercel** as a monorepo. Follow the
 | `VERCEL` | `1` | (Optional) Already set in `vercel.json`. |
 
 ## 3. Deployment Settings
-- **Build Command**: Leave empty (Vercel uses `vercel.json`).
+- **Framework Preset**: **Other** (or **Express**)
+- **Build Command**: Leave empty.
 - **Output Directory**: Leave empty.
-- **Install Command**: `npm install` (Vercel will detect the root `package.json`).
+- **Install Command**: `npm install` 
+  > [!IMPORTANT]
+  > **DO NOT use backticks (`)** in the Vercel input box. Type it exactly as `npm install`.
 
 ## 4. Why this configuration works
 -   **`vercel.json`**: Tells Vercel to route any `/api/*` requests to the serverless function in `api/index.js` and everything else to the `frontend` folder.
