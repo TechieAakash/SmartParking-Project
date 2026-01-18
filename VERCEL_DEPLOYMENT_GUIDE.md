@@ -6,15 +6,17 @@ This project is optimized for deployment on **Vercel** as a monorepo. Follow the
 1.  Push your latest local changes to GitHub (I have already done this for you).
 2.  Go to [vercel.com](https://vercel.com) and click **"Add New"** > **"Project"**.
 3.  Import your repository: `TechieAakash/SmartParking-Project`.
-4.  **Framework Preset**: Keep it as **Other**.
-5.  **Root Directory**: Keep it as **`./`** (the root directory).
+-   **Framework Preset**: Keep it as **Other**.
+-   **Node.js Version**: Ensure it uses **24.x** (I have already updated `package.json` to 24.x for you).
+-   **Root Directory**: Keep it as **`./`**.
 
 ## 2. Environment Variables (CRITICAL)
-Vercel needs these variables to connect to your database and AI services. Go to the **Environment Variables** section and add the following:
+> [!WARNING]
+> **DB_HOST cannot be `localhost`**: In a Vercel deployment, `localhost` refers to the Vercel server itself, not your computer. You **MUST** use a cloud-hosted MySQL database.
 
 | Key | Value | Note |
 | :--- | :--- | :--- |
-| `DB_HOST` | `your-cloud-db-host.com` | Use a service like **Aiven**, **PlanetScale**, or **Tidb**. |
+| `DB_HOST` | `your-cloud-db.com` | **DO NOT USE localhost**. Use Aiven, Tidb, or AWS. |
 | `DB_USER` | `admin` | Your remote DB username. |
 | `DB_PASSWORD` | `your_secure_password` | Your remote DB password. |
 | `DB_NAME` | `smartparking` | Database name. |
