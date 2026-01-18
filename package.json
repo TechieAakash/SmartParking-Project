@@ -19,14 +19,19 @@
     "db:info": "mysql -u root -padmin123 -e \"SHOW DATABASES; SELECT 'smartparking' AS database_name, COUNT(*) AS table_count FROM information_schema.tables WHERE table_schema = 'smartparking';\""
   },
   "dependencies": {
+    "@google/generative-ai": "^0.24.1",
+    "axios": "^1.13.2",
     "bcryptjs": "^3.0.3",
     "cors": "^2.8.5",
     "dotenv": "^16.3.1",
-    "express": "^4.18.2",
+    "express": "^4.22.1",
     "express-rate-limit": "^6.10.0",
+    "express-validator": "^7.0.1",
     "helmet": "^7.0.0",
     "jsonwebtoken": "^9.0.3",
+    "morgan": "^1.10.0",
     "mysql2": "^3.6.5",
+    "openai": "^6.16.0",
     "sequelize": "^6.35.0"
   },
   "devDependencies": {

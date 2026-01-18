@@ -20,15 +20,28 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Serve static files from frontend directory
+// On Vercel, we usually let Vercel handle static files for better performance
+const isVercel = process.env.VERCEL === '1';
 const frontendPath = path.join(__dirname, '../../frontend');
-app.use(express.static(frontendPath));
+
+if (!isVercel) {
+  app.use(express.static(frontendPath));
+}
 
 // API Routes
 const apiRoutes = require('./routes');
 app.use('/api', apiRoutes);
 
-// Serve dashboard.html for root path
+// Health check
+app.get('/api/health', (req, res) => {
+  res.json({ success: true, status: 'UP', timestamp: new Date() });
+});
+
+// Serve index.html for root path only if not on Vercel
 app.get('/', (req, res) => {
+  if (isVercel) {
+    return res.redirect('/index.html'); // Vercel handles the static file
+  }
   res.sendFile(path.join(frontendPath, 'index.html'));
 });
 
