@@ -2,9 +2,9 @@
   "name": "smart-parking-backend",
   "version": "1.0.0",
   "description": "Backend API for MCD Smart Parking System",
-  "main": "api/index.js",
+  "main": "index.js",
   "scripts": {
-    "start": "node api/index.js",
+    "start": "node index.js",
     "dev": "vercel dev",
     "test": "echo \"Run tests in backend/ folder\" && exit 0"
   },
