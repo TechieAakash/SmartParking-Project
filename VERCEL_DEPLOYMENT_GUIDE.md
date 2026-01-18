@@ -34,13 +34,20 @@ This project is optimized for deployment on **Vercel** as a monorepo. Follow the
   > **DO NOT use backticks (`)** in the Vercel input box. Type it exactly as `npm install`.
 
 ## 4. Why this configuration works
--   **`vercel.json`**: Tells Vercel to route any `/api/*` requests to the serverless function in `api/index.js` and everything else to the `frontend` folder.
--   **`api/index.js`**: Bridges the serverless environment with your Express app logic.
--   **`.vercelignore`**: Ensures only necessary files are uploaded, speeding up builds.
+-   **`vercel.json`**: Tells Vercel to route any `/api/*` requests to your root `index.js`.
+-   **Root `index.js`**: Bridges the serverless environment with your Express app.
+-   **`.vercelignore`**: Ensures only necessary files are uploaded.
 
-## 5. Troubleshooting
--   **Database Errors**: Ensure your cloud MySQL database allows connections from Vercel's IP addresses (set Allow-All `0.0.0.0/0` if necessary).
--   **404 on API**: Double-check that your frontend `js/config.js` uses `/api` as the base URL relative to the domain.
+## 5. Free Cloud MySQL Databases
+Since you cannot use `localhost`, here are the best free-tier providers:
+-   **[Aiven.io](https://aiven.io/mysql)**: Highly recommended, very easy setup.
+-   **[TiDB Cloud](https://pingcap.com/products/tidb-cloud)**: Great MySQL-compatible serverless DB.
+
+### Setup Steps:
+1.  Create a MySQL instance on one of the above.
+2.  Get the **Host**, **User**, **Password**, and **Database Name**.
+3.  Update these in **Vercel Project Settings > Environment Variables**.
+4.  **Redeploy** the latest commit.
 
 ---
-**Need help?** Ask me to verify a specific configuration or check your environment variables!
+**Need help?** Ask me to verify a specific configuration!
