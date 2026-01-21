@@ -1,0 +1,1 @@
+rewrite = "/*" to "/index.html"

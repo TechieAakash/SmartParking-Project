@@ -31,6 +31,8 @@ Add these variables in the backend service's **Variables** tab:
 
 > **Important:** Railway auto-links MySQL variables. Just add the service variables above.
 
+> **For Render Frontend Integration:** Set `CORS_ORIGIN` to your Render frontend URL (e.g., `https://smartparking-frontend.onrender.com`) to allow API requests from the frontend.
+
 ### 4. Database Initialization
 The application will automatically:
 - Connect to the MySQL database using Railway's environment variables
