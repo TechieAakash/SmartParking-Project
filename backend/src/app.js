@@ -7,12 +7,35 @@ const cors = require('cors');
 const path = require('path');
 const app = express();
 
-// CORS Configuration - Allow frontend access
+// CORS Configuration - Railway Production
+// Use CORS_ORIGIN from environment variable set in Railway
+const allowedOrigins = process.env.CORS_ORIGIN 
+  ? process.env.CORS_ORIGIN.split(',').map(origin => origin.trim())
+  : ['*'];
+
 const corsOptions = {
-  origin: ['http://localhost:3000', 'http://127.0.0.1:3000', 'http://localhost:5000', 'http://127.0.0.1:5000'],
+  origin: function (origin, callback) {
+    // Allow requests with no origin (e.g., mobile apps, Postman)
+    if (!origin) return callback(null, true);
+    
+    // If CORS_ORIGIN is '*', allow all origins
+    if (allowedOrigins[0] === '*') {
+      return callback(null, true);
+    }
+    
+    // Check if origin is in allowed list
+    if (allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      console.warn(`⚠️ CORS blocked origin: ${origin}`);
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   credentials: true,
   optionsSuccessStatus: 200
 };
+
+console.log('🔐 CORS Origins:', allowedOrigins);
 
 // Middlewares
 app.use(cors(corsOptions));

@@ -1,22 +1,23 @@
 /**
- * Database Configuration
- * Sequelize setup with connection pooling and error handling
+ * Database Configuration for Railway
+ * Sequelize setup with Railway MySQL support
  */
 
 const { Sequelize } = require('sequelize');
 const config = require('./env');
 
-const sequelize = new Sequelize(
-  config.database.name,
-  config.database.user,
-  config.database.password,
-  {
-    host: config.database.host,
-    port: config.database.port,
+// Railway provides MYSQL_URL which is the complete connection string
+// Format: mysql://user:password@host:port/database
+let sequelize;
+
+if (process.env.MYSQL_URL) {
+  // Use Railway's MYSQL_URL for production
+  console.log('🔗 Connecting to Railway MySQL using MYSQL_URL');
+  sequelize = new Sequelize(process.env.MYSQL_URL, {
     dialect: 'mysql',
-    logging: config.nodeEnv === 'development' ? console.log : false,
+    logging: false, // Disable logging in production
     
-    // Connection pool configuration
+    // Connection pool configuration for Railway
     pool: {
       max: 10,
       min: 0,
@@ -34,12 +35,53 @@ const sequelize = new Sequelize(
       underscored: true,
     },
 
-    // Retry configuration
+    // Retry configuration for Railway
     retry: {
       max: 3,
     },
-  }
-);
+
+    // Disable SSL warnings for Railway
+    dialectOptions: {
+      ssl: {
+        require: false,
+        rejectUnauthorized: false
+      }
+    }
+  });
+} else {
+  // Fallback to individual environment variables (for local development)
+  console.log('🔗 Connecting using individual database credentials');
+  sequelize = new Sequelize(
+    config.database.name,
+    config.database.user,
+    config.database.password,
+    {
+      host: config.database.host,
+      port: config.database.port,
+      dialect: 'mysql',
+      logging: config.nodeEnv === 'development' ? console.log : false,
+      
+      pool: {
+        max: 10,
+        min: 0,
+        acquire: 30000,
+        idle: 10000,
+      },
+
+      timezone: '+05:30',
+
+      define: {
+        freezeTableName: true,
+        timestamps: true,
+        underscored: true,
+      },
+
+      retry: {
+        max: 3,
+      },
+    }
+  );
+}
 
 /**
  * Test database connection

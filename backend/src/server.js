@@ -138,17 +138,28 @@ const startServer = async () => {
       console.log('✅ Seeded 50 Officer Badges');
     }
 
-    // Start server with port error handling
-    server = app.listen(config.port, () => {
+    // Start server with Railway PORT support
+    const PORT = process.env.PORT || config.port;
+    
+    server = app.listen(PORT, '0.0.0.0', () => {
       console.log('');
       console.log('🚀 ============================================');
       console.log('   Smart Parking Management System');
       console.log('============================================ 🚀');
       console.log('');
       console.log(`📡 Server running in ${config.nodeEnv} mode`);
-      console.log(`🌐 URL: http://localhost:${config.port}`);
-      console.log(`📊 API: http://localhost:${config.port}/api`);
-      console.log(`💚 Health: http://localhost:${config.port}/api/health`);
+      console.log(`🌐 PORT: ${PORT}`);
+      console.log(`📊 API: /api`);
+      console.log(`💚 Health: /api/health`);
+      
+      // Show public URL if on Railway
+      if (process.env.RAILWAY_ENVIRONMENT) {
+        console.log(`🚂 Railway Environment: ${process.env.RAILWAY_ENVIRONMENT}`);
+        if (process.env.RAILWAY_STATIC_URL) {
+          console.log(`🌍 Public URL: ${process.env.RAILWAY_STATIC_URL}`);
+        }
+      }
+      
       console.log('');
       console.log('Press CTRL+C to stop');
       console.log('');
