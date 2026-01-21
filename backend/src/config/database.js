@@ -34,13 +34,6 @@ const sequelize = new Sequelize(
       underscored: true,
     },
 
-    // SSL configuration for Cloud Databases
-    dialectOptions: {
-      ssl: config.database.host !== 'localhost' ? {
-        rejectUnauthorized: false
-      } : null
-    },
-
     // Retry configuration
     retry: {
       max: 3,
