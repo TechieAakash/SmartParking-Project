@@ -56,6 +56,10 @@ Booking.belongsTo(ParkingSlot, { foreignKey: 'slotId', as: 'slot' });
 Vehicle.hasMany(Booking, { foreignKey: 'vehicleId', as: 'bookings' });
 Booking.belongsTo(Vehicle, { foreignKey: 'vehicleId', as: 'vehicle' });
 
+// ParkingZone ← → Booking
+ParkingZone.hasMany(Booking, { foreignKey: 'zoneId', as: 'bookings' });
+Booking.belongsTo(ParkingZone, { foreignKey: 'zoneId', as: 'zone' });
+
 // User ← → Violation (removed - resolved_by doesn't exist in finalized schema)
 // User.hasMany(Violation, { foreignKey: 'resolved_by', as: 'resolvedViolations'});
 // Violation.belongsTo(User, { foreignKey: 'resolved_by', as: 'resolver' });

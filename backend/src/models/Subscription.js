@@ -23,7 +23,7 @@ const Subscription = sequelize.define('Subscription', {
     field: 'vehicle_id'
   },
   passType: {
-    type: DataTypes.ENUM('monthly', 'yearly'),
+    type: DataTypes.ENUM('weekly', 'monthly', 'yearly'),
     allowNull: false,
     field: 'pass_type'
   },

@@ -88,10 +88,12 @@ const createBooking = async (req, res, next) => {
 
 const getMyBookings = async (req, res, next) => {
   try {
+    const { ParkingZone } = require('../models');
     const bookings = await Booking.findAll({
       where: { userId: req.user.id },
       include: [
-        { model: Vehicle, as: 'vehicle', attributes: ['licensePlate', 'model'] }
+        { model: Vehicle, as: 'vehicle', attributes: ['licensePlate', 'model'] },
+        { model: ParkingZone, as: 'zone', attributes: ['id', 'name', 'address'] }
       ],
       order: [['id', 'DESC']]
     });

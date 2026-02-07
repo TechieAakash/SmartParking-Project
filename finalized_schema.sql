@@ -14,9 +14,17 @@ CREATE TABLE users (
     email VARCHAR(100) UNIQUE NOT NULL,
     password_hash VARCHAR(255) NOT NULL,
     full_name VARCHAR(100) NOT NULL,
-    role ENUM('admin', 'officer', 'viewer') DEFAULT 'viewer',
+    role ENUM('admin', 'officer', 'viewer', 'user', 'driver') DEFAULT 'viewer',
     phone VARCHAR(20),
+    refresh_token VARCHAR(512),
     mcd_govt_id VARCHAR(50),
+    officer_badge_id VARCHAR(50) UNIQUE,
+    department VARCHAR(100),
+    is_verified BOOLEAN DEFAULT FALSE,
+    verified_at DATETIME,
+    profile_photo VARCHAR(255),
+    registration_ip VARCHAR(45),
+    google_id VARCHAR(100) UNIQUE,
     status ENUM('active', 'inactive', 'suspended') DEFAULT 'active',
     last_login DATETIME,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
@@ -90,14 +98,19 @@ CREATE TABLE violations (
 CREATE TABLE bookings (
     id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     user_id INT UNSIGNED NOT NULL,
+    zone_id INT UNSIGNED NOT NULL,
     slot_id INT UNSIGNED NOT NULL,
     vehicle_id INT UNSIGNED,
     booking_start DATETIME NOT NULL,
     booking_end DATETIME NOT NULL,
+    entry_time DATETIME,
     booking_type ENUM('hourly', 'daily', 'monthly', 'yearly') DEFAULT 'hourly',
     status ENUM('active', 'completed', 'cancelled', 'expired') DEFAULT 'active',
+    total_price DECIMAL(10, 2) DEFAULT 0.00,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (zone_id) REFERENCES parking_zones(id) ON DELETE CASCADE,
     FOREIGN KEY (slot_id) REFERENCES parking_slots(id) ON DELETE CASCADE,
     FOREIGN KEY (vehicle_id) REFERENCES vehicles(id) ON DELETE SET NULL
 );
@@ -121,11 +134,13 @@ CREATE TABLE passes (
     user_id INT UNSIGNED NOT NULL,
     plan_id INT UNSIGNED,
     vehicle_id INT UNSIGNED,
-    pass_type ENUM('monthly', 'yearly') NOT NULL,
+    pass_type ENUM('weekly', 'monthly', 'yearly') NOT NULL,
     zone_id INT UNSIGNED,
     start_date DATE NOT NULL,
     end_date DATE NOT NULL,
     status ENUM('active', 'expired', 'cancelled') DEFAULT 'active',
+    price DECIMAL(10, 2) NOT NULL DEFAULT 0.00,
+    qr_code VARCHAR(100),
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
     FOREIGN KEY (zone_id) REFERENCES parking_zones(id) ON DELETE SET NULL,
@@ -227,5 +242,49 @@ INSERT INTO subscription_plans (name, description, duration_days, price, plan_ty
 ('Monthly Basic', 'Unlimited parking in chosen zone for 30 days', 30, 2500.00, 'monthly'),
 ('Quarterly Saver', 'Unlimited parking in chosen zone for 90 days', 90, 6500.00, 'quarterly'),
 ('Yearly Premium', 'Unlimited parking in all zones for 365 days', 365, 22000.00, 'yearly');
+
+-- 10. Wallets table (for user wallet balances)
+CREATE TABLE wallets (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    user_id INT UNSIGNED NOT NULL UNIQUE,
+    balance DECIMAL(10, 2) DEFAULT 0.00,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+-- 11. Wallet Transactions table
+CREATE TABLE wallet_transactions (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    user_id INT UNSIGNED NOT NULL,
+    wallet_id INT UNSIGNED NOT NULL,
+    transaction_type ENUM('credit', 'debit', 'refund') NOT NULL,
+    amount DECIMAL(10, 2) NOT NULL,
+    balance_after DECIMAL(10, 2) NOT NULL,
+    description VARCHAR(255),
+    reference_id VARCHAR(100),
+    status ENUM('pending', 'completed', 'failed') DEFAULT 'completed',
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (wallet_id) REFERENCES wallets(id) ON DELETE CASCADE
+);
+
+-- 12. Valid Officer Badges table (whitelist for officer registration)
+CREATE TABLE valid_officer_badges (
+    badge_id VARCHAR(50) PRIMARY KEY,
+    is_claimed BOOLEAN DEFAULT FALSE,
+    claimed_by INT UNSIGNED,
+    FOREIGN KEY (claimed_by) REFERENCES users(id) ON DELETE SET NULL
+);
+
+-- 13. OTP Codes table (for email verification)
+CREATE TABLE otp_codes (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    contact VARCHAR(100) NOT NULL,
+    code VARCHAR(6) NOT NULL,
+    expires_at DATETIME NOT NULL,
+    used BOOLEAN DEFAULT FALSE,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    INDEX idx_contact (contact)
+);
 
 SELECT 'Setup Complete!' as Status;
