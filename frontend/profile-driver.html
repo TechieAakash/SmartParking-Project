@@ -15,6 +15,11 @@
             padding: 0 20px;
         }
 
+        /* Hide Kuro Chatbot specifically for this page */
+        #kuro-chat-widget {
+            display: none !important;
+        }
+
         .profile-header {
             background: linear-gradient(135deg, #1e293b, #334155);
             border-radius: 20px;
@@ -590,7 +595,6 @@
     <script src="js/config.js"></script>
     <script src="js/auth.js"></script>
     <script src="js/ui.js"></script>
-    <script src="js/chatbot.js"></script>
     <script>
         // Mini Debug Console for Production Troubleshooting
         const debugLogs = [];
