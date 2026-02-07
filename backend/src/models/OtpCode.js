@@ -29,7 +29,13 @@ const OtpCode = sequelize.define('OtpCode', {
 }, {
   tableName: 'otp_codes',
   timestamps: true,
-  updatedAt: false // Only need createdAt for audit
+  updatedAt: false, // Only need createdAt for audit
+  indexes: [
+    {
+      unique: false,
+      fields: ['contact']
+    }
+  ]
 });
 
 module.exports = OtpCode;
