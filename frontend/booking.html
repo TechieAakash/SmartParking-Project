@@ -243,6 +243,82 @@
             padding: 20px;
             color: #718096;
         }
+
+        /* Booking Page Responsive Styles */
+        @media (max-width: 768px) {
+            .booking-container {
+                margin: 20px auto;
+                padding: 0 15px;
+            }
+
+            .stepper {
+                margin-bottom: 25px;
+            }
+
+            .step-circle {
+                width: 32px;
+                height: 32px;
+                font-size: 12px;
+            }
+
+            .step-label {
+                font-size: 10px;
+            }
+
+            .booking-section {
+                padding: 20px;
+                border-radius: 15px;
+            }
+
+            .section-title {
+                font-size: 18px;
+            }
+
+            .zone-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .summary-card {
+                position: static;
+                margin-top: 20px;
+            }
+
+            .booking-nav {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .booking-nav .btn {
+                width: 100%;
+                justify-content: center;
+            }
+
+            #prev-btn {
+                order: 2;
+            }
+
+            #next-btn {
+                order: 1;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .stepper::before {
+                top: 15px;
+            }
+
+            .zone-card {
+                padding: 15px;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr !important;
+            }
+
+            .payment-methods>div {
+                flex-direction: column;
+            }
+        }
     </style>
 </head>
 

@@ -240,6 +240,62 @@
             color: #dc2626 !important;
             font-weight: 700;
         }
+
+        /* Additional Responsive Styles */
+        @media (max-width: 576px) {
+            .profile-container {
+                margin: 15px auto;
+                padding: 0 10px;
+            }
+
+            .profile-header {
+                flex-direction: column;
+                text-align: center;
+                padding: 25px 20px;
+                gap: 20px;
+            }
+
+            .profile-photo-container {
+                width: 100px;
+                height: 100px;
+            }
+
+            .profile-info h1 {
+                font-size: 22px;
+            }
+
+            .section-card {
+                padding: 20px;
+                border-radius: 15px;
+            }
+
+            .vehicle-item {
+                padding: 12px;
+            }
+
+            .vehicle-icon {
+                width: 35px;
+                height: 35px;
+                margin-right: 12px;
+            }
+
+            .nav-actions .btn span {
+                display: none;
+            }
+
+            #wallet-balance {
+                font-size: 28px !important;
+            }
+
+            .auth-modal-content {
+                margin: 10px;
+                max-height: 95vh;
+            }
+
+            .modal-buttons {
+                flex-direction: column;
+            }
+        }
     </style>
 </head>
 

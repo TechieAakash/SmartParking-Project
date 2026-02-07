@@ -5,6 +5,7 @@ const { ValidationError, NotFoundError } = require('../utils/CustomError');
 
 /**
  * Send a message to Kuro and get response
+ * Now with fallback mode if database tables don't exist
  */
 const sendMessage = async (req, res, next) => {
   try {
@@ -15,41 +16,60 @@ const sendMessage = async (req, res, next) => {
       throw new ValidationError('Message cannot be empty');
     }
 
-    let session;
+    let session = null;
+    let useDbMode = true;
 
-    // Get or create session
-    if (sessionId) {
-      session = await ChatSession.findByPk(sessionId);
-      if (!session) {
-        throw new NotFoundError('Chat session not found');
+    // Try database operations, fallback to stateless if tables don't exist
+    try {
+      if (sessionId) {
+        session = await ChatSession.findByPk(sessionId);
+        if (!session) {
+          // Create new session if ID not found
+          session = await ChatSession.create({
+            userId,
+            title: message.substring(0, 50) + '...',
+            status: 'active'
+          });
+        }
+      } else {
+        // Create new session
+        session = await ChatSession.create({
+          userId,
+          title: message.substring(0, 50) + '...',
+          status: 'active'
+        });
       }
-    } else {
-      // Create new session
-      session = await ChatSession.create({
+
+      // Save user message
+      await ChatMessage.create({
+        sessionId: session.id,
         userId,
-        title: message.substring(0, 50) + '...',
-        status: 'active'
+        role: 'user',
+        content: message.trim()
       });
+    } catch (dbError) {
+      // Database tables might not exist - use fallback mode
+      console.warn('⚠️ Chat DB unavailable, using stateless mode:', dbError.message);
+      useDbMode = false;
+      session = { id: sessionId || `temp_${Date.now()}` };
     }
 
-    // Save user message
-    await ChatMessage.create({
-      sessionId: session.id,
-      userId,
-      role: 'user',
-      content: message.trim()
-    });
-
-    // Process with Kuro AI
+    // Process with Kuro AI (always works)
     const aiResponse = await kuroEngine.processMessage(session.id, userId, message);
 
-    // Save bot response
-    const chatMessage = await ChatMessage.create({
-      sessionId: session.id,
-      userId: null, // Assistant doesn't have a user ID
-      role: 'assistant',
-      content: aiResponse.response
-    });
+    // Save bot response if DB available
+    if (useDbMode && session.id) {
+      try {
+        await ChatMessage.create({
+          sessionId: session.id,
+          userId: null,
+          role: 'assistant',
+          content: aiResponse.response
+        });
+      } catch (saveError) {
+        console.warn('⚠️ Could not save bot response:', saveError.message);
+      }
+    }
 
     successResponse(res, {
       sessionId: session.id,

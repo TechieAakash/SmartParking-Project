@@ -1,4 +1,31 @@
 // UI & Animations
+
+// Mobile Menu Toggle
+function toggleMobileMenu() {
+    const navTabs = document.querySelector('.nav-tabs');
+    const menuIcon = document.querySelector('.mobile-menu-toggle i');
+    if (navTabs) {
+        navTabs.classList.toggle('open');
+        if (menuIcon) {
+            menuIcon.className = navTabs.classList.contains('open') ? 'fas fa-times' : 'fas fa-bars';
+        }
+    }
+}
+
+// Close mobile menu when a nav item is clicked
+document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.nav-tab').forEach(tab => {
+        tab.addEventListener('click', () => {
+            const navTabs = document.querySelector('.nav-tabs');
+            const menuIcon = document.querySelector('.mobile-menu-toggle i');
+            if (navTabs && window.innerWidth <= 768) {
+                navTabs.classList.remove('open');
+                if (menuIcon) menuIcon.className = 'fas fa-bars';
+            }
+        });
+    });
+});
+
 function typeWriter() {
     const text = "Delhi NCT";
     const container = document.getElementById('typewriter-text');

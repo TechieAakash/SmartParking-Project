@@ -2634,3 +2634,559 @@ body {
     transform: translateY(-2px);
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
 }
+
+/* ============================================
+   RESPONSIVE DESIGN - COMPREHENSIVE
+   ============================================ */
+
+/* Mobile Menu Toggle Button */
+.mobile-menu-toggle {
+    display: none;
+    background: transparent;
+    border: 2px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 8px 12px;
+    cursor: pointer;
+    color: #4a5568;
+}
+
+.mobile-menu-toggle i {
+    font-size: 20px;
+}
+
+/* ============================================
+   LARGE TABLETS (max-width: 1200px)
+   ============================================ */
+@media (max-width: 1200px) {
+    .main-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .right-column {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+    }
+
+    .nav-tabs {
+        gap: 4px;
+    }
+
+    .nav-tab {
+        padding: 8px 14px;
+        font-size: 12px;
+    }
+
+    .hero-stats {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* ============================================
+   TABLETS (max-width: 992px)
+   ============================================ */
+@media (max-width: 992px) {
+    .nav-container {
+        flex-wrap: wrap;
+    }
+
+    .nav-tabs {
+        order: 3;
+        width: 100%;
+        justify-content: center;
+        margin-top: 12px;
+        flex-wrap: wrap;
+    }
+
+    .nav-tab {
+        padding: 8px 12px;
+        font-size: 11px;
+    }
+
+    .logo-text h1 {
+        font-size: 16px;
+    }
+
+    .logo-subtitle {
+        font-size: 10px;
+    }
+
+    .right-column {
+        grid-template-columns: 1fr;
+    }
+
+    .hero-section {
+        flex-direction: column;
+    }
+
+    .hero-content {
+        text-align: center;
+        padding: 30px 20px;
+    }
+
+    .hero-title {
+        font-size: 28px;
+    }
+
+    .hero-buttons {
+        justify-content: center;
+    }
+
+    .hero-map {
+        height: 300px;
+        border-radius: 0;
+    }
+
+    .portal-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .home-stats {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    /* Violations table responsive */
+    .hero-stats[style*="grid-template-columns: repeat(4, 1fr)"] {
+        grid-template-columns: repeat(2, 1fr) !important;
+    }
+
+    .modern-table {
+        font-size: 12px;
+    }
+
+    .modern-table th,
+    .modern-table td {
+        padding: 10px 8px;
+    }
+
+    .gov-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* ============================================
+   SMALL TABLETS / LARGE PHONES (max-width: 768px)
+   ============================================ */
+@media (max-width: 768px) {
+    .mobile-menu-toggle {
+        display: flex;
+    }
+
+    .nav-tabs {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: white;
+        flex-direction: column;
+        padding: 15px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        z-index: 1000;
+        border-top: 1px solid #e2e8f0;
+    }
+
+    .nav-tabs.open {
+        display: flex;
+    }
+
+    .nav-tab {
+        width: 100%;
+        justify-content: center;
+        padding: 12px;
+        border-radius: 8px;
+    }
+
+    .top-nav {
+        position: relative;
+    }
+
+    .nav-actions {
+        gap: 8px;
+    }
+
+    .nav-actions .btn span {
+        display: none;
+    }
+
+    .lang-btn span,
+    .lang-btn .fa-chevron-down {
+        display: none;
+    }
+
+    .user-profile-btn span,
+    .user-profile-btn .fa-chevron-down {
+        display: none;
+    }
+
+    .container {
+        padding: 15px;
+    }
+
+    .hero-title {
+        font-size: 24px;
+    }
+
+    .hero-subtitle {
+        font-size: 14px;
+    }
+
+    .cta-btn {
+        padding: 12px 20px;
+        font-size: 14px;
+    }
+
+    .home-stats {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px;
+    }
+
+    .home-stat-number {
+        font-size: 28px;
+    }
+
+    .stat-card {
+        padding: 16px;
+        flex-direction: column;
+        text-align: center;
+        gap: 12px;
+    }
+
+    .stat-icon {
+        width: 48px;
+        height: 48px;
+        font-size: 20px;
+    }
+
+    .stat-value {
+        font-size: 22px;
+    }
+
+    .card {
+        padding: 15px;
+        border-radius: 10px;
+    }
+
+    .card-title {
+        font-size: 16px;
+    }
+
+    #map {
+        height: 280px;
+    }
+
+    /* Modals responsive */
+    .auth-modal-content {
+        margin: 10px;
+        max-height: 95vh;
+        overflow-y: auto;
+    }
+
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .form-grid .full-width {
+        grid-column: span 1;
+    }
+
+    /* Tables responsive - horizontal scroll */
+    .modern-table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+
+    /* Zone details modal */
+    .zone-details-grid {
+        grid-template-columns: 1fr 1fr !important;
+    }
+
+    #modal-slots-grid {
+        grid-template-columns: repeat(auto-fill, minmax(50px, 1fr)) !important;
+    }
+
+    /* Footer responsive */
+    .gov-grid {
+        grid-template-columns: 1fr;
+        gap: 30px;
+    }
+
+    .gov-bottom-bar {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .gov-legal-links {
+        justify-content: center;
+    }
+
+    .gov-branding-row {
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    /* App banner */
+    .app-banner h2 {
+        font-size: 24px !important;
+    }
+
+    .app-banner p {
+        font-size: 14px !important;
+    }
+
+    /* Resolution options */
+    .resolution-options {
+        grid-template-columns: 1fr !important;
+    }
+}
+
+/* ============================================
+   SMARTPHONES (max-width: 576px)
+   ============================================ */
+@media (max-width: 576px) {
+    .logo-img {
+        width: 36px;
+        height: 36px;
+    }
+
+    .logo-text h1 {
+        font-size: 14px;
+    }
+
+    .logo-subtitle {
+        font-size: 9px;
+    }
+
+    .notification-btn {
+        width: 36px;
+        height: 36px;
+    }
+
+    .notification-menu {
+        width: 280px;
+        right: -50px;
+    }
+
+    .hero-content {
+        padding: 20px 15px;
+    }
+
+    .hero-title {
+        font-size: 20px;
+        line-height: 1.3;
+    }
+
+    .hero-subtitle {
+        font-size: 13px;
+    }
+
+    .hero-buttons {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .cta-btn {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .home-stats {
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+    }
+
+    .home-stat-item {
+        padding: 15px 10px;
+    }
+
+    .home-stat-number {
+        font-size: 24px;
+    }
+
+    .home-stat-label {
+        font-size: 10px;
+    }
+
+    .hero-stats {
+        grid-template-columns: 1fr;
+    }
+
+    /* Violations stats */
+    .hero-stats[style*="grid-template-columns: repeat(4, 1fr)"] {
+        grid-template-columns: 1fr 1fr !important;
+    }
+
+    .portal-card {
+        padding: 20px;
+    }
+
+    .portal-icon {
+        width: 50px;
+        height: 50px;
+        font-size: 20px;
+    }
+
+    .portal-title {
+        font-size: 16px;
+    }
+
+    .portal-desc {
+        font-size: 13px;
+    }
+
+    /* Buttons in tables */
+    .action-btn {
+        width: 28px;
+        height: 28px;
+        font-size: 12px;
+        margin-right: 3px;
+    }
+
+    .btn {
+        padding: 6px 12px;
+        font-size: 12px;
+    }
+
+    .btn-sm {
+        padding: 4px 8px;
+        font-size: 10px;
+    }
+
+    /* Badge responsive */
+    .badge {
+        padding: 4px 8px;
+        font-size: 10px;
+    }
+
+    /* Weather widget compact */
+    .weather-widget {
+        padding: 12px;
+    }
+
+    .temp {
+        font-size: 28px !important;
+    }
+
+    /* Zone details modal compact */
+    .zone-details-grid {
+        grid-template-columns: 1fr !important;
+    }
+
+    /* User welcome banner compact */
+    #user-welcome-banner {
+        padding: 15px !important;
+    }
+
+    #user-welcome-banner h2 {
+        font-size: 18px !important;
+    }
+
+    #user-welcome-banner>div {
+        flex-direction: column !important;
+        gap: 15px !important;
+    }
+
+    /* Footer compact */
+    .gov-footer-content {
+        padding: 40px 15px 20px;
+    }
+
+    .gov-col h4 {
+        font-size: 16px;
+    }
+
+    .gov-contact-item {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    /* Chatbot responsive */
+    .chatbot-window {
+        width: calc(100vw - 20px) !important;
+        max-width: 100% !important;
+        right: 10px !important;
+        bottom: 80px !important;
+        height: 70vh !important;
+    }
+
+    .chatbot-fab {
+        width: 50px !important;
+        height: 50px !important;
+        right: 15px !important;
+        bottom: 15px !important;
+    }
+}
+
+/* ============================================
+   EXTRA SMALL PHONES (max-width: 400px)
+   ============================================ */
+@media (max-width: 400px) {
+    .logo-text h1 {
+        font-size: 12px;
+    }
+
+    .logo-subtitle {
+        display: none;
+    }
+
+    .home-stats {
+        grid-template-columns: 1fr;
+    }
+
+    .home-stat-item {
+        flex-direction: row;
+        justify-content: space-between;
+        text-align: left;
+    }
+
+    .hero-title {
+        font-size: 18px;
+    }
+
+    .notification-menu {
+        width: 260px;
+        right: -80px;
+    }
+}
+
+/* ============================================
+   LANDSCAPE ORIENTATION FIXES
+   ============================================ */
+@media (max-height: 500px) and (orientation: landscape) {
+    .hero-section {
+        min-height: auto;
+    }
+
+    .hero-map {
+        height: 200px;
+    }
+
+    .auth-modal-content {
+        max-height: 90vh;
+    }
+}
+
+/* ============================================
+   PRINT STYLES
+   ============================================ */
+@media print {
+
+    .top-nav,
+    .chatbot-fab,
+    .chatbot-window,
+    .mobile-menu-toggle,
+    .nav-actions,
+    .footer-back-to-top {
+        display: none !important;
+    }
+
+    .container {
+        padding: 0;
+    }
+
+    .card {
+        box-shadow: none;
+        border: 1px solid #ccc;
+    }
+}
