@@ -13,6 +13,11 @@ let sequelize;
 if (process.env.MYSQL_URL) {
   // Use Railway's MYSQL_URL for production
   console.log('🔗 Connecting to Railway MySQL using MYSQL_URL');
+  // Mask password for logging if it's a string
+  if (typeof process.env.MYSQL_URL === 'string' && process.env.MYSQL_URL.includes(':')) {
+    const maskedUrl = process.env.MYSQL_URL.replace(/:([^:@]+)@/, ':****@');
+    console.log('DEBUG MYSQL_URL:', maskedUrl);
+  }
   sequelize = new Sequelize(process.env.MYSQL_URL, {
     dialect: 'mysql',
     logging: false, // Disable logging in production
@@ -51,6 +56,7 @@ if (process.env.MYSQL_URL) {
 } else {
   // Fallback to individual environment variables (for local development)
   console.log('🔗 Connecting using individual database credentials');
+  console.log('DEBUG DB Config:', config.database);
   sequelize = new Sequelize(
     config.database.name,
     config.database.user,

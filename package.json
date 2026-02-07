@@ -4,8 +4,8 @@
   "description": "Backend API for MCD Smart Parking System",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js",
-    "dev": "nodemon server.js",
+    "start": "node backend/src/server.js",
+    "dev": "nodemon backend/src/server.js",
     "test": "node test-mysql.js",
     "create-user": "node scripts/createDefaultUser.js"
   },
@@ -17,13 +17,20 @@
     "dotenv": "^16.3.1",
     "express": "^4.22.1",
     "express-rate-limit": "^6.10.0",
+    "express-session": "^1.19.0",
     "express-validator": "^7.0.1",
     "helmet": "^7.0.0",
     "jsonwebtoken": "^9.0.3",
     "morgan": "^1.10.0",
+    "multer": "^2.0.2",
     "mysql2": "^3.6.5",
+    "natural": "^8.1.0",
+    "nodemailer": "^8.0.1",
     "openai": "^6.16.0",
-    "sequelize": "^6.35.0"
+    "passport": "^0.7.0",
+    "passport-google-oauth20": "^2.0.0",
+    "sequelize": "^6.35.0",
+    "wordnet-db": "^3.1.14"
   },
   "devDependencies": {
     "nodemon": "^3.0.1"
