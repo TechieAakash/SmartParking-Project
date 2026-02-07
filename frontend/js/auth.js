@@ -151,29 +151,46 @@ function toggleLoginMethod(e) {
 }
 
 async function handleSocialLogin(provider) {
-    showToast(`${provider} login is not yet configured. Redirecting to mock flow...`, 'info');
-    const profile = {
-        email: `demo_${provider.toLowerCase()}@example.com`,
-        fullName: `Demo ${provider} User`
-    };
-
-    try {
-        const response = await fetch(`${API_BASE_URL}/auth/social-login`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ provider, profile })
-        });
-        const data = await response.json();
-        if (data.success) {
-            localStorage.setItem('token', data.data.token);
-            localStorage.setItem('refresh_token', data.data.refreshToken);
-            localStorage.setItem('user_data', JSON.stringify(data.data.user));
-            showToast(`Logged in with ${provider}!`, 'success');
-            location.reload();
-        }
-    } catch (error) {
-        showToast('Social login failed', 'error');
+    if (provider === 'Google') {
+        // Redirect to Google OAuth endpoint
+        showToast('Redirecting to Google...', 'info');
+        window.location.href = `${API_BASE_URL}/auth/google`;
+    } else if (provider === 'Facebook') {
+        showToast('Facebook login coming soon!', 'info');
+    } else {
+        showToast(`${provider} login is not available`, 'warning');
     }
+}
+
+// Handle OAuth callback (check URL params on page load)
+function handleOAuthCallback() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const oauth = urlParams.get('oauth');
+    const token = urlParams.get('token');
+    const refreshToken = urlParams.get('refreshToken');
+    
+    if (oauth === 'success' && token) {
+        // Store tokens
+        localStorage.setItem('token', token);
+        localStorage.setItem('refresh_token', refreshToken);
+        
+        // Clean URL
+        window.history.replaceState({}, document.title, window.location.pathname);
+        
+        // Show success and reload to get user data
+        showToast('Successfully logged in with Google!', 'success');
+        setTimeout(() => {
+            window.location.reload();
+        }, 1000);
+    } else if (urlParams.get('error')) {
+        showToast('OAuth login failed. Please try again.', 'error');
+        window.history.replaceState({}, document.title, window.location.pathname);
+    }
+}
+
+// Call on page load
+if (typeof window !== 'undefined') {
+    document.addEventListener('DOMContentLoaded', handleOAuthCallback);
 }
 
 function logout() {

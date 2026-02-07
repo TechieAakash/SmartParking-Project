@@ -42,6 +42,23 @@ app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// Session for OAuth (required for passport)
+const session = require('express-session');
+app.use(session({
+  secret: process.env.SESSION_SECRET || process.env.JWT_SECRET || 'smartparking-session-secret',
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    secure: process.env.NODE_ENV === 'production',
+    maxAge: 24 * 60 * 60 * 1000 // 24 hours
+  }
+}));
+
+// Initialize Passport for OAuth
+const passport = require('./config/google.strategy');
+app.use(passport.initialize());
+app.use(passport.session());
+
 // Serve static files from frontend directory
 // On Vercel, we usually let Vercel handle static files for better performance
 const isVercel = process.env.VERCEL === '1';
@@ -50,6 +67,29 @@ const frontendPath = path.join(__dirname, '../../frontend');
 if (!isVercel) {
   app.use(express.static(frontendPath));
 }
+
+// Google OAuth Routes (before API routes)
+app.get('/api/auth/google', 
+  passport.authenticate('google', { scope: ['profile', 'email'] })
+);
+
+app.get('/api/auth/google/callback',
+  passport.authenticate('google', { 
+    failureRedirect: '/login?error=oauth_failed',
+    session: false 
+  }),
+  (req, res) => {
+    // Successful authentication - redirect with token
+    const { token, refreshToken, user } = req.user;
+    
+    // Determine frontend URL
+    const frontendUrl = process.env.CORS_ORIGIN || 'https://mcd-smart-parking.onrender.com';
+    const baseUrl = frontendUrl.split(',')[0].trim();
+    
+    // Redirect to frontend with token in URL (frontend will store it)
+    res.redirect(`${baseUrl}/index.html?oauth=success&token=${token}&refreshToken=${refreshToken}&userId=${user.id}`);
+  }
+);
 
 // API Routes
 const apiRoutes = require('./routes');
