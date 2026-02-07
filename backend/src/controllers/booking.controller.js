@@ -81,6 +81,7 @@ const createBooking = async (req, res, next) => {
       } 
     }, 'Booking confirmed successfully');
   } catch (error) {
+    if (transaction) await transaction.rollback();
     console.error('Booking error:', error);
     next(error);
   }

@@ -161,8 +161,8 @@ const seedDatabase = async () => {
         const { User, ParkingZone, Setting, Violation, ValidOfficerBadge, sequelize } = models;
         
         console.log('🔄 Checking/Creating database tables...');
-        // Sync all models (creates tables if they don't exist)
-        await sequelize.sync({ alter: false });
+        // Sync all models (creates tables if they don't exist and updates columns)
+        await sequelize.sync({ alter: true });
         console.log('✅ Database tables ready');
         
         // 1. Users Check
