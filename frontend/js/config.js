@@ -1,10 +1,9 @@
 // Configuration
-// Auto-detect environment: Use Railway backend in production, localhost in development
+// Auto-detect environment: Use Render backend in production, localhost in development
 const isProduction = window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1';
 
-// ⚠️ IMPORTANT: Replace 'YOUR-RAILWAY-BACKEND-URL' with your actual Railway backend URL after deployment
-// Example: 'https://smartparking-backend-production.up.railway.app/api'
-const PRODUCTION_API_URL = 'https://YOUR-RAILWAY-BACKEND-URL.railway.app/api';
+// Production API on Render
+const PRODUCTION_API_URL = 'https://smartparking-project-2.onrender.com/api';
 const DEVELOPMENT_API_URL = 'http://localhost:5000/api';
 
 const API_BASE_URL = isProduction ? PRODUCTION_API_URL : DEVELOPMENT_API_URL;
