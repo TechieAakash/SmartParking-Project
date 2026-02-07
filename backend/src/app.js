@@ -68,12 +68,15 @@ if (!isVercel) {
   app.use(express.static(frontendPath));
 }
 
-// Google OAuth Routes (before API routes)
-app.get('/api/auth/google', 
+// Google OAuth Routes (Support both /api/auth and /auth to prevent redirect mismatches)
+const authPaths = ['/api/auth/google', '/auth/google'];
+const callbackPaths = ['/api/auth/google/callback', '/auth/google/callback'];
+
+app.get(authPaths, 
   passport.authenticate('google', { scope: ['profile', 'email'] })
 );
 
-app.get('/api/auth/google/callback',
+app.get(callbackPaths,
   passport.authenticate('google', { 
     failureRedirect: '/login?error=oauth_failed',
     session: false 
