@@ -19,6 +19,7 @@ router.post('/social-login', socialLogin);
 
 // Protected routes
 router.get('/profile', authenticate, getProfile);
-router.put('/profile', authenticate, updateProfile);
+const upload = require('../middlewares/upload.middleware');
+router.put('/profile', authenticate, upload.single('profilePhoto'), updateProfile);
 
 module.exports = router;

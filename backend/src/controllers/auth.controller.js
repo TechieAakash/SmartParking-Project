@@ -183,10 +183,17 @@ const updateProfile = async (req, res, next) => {
     const { fullName, phone } = req.body;
     const user = await User.findByPk(req.user.id);
     
-    await user.update({
+    const updates = {
       fullName: fullName || user.fullName,
       phone: phone || user.phone,
-    });
+    };
+
+    if (req.file) {
+      // Store relative path
+      updates.profilePhoto = `uploads/${req.file.filename}`;
+    }
+
+    await user.update(updates);
 
     successResponse(res, { user }, 'Profile updated successfully');
   } catch (error) {

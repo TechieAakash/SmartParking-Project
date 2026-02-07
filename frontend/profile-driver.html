@@ -1330,6 +1330,83 @@
             }
         }
 
+        // Profile Photo Upload Handler
+        const photoInput = document.getElementById('photo-upload');
+        if (photoInput) {
+            photoInput.addEventListener('change', async (e) => {
+                const file = e.target.files[0];
+                if (!file) return;
+
+                // Validate size (5MB)
+                if (file.size > 5 * 1024 * 1024) {
+                    showToast('File too large (Max 5MB)', 'error');
+                    photoInput.value = '';
+                    return;
+                }
+
+                const formData = new FormData();
+                formData.append('profilePhoto', file);
+
+                // Show uploading state
+                const displayPhoto = document.getElementById('display-photo');
+                displayPhoto.style.opacity = '0.5';
+
+                try {
+                    const token = localStorage.getItem('token');
+                    const res = await fetch(`${API_BASE_URL}/auth/profile`, {
+                        method: 'PUT',
+                        headers: {
+                            'Authorization': `Bearer ${token}`
+                            // Content-Type is auto-set by browser for FormData
+                        },
+                        body: formData
+                    });
+
+                    const data = await res.json();
+                    if (data.success) {
+                        showToast('Profile photo updated!', 'success');
+                        // Update local storage
+                        const user = JSON.parse(localStorage.getItem('user_data'));
+                        user.profilePhoto = data.data.user.profilePhoto;
+                        localStorage.setItem('user_data', JSON.stringify(user));
+
+                        // Update UI
+                        // Use the relative path from response (e.g. uploads/file.jpg)
+                        // If standard deployment, it's relative to root URL.
+                        // However, if we are on same domain, it works.
+                        // If separate backend domain, we need to prepend API_BASE_URL only if serve static is on backend.
+                        // But API_BASE_URL is /api.
+                        // We set app.use('/uploads'). So the URL is /uploads/file.jpg if on same domain.
+                        // If strictly backend, it's BACKEND_URL/uploads.
+                        // Let's assume relative to root / works for now as frontend/backend are same origin (or proxied).
+
+                        // Actually, data.data.user.profilePhoto is 'uploads/...'
+                        // We need to resolve it. 
+                        // If PROD: /uploads/... works if serving from root.
+
+                        if (data.data.user.profilePhoto.startsWith('http')) {
+                            displayPhoto.src = data.data.user.profilePhoto;
+                        } else {
+                            // If relative path, prepend window.location.origin or relative path?
+                            // Since app.use('/uploads') is at root level of Backend.
+                            // And backend is served at root? No, backend is typically /api for routes.
+                            // But app.use('/uploads') is mounted at root `/uploads`.
+                            // So just `/${data.data.user.profilePhoto}` should work.
+                            displayPhoto.src = `/${data.data.user.profilePhoto}`;
+                        }
+                    } else {
+                        showToast(data.error || 'Upload failed', 'error');
+                    }
+                } catch (err) {
+                    console.error(err);
+                    showToast('Upload error', 'error');
+                } finally {
+                    displayPhoto.style.opacity = '1';
+                    photoInput.value = ''; // Reset
+                }
+            });
+        }
+
         // Expose functions to global scope
         window.handleTopUp = handleTopUp;
         window.closeWalletModal = closeWalletModal;
