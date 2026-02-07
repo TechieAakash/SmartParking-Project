@@ -1,0 +1,10 @@
+{"prompt": "User: What is the capital of France?\nAssistant:", "completion": " OUT_OF_SCOPE\n"}
+{"prompt": "User: Tell me a joke\nAssistant:", "completion": " OUT_OF_SCOPE\n"}
+{"prompt": "User: Who is the president?\nAssistant:", "completion": " OUT_OF_SCOPE\n"}
+{"prompt": "User: How to cook pasta?\nAssistant:", "completion": " OUT_OF_SCOPE\n"}
+{"prompt": "User: Weather in Delhi\nAssistant:", "completion": " OUT_OF_SCOPE\n"}
+{"prompt": "User: Best song 2024\nAssistant:", "completion": " OUT_OF_SCOPE\n"}
+{"prompt": "User: Python programming help\nAssistant:", "completion": " OUT_OF_SCOPE\n"}
+{"prompt": "User: Movie tickets\nAssistant:", "completion": " OUT_OF_SCOPE\n"}
+{"prompt": "User: Doctor appointment\nAssistant:", "completion": " OUT_OF_SCOPE\n"}
+{"prompt": "User: Buy groceries\nAssistant:", "completion": " OUT_OF_SCOPE\n"}
