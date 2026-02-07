@@ -65,7 +65,7 @@ app.use(passport.session());
 // Serve static files from frontend directory
 const isVercel = process.env.VERCEL === '1';
 const frontendPath = path.join(__dirname, '../../frontend');
-const uploadsPath = path.join(__dirname, '../../uploads');
+const uploadsPath = path.join(__dirname, '../uploads');
 
 // Ensure uploads are served (e.g. /uploads/filename.jpg)
 app.use('/uploads', express.static(uploadsPath));

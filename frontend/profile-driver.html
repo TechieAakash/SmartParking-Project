@@ -1417,11 +1417,12 @@
 
                         displayPhoto.src = `${photoUrl}?t=${new Date().getTime()}`;
                     } else {
+                        console.error('Upload failed:', data.error);
                         showToast(data.error || 'Upload failed', 'error');
                     }
                 } catch (err) {
-                    console.error(err);
-                    showToast('Upload error', 'error');
+                    console.error('Fetch error during upload:', err);
+                    showToast(`Upload error: ${err.message}`, 'error');
                 } finally {
                     displayPhoto.style.opacity = '1';
                     photoInput.value = '';

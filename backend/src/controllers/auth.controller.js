@@ -197,6 +197,7 @@ const updateProfile = async (req, res, next) => {
 
     successResponse(res, { user }, 'Profile updated successfully');
   } catch (error) {
+    console.error('❌ Profile Update Error:', error);
     next(error);
   }
 };
