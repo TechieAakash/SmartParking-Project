@@ -202,7 +202,8 @@ const requestOTP = async (req, res, next) => {
     const { email } = req.body;
 
     if (!email) {
-      throw new ValidationError('Email is required');
+      console.log('❌ Request body:', req.body);
+      throw new ValidationError(`DEBUG: Email missing. Body: ${JSON.stringify(req.body)}`);
     }
 
     // Generate OTP
