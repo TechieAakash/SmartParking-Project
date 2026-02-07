@@ -584,13 +584,36 @@
     <div id="toast-container"></div>
 
     <div id="toast-container"></div>
+    <!-- Shared Components Container -->
+    <div id="auth-chatbot-container"></div>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
     <script src="js/config.js"></script>
     <script src="js/auth.js"></script>
     <script src="js/ui.js"></script>
+    <script src="js/chatbot.js"></script>
     <script>
+        // Load Shared Components (Chatbot)
+        async function loadSharedComponents() {
+            try {
+                const response = await fetch('auth-chatbot-components.html?v=' + new Date().getTime());
+                if (response.ok) {
+                    const html = await response.text();
+                    const container = document.getElementById('auth-chatbot-container');
+                    if (container) {
+                        container.innerHTML = html;
+                        console.log('Shared components loaded');
+                    }
+                }
+            } catch (error) {
+                console.error('Failed to load shared components:', error);
+            }
+        }
+
         document.addEventListener('DOMContentLoaded', async () => {
+            // Initialize Chatbot Components First
+            await loadSharedComponents();
             const user = JSON.parse(localStorage.getItem('user_data') || '{}');
             if (!user.id) {
                 // Redirect to home with login trigger if not logged in
