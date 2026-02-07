@@ -223,12 +223,12 @@ async function refreshToken() {
     }
 }
 
-async function requestOTP(identifier) {
+async function requestOTP(email) {
     try {
         const response = await fetch(`${API_BASE_URL}/auth/request-otp`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email: identifier, phone: identifier })
+            body: JSON.stringify({ email })
         });
         return await response.json();
     } catch (error) {
@@ -236,42 +236,85 @@ async function requestOTP(identifier) {
     }
 }
 
-async function verifyOTP(identifier, otp) {
+async function verifyOTP(email, otp) {
     try {
         const response = await fetch(`${API_BASE_URL}/auth/verify-otp`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email: identifier, phone: identifier, otp })
+            body: JSON.stringify({ email, otp })
         });
-        const result = await response.json();
-        if (result.success) {
-            localStorage.setItem('token', result.data.token);
-            localStorage.setItem('refresh_token', result.data.refreshToken);
-            localStorage.setItem('user_data', JSON.stringify(result.data.user));
-        }
-        return result;
+        return await response.json();
     } catch (error) {
         return { success: false, message: error.message };
     }
 }
-async function handleRequestOTP() {
-    const identifier = document.getElementById('login-identifier').value;
-    if (!identifier) return showToast('Please enter email or username first', 'warning');
 
-    const res = await requestOTP(identifier);
-    if (res.success) showToast(res.message, 'success');
-    else showToast(res.message, 'error');
+async function handleRequestOTP() {
+    const btn = document.querySelector('button[onclick="handleRequestOTP()"]');
+    const originalText = btn.innerHTML;
+    
+    try {
+        const identifier = document.getElementById('login-identifier').value;
+        if (!identifier) {
+            showToast('Please enter your email first', 'warning');
+            return;
+        }
+
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
+
+        const res = await requestOTP(identifier);
+        
+        if (res.success) {
+            showToast('OTP sent to your email!', 'success');
+            // Show OTP input field if not already visible
+            document.getElementById('login-otp-group').style.display = 'block';
+            document.getElementById('login-password-group').style.display = 'none';
+        } else {
+            showToast(res.error || res.message || 'Failed to send OTP', 'error');
+        }
+    } catch(err) {
+        showToast('Error sending OTP', 'error');
+    } finally {
+        btn.disabled = false;
+        btn.innerHTML = originalText;
+    }
 }
 
 async function handleVerifyRegOTP() {
-    const otp = document.getElementById('reg-otp').value;
-    const email = document.getElementById('reg-email').value;
+    const btn = document.querySelector('button[onclick="handleVerifyRegOTP()"]');
+    const originalText = btn.innerHTML;
 
-    const res = await verifyOTP(email, otp);
-    if (res.success) {
-        showToast('Account verified successfully!', 'success');
-        setTimeout(() => location.reload(), 1500);
-    } else {
-        showToast(res.message, 'error');
+    try {
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Verifying...';
+
+        const otp = document.getElementById('reg-otp').value;
+        const email = document.getElementById('reg-email').value;
+
+        if(!otp || !email) {
+             showToast('Please generate OTP first', 'warning');
+             return;
+        }
+
+        const res = await verifyOTP(email, otp);
+        
+        if (res.success) {
+            showToast('Account verified successfully!', 'success');
+            if(res.data && res.data.token) {
+                 // Auto login
+                 localStorage.setItem('token', res.data.token);
+                 localStorage.setItem('refresh_token', res.data.refreshToken);
+                 localStorage.setItem('user_data', JSON.stringify(res.data.user));
+                 setTimeout(() => location.reload(), 1500);
+            }
+        } else {
+            showToast(res.error || res.message || 'Invalid OTP', 'error');
+        }
+    } catch(err) {
+        showToast('Verification failed', 'error');
+    } finally {
+        btn.disabled = false;
+        btn.innerHTML = originalText;
     }
 }

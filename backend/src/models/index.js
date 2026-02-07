@@ -20,6 +20,7 @@ const WalletTransaction = require('./WalletTransaction');
 const Subscription = require('./Subscription');
 const ParkingSlot = require('./ParkingSlot');
 const ValidOfficerBadge = require('./ValidOfficerBadge');
+const OtpCode = require('./OtpCode');
 
 // Define associations
 
@@ -95,5 +96,6 @@ module.exports = {
   WalletTransaction,
   Subscription,
   ParkingSlot,
-  ValidOfficerBadge
+  ValidOfficerBadge,
+  OtpCode
 };

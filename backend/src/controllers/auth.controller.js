@@ -194,37 +194,40 @@ const updateProfile = async (req, res, next) => {
   }
 };
 
+const { sendEmail } = require('../utils/mailer');
+const { OtpCode } = require('../models');
+
 const requestOTP = async (req, res, next) => {
   try {
-    const { email, phone } = req.body;
-    const identifier = email || phone;
+    const { email } = req.body;
 
-    if (!identifier) {
-      throw new ValidationError('Email or phone number is required');
+    if (!email) {
+      throw new ValidationError('Email is required');
     }
 
-    const user = await User.findOne({
-      where: {
-        [Op.or]: [{ email: identifier }, { phone: identifier }]
-      }
+    // Generate OTP
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    const expiresAt = new Date(Date.now() + 5 * 60 * 1000); // 5 minutes
+
+    // Save to OtpCode table
+    await OtpCode.create({
+      contact: email,
+      code: otp,
+      expiresAt
     });
 
-    if (!user) {
-      throw new NotFoundError('User not found');
+    // Send Email
+    const sent = await sendEmail(
+      email,
+      'Your Smart Parking OTP',
+      `Your verification code is: ${otp}. It expires in 5 minutes.`
+    );
+
+    if (!sent) {
+      throw new Error('Failed to send OTP email. Please check server logs.');
     }
 
-    const otp = generateOTP();
-    const expiry = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
-
-    await user.update({
-      otpCode: otp,
-      otpExpiry: expiry
-    });
-
-    // MOCK: In a real system, send SMS/Email here
-    console.log(`[AUTH] OTP for ${identifier}: ${otp}`);
-
-    successResponse(res, { message: 'OTP sent successfully (Demo: check server logs)' });
+    successResponse(res, { message: 'OTP sent to your email' });
   } catch (error) {
     next(error);
   }
@@ -232,40 +235,46 @@ const requestOTP = async (req, res, next) => {
 
 const verifyOTP = async (req, res, next) => {
   try {
-    const { email, phone, otp } = req.body;
-    const identifier = email || phone;
+    const { email, otp } = req.body;
 
-    const user = await User.findOne({
-      where: {
-        [Op.or]: [{ email: identifier }, { phone: identifier }]
-      }
-    });
-
-    if (!user) {
-      throw new NotFoundError('User not found');
+    if (!email || !otp) {
+      throw new ValidationError('Email and OTP are required');
     }
 
-    if (!user.otpCode || user.otpCode !== otp || new Date() > user.otpExpiry) {
+    // Find valid OTP
+    const validOtp = await OtpCode.findOne({
+      where: {
+        contact: email,
+        code: otp,
+        used: false,
+        expiresAt: { [Op.gt]: new Date() } // Not expired
+      },
+      order: [['createdAt', 'DESC']]
+    });
+
+    if (!validOtp) {
       throw new AuthenticationError('Invalid or expired OTP');
     }
 
-    // Clear OTP and verify user
-    await user.update({
-      otpCode: null,
-      otpExpiry: null,
-      isVerified: true,
-      verifiedAt: new Date()
-    });
+    // Mark as used
+    await validOtp.update({ used: true });
 
-    const accessToken = generateToken(user);
-    const refreshToken = generateRefreshToken(user);
-    await user.update({ refreshToken });
+    // Check if user exists to log them in, or just return success for registration flow
+    let user = await User.findOne({ where: { email } });
+    let responseData = { verified: true, email };
 
-    successResponse(res, {
-      user: user.toSafeObject(),
-      token: accessToken,
-      refreshToken
-    }, 'OTP verified successfully');
+    if (user) {
+      // Login user if they exist
+      const accessToken = generateToken(user);
+      const refreshToken = generateRefreshToken(user);
+      await user.update({ refreshToken });
+      
+      responseData.token = accessToken;
+      responseData.refreshToken = refreshToken;
+      responseData.user = user.toSafeObject();
+    }
+
+    successResponse(res, responseData, 'OTP verified successfully');
   } catch (error) {
     next(error);
   }
