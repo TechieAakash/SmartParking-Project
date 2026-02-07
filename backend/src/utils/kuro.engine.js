@@ -311,21 +311,7 @@ Use context from the provided dataset where applicable.`;
     if (lowerMessage.includes('hindi') || lowerMessage.includes('हिंदी')) return { intent: 'language_switch', response: null, confidence: 1, forceLanguage: 'hi' };
     if (lowerMessage.includes('english')) return { intent: 'language_switch', response: null, confidence: 1, forceLanguage: 'en' };
 
-    // 1. Try ML Model First
-    const mlPrediction = this.predictWithML(message);
-    if (mlPrediction) {
-      if (mlPrediction.response === 'OUT_OF_SCOPE') {
-        console.log(`🤖 ML Model Identified Out-of-Scope Query`);
-        return {
-          intent: 'out_of_scope',
-          response: "I can only provide information related to MCD parking and the Smart Parking system in Delhi.",
-          confidence: 1.0
-        };
-      }
-      console.log(`🤖 ML Model Match: "${mlPrediction.response.substring(0, 30)}..."`);
-      return mlPrediction;
-    }
-
+    // 1. Check Knowledge Base (Keywords)
     let bestMatch = null;
     let highestScore = 0;
 
@@ -356,10 +342,32 @@ Use context from the provided dataset where applicable.`;
       }
     }
 
-    // Return best match or null if not confident (to trigger Gemini)
-    // Increased threshold to reduce false positives
+    // 2. Try ML Model (Hybrid Logic)
+    // If KB confidence is high, prefer KB (keeps greetings/rules stable)
+    // If KB confidence is low or null, try ML (good for specific long-tail Q&A)
+    const mlPrediction = this.predictWithML(message);
+    
+    // Priority Rule: If KB > 0.4, use KB. Else check ML.
     if (bestMatch && bestMatch.confidence >= 0.5) {
-      return bestMatch;
+      return bestMatch; 
+    }
+
+    if (mlPrediction) {
+      if (mlPrediction.response === 'OUT_OF_SCOPE') {
+        console.log(`🤖 ML Model Identified Out-of-Scope Query`);
+        return {
+          intent: 'out_of_scope',
+          response: "I can only provide information related to MCD parking and the Smart Parking system in Delhi.",
+          confidence: 1.0
+        };
+      }
+      console.log(`🤖 ML Model Match (Preferred over Low Conf KB): "${mlPrediction.response.substring(0, 30)}..."`);
+      return mlPrediction;
+    }
+
+    // 3. Return best KB match if any (even low confidence, if ML failed)
+    if (bestMatch) {
+       return bestMatch;
     }
 
     return null;
