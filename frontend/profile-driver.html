@@ -598,21 +598,61 @@
                 return;
             }
 
-            // Fill profile data
-            document.getElementById('header-fullname').textContent = user.fullName;
-            document.getElementById('header-role').textContent = user.role.toUpperCase();
-            document.getElementById('header-email').textContent = user.email;
-            document.getElementById('prof-fullname').value = user.fullName;
-            document.getElementById('prof-email').value = user.email;
-            document.getElementById('prof-phone').value = user.phone || '';
+            // Fill profile data from localStorage initially (for speed)
+            if (user.fullName) document.getElementById('header-fullname').textContent = user.fullName;
+            if (user.role) document.getElementById('header-role').textContent = user.role.toUpperCase();
+            if (user.email) document.getElementById('header-email').textContent = user.email;
+            if (user.fullName) document.getElementById('prof-fullname').value = user.fullName;
+            if (user.email) document.getElementById('prof-email').value = user.email;
+            if (user.phone) document.getElementById('prof-phone').value = user.phone;
+
             if (user.profilePhoto) {
-                document.getElementById('display-photo').src = user.profilePhoto;
+                // Handle both relative and absolute URLs
+                const photoUrl = user.profilePhoto.startsWith('http')
+                    ? user.profilePhoto
+                    : `${API_BASE_URL.replace('/api', '')}/${user.profilePhoto}`;
+                document.getElementById('display-photo').src = photoUrl;
             }
 
+            // Load fresh data from server
+            await loadUserProfile();
             loadVehicles();
             loadWalletBalance();
             loadMyBookings();
         });
+
+        async function loadUserProfile() {
+            try {
+                const token = localStorage.getItem('token');
+                const res = await fetch(`${API_BASE_URL}/auth/profile`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const data = await res.json();
+
+                if (data.success) {
+                    const user = data.data.user;
+                    // Update DOM
+                    document.getElementById('header-fullname').textContent = user.fullName || 'User';
+                    document.getElementById('prof-fullname').value = user.fullName || '';
+                    document.getElementById('prof-phone').value = user.phone || '';
+                    document.getElementById('header-email').textContent = user.email;
+                    document.getElementById('prof-email').value = user.email;
+
+                    if (user.profilePhoto) {
+                        const photoUrl = user.profilePhoto.startsWith('http')
+                            ? user.profilePhoto
+                            : `${API_BASE_URL.replace('/api', '')}/${user.profilePhoto}`;
+                        document.getElementById('display-photo').src = photoUrl;
+                    }
+
+                    // Update LocalStorage
+                    localStorage.setItem('user_data', JSON.stringify(user));
+                }
+            } catch (err) {
+                console.error('Failed to load user profile:', err);
+                // Don't block usage, just log
+            }
+        }
 
         async function loadMyBookings() {
             try {
@@ -1371,29 +1411,13 @@
                         localStorage.setItem('user_data', JSON.stringify(user));
 
                         // Update UI
-                        // Use the relative path from response (e.g. uploads/file.jpg)
-                        // If standard deployment, it's relative to root URL.
-                        // However, if we are on same domain, it works.
-                        // If separate backend domain, we need to prepend API_BASE_URL only if serve static is on backend.
-                        // But API_BASE_URL is /api.
-                        // We set app.use('/uploads'). So the URL is /uploads/file.jpg if on same domain.
-                        // If strictly backend, it's BACKEND_URL/uploads.
-                        // Let's assume relative to root / works for now as frontend/backend are same origin (or proxied).
+                        // Resolve URL correctly
+                        const photoUrl = data.data.user.profilePhoto.startsWith('http')
+                            ? data.data.user.profilePhoto
+                            : `${API_BASE_URL.replace('/api', '')}/${data.data.user.profilePhoto}`;
 
-                        // Actually, data.data.user.profilePhoto is 'uploads/...'
-                        // We need to resolve it. 
-                        // If PROD: /uploads/... works if serving from root.
-
-                        if (data.data.user.profilePhoto.startsWith('http')) {
-                            displayPhoto.src = data.data.user.profilePhoto;
-                        } else {
-                            // If relative path, prepend window.location.origin or relative path?
-                            // Since app.use('/uploads') is at root level of Backend.
-                            // And backend is served at root? No, backend is typically /api for routes.
-                            // But app.use('/uploads') is mounted at root `/uploads`.
-                            // So just `/${data.data.user.profilePhoto}` should work.
-                            displayPhoto.src = `/${data.data.user.profilePhoto}`;
-                        }
+                        // Force cache refresh by adding timestamp
+                        displayPhoto.src = `${photoUrl}?t=${new Date().getTime()}`;
                     } else {
                         showToast(data.error || 'Upload failed', 'error');
                     }
