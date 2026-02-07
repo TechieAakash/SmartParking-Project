@@ -3,8 +3,15 @@
  */
 
 const mysql = require('mysql2/promise');
+const path = require('path');
+require('dotenv').config({ path: path.join(__dirname, '..', '.env') });
 
-const MYSQL_URL = 'mysql://root:QknKljREygofzvfcmmEZCfeUcPUgJMiC@mainline.proxy.rlwy.net:56393/railway';
+const MYSQL_URL = process.env.MYSQL_URL;
+
+if (!MYSQL_URL) {
+  console.error('❌ MYSQL_URL not found in environment variables!');
+  process.exit(1);
+}
 
 async function verify() {
   console.log('🔗 Connecting to Railway MySQL...');
