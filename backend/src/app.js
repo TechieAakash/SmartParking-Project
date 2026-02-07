@@ -89,16 +89,22 @@ app.get('/auth/google', (req, res, next) => {
 // Callback Routes
 const handleCallback = [
   passport.authenticate('google', { 
-    failureRedirect: '/login?error=oauth_failed',
+    failureRedirect: '/index.html?error=oauth_failed&trigger=login',
     session: false 
   }),
   (req, res) => {
     // Successful authentication - redirect with token
     const { token, refreshToken, user } = req.user;
     
-    // Determine frontend URL
-    const frontendUrl = process.env.CORS_ORIGIN || 'https://mcd-smart-parking.onrender.com';
+    // Determine frontend URL dynamically
+    const protocol = req.headers['x-forwarded-proto'] === 'https' ? 'https' : 'http';
+    const host = req.get('host');
+    const defaultUrl = `${protocol}://${host}`;
+    
+    const frontendUrl = process.env.CORS_ORIGIN || defaultUrl;
     const baseUrl = frontendUrl.split(',')[0].trim();
+    
+    console.log(`📡 Redirecting to baseUrl: ${baseUrl}`);
     
     // Redirect to frontend with token in URL
     res.redirect(`${baseUrl}/index.html?oauth=success&token=${token}&refreshToken=${refreshToken}&userId=${user.id}`);

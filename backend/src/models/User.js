@@ -111,6 +111,12 @@ const User = sequelize.define('User', {
     allowNull: false,
     defaultValue: 'active'
   },
+  googleId: {
+    type: DataTypes.STRING(100),
+    allowNull: true,
+    unique: true,
+    field: 'google_id'
+  },
   lastLogin: {
     type: DataTypes.DATE,
     allowNull: true,
