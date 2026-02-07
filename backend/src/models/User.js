@@ -59,16 +59,6 @@ const User = sequelize.define('User', {
     type: DataTypes.STRING(20),
     allowNull: true
   },
-  otpCode: {
-    type: DataTypes.STRING(10),
-    allowNull: true,
-    field: 'otp_code'
-  },
-  otpExpiry: {
-    type: DataTypes.DATE,
-    allowNull: true,
-    field: 'otp_expiry'
-  },
   refreshToken: {
     type: DataTypes.STRING(512),
     allowNull: true,
