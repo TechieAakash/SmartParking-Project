@@ -67,7 +67,8 @@ const startServer = async () => {
     }
     
     // Seed Data in Background (So server starts immediately)
-    seedDatabase().catch(err => console.error('❌ Seeding failed:', err));
+    // Seed Data in Background moved to app.listen callback
+    // seedDatabase().catch(err => console.error('❌ Seeding failed:', err));
 
     // Start server with Railway PORT support
     const PORT = process.env.PORT || config.port || 3000;
@@ -76,6 +77,11 @@ const startServer = async () => {
     
     server = app.listen(PORT, '0.0.0.0', () => {
       console.log('✅ Server bound successfully!');
+      
+      // Seed Data in Background AFTER server is listening
+      // This prevents 'require' blocking or DB slow-down from killing deployment
+      seedDatabase().catch(err => console.error('❌ Seeding failed:', err));
+      
       console.log('');
       console.log('🚀 ============================================');
       console.log('   Smart Parking Management System');
@@ -98,6 +104,10 @@ const startServer = async () => {
       console.log('Press CTRL+C to stop');
       console.log('');
     });
+    
+    // Prevent 502 Bad Gateway errors on Render/Load Balancers
+    server.keepAliveTimeout = 120 * 1000;
+    server.headersTimeout = 120 * 1000;
 
     server.on('error', (error) => {
       console.error('❌ FATAL SERVER ERROR:', error);

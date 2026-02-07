@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Direct Registration Test</title>
+</head>
+
+<body>
+    <h1>Direct API Test</h1>
+    <button onclick="testRegistration()">Test Registration API</button>
+    <button onclick="testLogin()">Test Login API</button>
+    <div id="result"></div>
+
+    <script>
+        const API_BASE_URL = 'http://localhost:5000/api';
+
+        async function testRegistration() {
+            const result = document.getElementById('result');
+            result.innerHTML = '<p>Testing registration...</p>';
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/auth/register`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        fullName: 'Mamta Test',
+                        username: 'mamta123',
+                        email: 'mamta123@gmail.com',
+                        phone: '+919310988280',
+                        role: 'driver',
+                        password: 'password123'
+                    })
+                });
+
+                const data = await response.json();
+                result.innerHTML = `
+                    <h3>Registration Response:</h3>
+                    <pre>${JSON.stringify(data, null, 2)}</pre>
+                    <p>Status: ${response.status}</p>
+                `;
+
+                if (data.success) {
+                    alert('✓ Registration SUCCESSFUL!');
+                } else {
+                    alert('✗ Registration FAILED: ' + (data.error || data.message));
+                }
+            } catch (error) {
+                result.innerHTML = `<p style="color: red;">ERROR: ${error.message}</p>`;
+                alert('✗ Error: ' + error.message);
+            }
+        }
+
+        async function testLogin() {
+            const result = document.getElementById('result');
+            result.innerHTML = '<p>Testing login...</p>';
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/auth/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        username: 'mamta123',
+                        password: 'password123'
+                    })
+                });
+
+                const data = await response.json();
+                result.innerHTML = `
+                    <h3>Login Response:</h3>
+                    <pre>${JSON.stringify(data, null, 2)}</pre>
+                    <p>Status: ${response.status}</p>
+                `;
+
+                if (data.success) {
+                    alert('✓ Login SUCCESSFUL!');
+                } else {
+                    alert('✗ Login FAILED: ' + (data.error || data.message));
+                }
+            } catch (error) {
+                result.innerHTML = `<p style="color: red;">ERROR: ${error.message}</p>`;
+                alert('✗ Error: ' + error.message);
+            }
+        }
+    </script>
+</body>
+
+</html>
