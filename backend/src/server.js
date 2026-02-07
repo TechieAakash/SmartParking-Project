@@ -157,7 +157,13 @@ process.on('SIGTERM', () => {
 // Async Database Seeding
 const seedDatabase = async () => {
     try {
-        const { User, ParkingZone, Setting, Violation, ValidOfficerBadge } = require('./models');
+        const models = require('./models');
+        const { User, ParkingZone, Setting, Violation, ValidOfficerBadge, sequelize } = models;
+        
+        console.log('🔄 Checking/Creating database tables...');
+        // Sync all models (creates tables if they don't exist)
+        await sequelize.sync({ alter: false });
+        console.log('✅ Database tables ready');
         
         // 1. Users Check
         const userCount = await User.count();
