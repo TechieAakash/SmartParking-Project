@@ -55,7 +55,7 @@ async function init() {
 
 async function loadSharedComponents() {
     try {
-        const response = await fetch('auth-chatbot-components.html');
+        const response = await fetch(`auth-chatbot-components.html?v=${new Date().getTime()}`);
         const html = await response.text();
         document.getElementById('auth-chatbot-container').innerHTML = html;
         console.log('Shared components loaded');
