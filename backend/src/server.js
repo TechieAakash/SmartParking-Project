@@ -139,9 +139,12 @@ const startServer = async () => {
     }
 
     // Start server with Railway PORT support
-    const PORT = process.env.PORT || config.port;
+    const PORT = process.env.PORT || config.port || 3000;
+    
+    console.log(`⏳ Attempting to bind to PORT: ${PORT}`);
     
     server = app.listen(PORT, '0.0.0.0', () => {
+      console.log('✅ Server bound successfully!');
       console.log('');
       console.log('🚀 ============================================');
       console.log('   Smart Parking Management System');
