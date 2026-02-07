@@ -6,11 +6,12 @@
 const path = require('path');
 require('dotenv').config({ path: path.resolve(__dirname, '../../.env') });
 
-// Railway provides MySQL environment variables, fall back to DB_* for local development
+// Railway/Render with MYSQL_URL, or local with individual DB_* vars
+const hasMysqlUrl = process.env.MYSQL_URL !== undefined;
 const isRailway = process.env.RAILWAY_ENVIRONMENT !== undefined;
 
-const requiredEnvVars = isRailway 
-  ? ['JWT_SECRET']  // Railway auto-provides MySQL vars
+const requiredEnvVars = (hasMysqlUrl || isRailway)
+  ? ['JWT_SECRET']  // MYSQL_URL or Railway auto-provides MySQL vars
   : ['DB_HOST', 'DB_PORT', 'DB_NAME', 'DB_USER', 'DB_PASSWORD', 'JWT_SECRET'];
 
 // Validate required environment variables
