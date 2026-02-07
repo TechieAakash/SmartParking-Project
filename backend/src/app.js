@@ -45,7 +45,17 @@ app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// ... (session config remains same) ...
+// Session for OAuth (required for passport)
+const session = require('express-session');
+app.use(session({
+  secret: process.env.SESSION_SECRET || process.env.JWT_SECRET || 'smartparking-session-secret',
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    secure: process.env.NODE_ENV === 'production',
+    maxAge: 24 * 60 * 60 * 1000 // 24 hours
+  }
+}));
 
 // Initialize Passport for OAuth
 const passport = require('./config/google.strategy');
