@@ -314,6 +314,14 @@ Use context from the provided dataset where applicable.`;
     // 1. Try ML Model First
     const mlPrediction = this.predictWithML(message);
     if (mlPrediction) {
+      if (mlPrediction.response === 'OUT_OF_SCOPE') {
+        console.log(`🤖 ML Model Identified Out-of-Scope Query`);
+        return {
+          intent: 'out_of_scope',
+          response: "I can only provide information related to MCD parking and the Smart Parking system in Delhi.",
+          confidence: 1.0
+        };
+      }
       console.log(`🤖 ML Model Match: "${mlPrediction.response.substring(0, 30)}..."`);
       return mlPrediction;
     }
