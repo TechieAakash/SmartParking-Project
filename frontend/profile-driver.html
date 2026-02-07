@@ -1329,6 +1329,17 @@
                 showToast('Scan error', 'error');
             }
         }
+
+        // Expose functions to global scope
+        window.handleTopUp = handleTopUp;
+        window.closeWalletModal = closeWalletModal;
+        window.openWalletModal = openWalletModal;
+        window.closeBookingModal = closeBookingModal;
+        window.closeCancelConfirmModal = closeCancelConfirmModal;
+        window.confirmCancellation = confirmCancellation;
+        window.scanBooking = scanBooking;
+        window.handleScanBooking = handleScanBooking;
+    });
     </script>
 
     <!-- Download App Section -->
