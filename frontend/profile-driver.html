@@ -15,11 +15,6 @@
             padding: 0 20px;
         }
 
-        /* Hide Kuro Chatbot specifically for this page */
-        #kuro-chat-widget {
-            display: none !important;
-        }
-
         .profile-header {
             background: linear-gradient(135deg, #1e293b, #334155);
             border-radius: 20px;
@@ -587,8 +582,6 @@
     </div>
 
     <div id="toast-container"></div>
-    <!-- Shared Components Container -->
-    <div id="auth-chatbot-container"></div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
@@ -630,31 +623,11 @@
             window.showDebugInfo = showDebugInfo;
         };
 
-        // Load Shared Components (Chatbot)
-        async function loadSharedComponents() {
-            try {
-                const response = await fetch('auth-chatbot-components.html?v=' + new Date().getTime());
-                if (response.ok) {
-                    const html = await response.text();
-                    const container = document.getElementById('auth-chatbot-container');
-                    if (container) {
-                        container.innerHTML = html;
-                        console.log('✅ Shared components loaded');
-                    }
-                }
-            } catch (error) {
-                console.error('❌ Failed to load shared components:', error);
-            }
-        }
-
         document.addEventListener('DOMContentLoaded', async () => {
             // 1. Initial exposure
             exposeGlobals();
 
-            // 2. Load components in background
-            loadSharedComponents();
-
-            // 3. Start initialization
+            // 2. Start initialization
             const user = JSON.parse(localStorage.getItem('user_data') || '{}');
             if (!user.id) {
                 window.location.href = 'index.html?trigger=login';
