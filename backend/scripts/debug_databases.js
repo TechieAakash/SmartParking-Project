@@ -1,7 +1,11 @@
 const { Sequelize } = require('sequelize');
 
 // Connection to the server root (no DB specified initially if possible, or default to railway)
-const databaseUrl = 'mysql://root:QknKljREygofzvfcmmEZCfeUcPUgJMiC@mainline.proxy.rlwy.net:56393/railway';
+const path = require('path');
+require('dotenv').config({ path: path.resolve(__dirname, '../../.env') });
+
+// Connection to the server root (no DB specified initially if possible, or default to railway)
+const databaseUrl = process.env.MYSQL_URL;
 
 const sequelize = new Sequelize(databaseUrl, {
   dialect: 'mysql',
