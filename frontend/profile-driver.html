@@ -582,12 +582,15 @@
     </div>
 
     <div id="toast-container"></div>
+    <div id="auth-chatbot-container"></div>
+
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
     <script src="js/config.js"></script>
     <script src="js/auth.js"></script>
     <script src="js/ui.js"></script>
+    <script src="js/chatbot.js"></script>
     <script>
         // Mini Debug Console for Production Troubleshooting
         const debugLogs = [];
@@ -623,9 +626,21 @@
             window.showDebugInfo = showDebugInfo;
         };
 
+        async function loadSharedComponents() {
+            try {
+                const response = await fetch(`auth-chatbot-components.html?v=${new Date().getTime()}`);
+                const html = await response.text();
+                document.getElementById('auth-chatbot-container').innerHTML = html;
+                console.log('Shared components loaded');
+            } catch (error) {
+                console.error('Failed to load shared components:', error);
+            }
+        }
+
         document.addEventListener('DOMContentLoaded', async () => {
             // 1. Initial exposure
             exposeGlobals();
+            await loadSharedComponents();
 
             // 2. Start initialization
             const user = JSON.parse(localStorage.getItem('user_data') || '{}');

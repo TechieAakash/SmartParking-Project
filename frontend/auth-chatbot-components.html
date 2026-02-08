@@ -101,48 +101,49 @@
 
 <!-- Chatbot Widget -->
 <div id="kuro-chat-widget">
-    <button class="chatbot-toggle" onclick="toggleKuroChat()">
+    <button class="chatbot-fab" onclick="toggleKuroChat()">
         <i class="fas fa-robot"></i>
+        <span class="bot-badge">Kuro</span>
     </button>
 
-    <div class="chatbot-window" id="kuro-chat-window">
-        <div class="chatbot-header">
-            <div class="header-info">
-                <div class="bot-avatar"><i class="fas fa-robot"></i></div>
-                <div>
-                    <h3>Kuro AI</h3>
-                    <div class="status-indicator"><span class="status-dot"></span> Online</div>
-                </div>
+    <div class="chat-window" id="kuro-chat-window">
+        <div class="chat-header">
+            <div class="bot-avatar">🤖</div>
+            <div class="bot-info">
+                <h4>Kuro AI</h4>
+                <div class="bot-status">Online</div>
             </div>
-            <div class="header-controls">
+            <div class="chat-controls">
                 <button onclick="minimizeKuroChat()"><i class="fas fa-minus"></i></button>
                 <button onclick="closeKuroChat()"><i class="fas fa-times"></i></button>
             </div>
         </div>
 
-        <div class="chatbot-messages" id="kuro-messages">
-            <div class="chat-message bot">
-                <div class="message-bubble">
+        <div class="chat-messages" id="kuro-messages">
+            <div class="chat-message">
+                <div class="message-bubble bot">
                     Hello! I'm Kuro, your MCD Parking Assistant. Ask me about parking availability, rates, or your
                     wallet! 🚗
                 </div>
             </div>
         </div>
 
-        <div class="chatbot-typing" id="kuro-typing">
-            <span>Kuro is typing...</span>
+        <div class="chat-typing" id="kuro-typing">
+            <span class="typing-dot"></span>
+            <span class="typing-dot"></span>
+            <span class="typing-dot"></span>
         </div>
 
-        <div class="chatbot-quick-replies" id="kuro-quick-replies">
+        <div class="quick-replies" id="kuro-quick-replies">
             <button class="quick-reply-btn" onclick="sendQuickReply('Check my balance')">Check Balance</button>
             <button class="quick-reply-btn" onclick="sendQuickReply('Find parking nearby')">Find Parking</button>
             <button class="quick-reply-btn" onclick="sendQuickReply('How do I pay?')">How to Pay</button>
         </div>
 
-        <div class="chatbot-input-area">
-            <input type="text" id="kuro-chat-input" placeholder="Type a message..."
+        <div class="chat-input-area">
+            <input type="text" id="kuro-chat-input" class="chat-input" placeholder="Type a message..."
                 onkeypress="handleChatKeyPress(event)">
-            <button id="kuro-send-btn" onclick="sendKuroMessage()">
+            <button id="kuro-send-btn" class="chat-send-btn" onclick="sendKuroMessage()">
                 <i class="fas fa-paper-plane"></i>
             </button>
         </div>
