@@ -152,9 +152,9 @@ function toggleLoginMethod(e) {
 
 async function handleSocialLogin(provider) {
     if (provider === 'Google') {
-        // Redirect to Google OAuth endpoint
+        // Redirect to Google OAuth endpoint on backend (must be full URL, not relative)
         showToast('Redirecting to Google...', 'info');
-        window.location.href = `${API_BASE_URL}/auth/google`;
+        window.location.href = `${BACKEND_URL}/api/auth/google`;
     } else if (provider === 'Facebook') {
         showToast('Facebook login coming soon!', 'info');
     } else {
