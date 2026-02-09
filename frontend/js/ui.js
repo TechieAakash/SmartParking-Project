@@ -137,14 +137,16 @@ function showLogin() {
 }
 
 function switchAuthTab(tab) {
-    document.querySelectorAll('.auth-tab-btn').forEach(btn => btn.classList.remove('active'));
-    document.querySelectorAll('.auth-form').forEach(form => form.classList.remove('active'));
+    // Toggle active state on tab buttons
+    document.querySelectorAll('.auth-tab').forEach(btn => btn.classList.remove('active'));
+    // Toggle visible content panels
+    document.querySelectorAll('.auth-tab-content').forEach(panel => panel.classList.remove('active'));
 
-    const activeBtn = document.querySelector(`.auth-tab-btn[onclick*=\"${tab}\"]`);
+    const activeBtn = document.querySelector(`.auth-tab[onclick*="${tab}"]`);
     if (activeBtn) activeBtn.classList.add('active');
 
-    const activeForm = document.getElementById(`${tab}-form`);
-    if (activeForm) activeForm.classList.add('active');
+    const activePanel = document.getElementById(`${tab}-tab`);
+    if (activePanel) activePanel.classList.add('active');
 }
 
 function handleRoleChange() {
