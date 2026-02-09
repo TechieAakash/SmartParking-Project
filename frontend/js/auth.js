@@ -152,9 +152,10 @@ function toggleLoginMethod(e) {
 
 async function handleSocialLogin(provider) {
     if (provider === 'Google') {
-        // Redirect to Google OAuth endpoint on backend (must be full URL, not relative)
-        showToast('Redirecting to Google...', 'info');
-        window.location.href = `${BACKEND_URL}/api/auth/google`;
+        // Redirect to Google OAuth endpoint on backend
+        // Initiating via same domain (proxied) to match Authorised JavaScript origins
+        showToast('Linking Digital Identify Hub...', 'info');
+        window.location.href = '/api/auth/google';
     } else if (provider === 'Facebook') {
         showToast('Facebook login coming soon!', 'info');
     } else {

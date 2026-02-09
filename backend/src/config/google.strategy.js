@@ -35,7 +35,7 @@ if (process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET) {
     clientID: process.env.GOOGLE_CLIENT_ID,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
     // CRITICAL: Must match Google Console EXACTLY.
-    callbackURL: process.env.GOOGLE_CALLBACK_URL || 'https://smartparking-backend-production.up.railway.app/api/auth/google/callback',
+    callbackURL: process.env.GOOGLE_CALLBACK_URL || 'https://smartparking-project-2.onrender.com/api/auth/google/callback',
     scope: ['profile', 'email']
   },
   async (accessToken, refreshToken, profile, done) => {
