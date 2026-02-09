@@ -36,30 +36,57 @@ async function handleLogin(event) {
     const btn = document.getElementById('login-btn');
     const originalText = btn.innerHTML;
 
+    // Detect if we are in OTP Mode
+    const passwordGroup = document.getElementById('login-password-group');
+    const isOTPMode = passwordGroup && passwordGroup.style.display === 'none';
+
     try {
         btn.disabled = true;
         btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Authenticating...';
 
         const identifier = document.getElementById('login-identifier').value;
         const password = document.getElementById('login-password').value;
+        const otp = document.getElementById('login-otp').value;
 
-        const response = await fetch(`${API_BASE_URL}/auth/login`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ username: identifier, password })
-        });
+        let response;
+        if (isOTPMode) {
+            if (!otp) throw new Error('Please enter the 6-digit OTP');
+            response = await fetch(`${API_BASE_URL}/auth/verify-otp`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email: identifier, otp })
+            });
+        } else {
+            response = await fetch(`${API_BASE_URL}/auth/login`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username: identifier, password })
+            });
+        }
 
         const result = await response.json();
 
-        if (!response.ok) throw new Error(result.error || result.message || 'Login failed');
+        if (!response.ok) throw new Error(result.error || result.message || 'Authentication failed');
+        
+        // Ensure result.data contains the required fields (verify-otp returns it directly in data if success)
+        if (!result.data.token) {
+            if (isOTPMode && result.data.verified) {
+                throw new Error('User not found. Please register first.');
+            }
+            throw new Error('Invalid authentication response');
+        }
 
         localStorage.setItem('token', result.data.token);
         localStorage.setItem('refresh_token', result.data.refreshToken);
         localStorage.setItem('user_data', JSON.stringify(result.data.user));
-        showToast('Welcome back, ' + result.data.user.fullName, 'success');
+        
+        showToast('Access Granted. Welcome back, ' + result.data.user.fullName, 'success');
         document.getElementById('auth-modal').classList.remove('active');
         updateUIForUser(result.data.user);
-        init();
+        
+        // Refresh session state
+        if (typeof init === 'function') init();
+        else setTimeout(() => location.reload(), 1000);
 
     } catch (error) {
         showToast(error.message, 'error');
