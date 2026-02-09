@@ -2,99 +2,182 @@
 <div id="auth-modal" class="auth-modal">
     <div class="auth-modal-content">
         <div class="auth-modal-header">
-            <h2>Welcome Back</h2>
             <button class="close-btn" onclick="closeAuthModal()">&times;</button>
-        </div>
-        <div class="auth-tabs">
-            <button class="auth-tab active" onclick="switchAuthTab('login')">Login</button>
-            <button class="auth-tab" onclick="switchAuthTab('register')">Register</button>
-        </div>
-
-        <!-- Login Form -->
-        <div id="login-tab" class="auth-tab-content active">
-            <form id="login-form" onsubmit="handleLogin(event)">
-                <div class="form-group">
-                    <label>Email or Username</label>
-                    <input type="text" id="login-identifier" class="form-input" required placeholder="Enter email">
-                </div>
-                <div class="form-group" id="login-password-group">
-                    <label>Password</label>
-                    <input type="password" id="login-password" class="form-input" placeholder="Enter password">
-                    <div style="text-align: right; margin-top: 5px;">
-                        <a href="#" onclick="toggleLoginMethod(event)" style="font-size: 12px; color: #3b82f6;">Login
-                            via OTP?</a>
-                    </div>
-                </div>
-                <div class="form-group" id="login-otp-group" style="display: none;">
-                    <label>Enter OTP</label>
-                    <input type="text" id="login-otp" class="form-input" placeholder="Enter 6-digit OTP">
-                    <button type="button" class="btn btn-outline" onclick="handleRequestOTP()"
-                        style="margin-top: 5px; width: 100%;">Request OTP</button>
-                </div>
-                <button type="submit" id="login-btn" class="btn btn-primary"
-                    style="width: 100%; margin-top: 10px;">Login</button>
-            </form>
-            <div class="social-login">
-                <p>Or continue with</p>
-                <div class="social-btns">
-                    <button class="social-btn google" onclick="handleSocialLogin('Google')"><i
-                            class="fab fa-google"></i> Google</button>
+            <div class="header-branding">
+                <img src="MCDlogo.png" alt="MCD Logo"
+                    style="width: 70px; margin-bottom: 12px; filter: drop-shadow(0 4px 10px rgba(0,0,0,0.2));">
+                <h2 style="margin: 0; font-weight: 950; font-size: 26px; letter-spacing: -0.5px;">MCD Secure Portal</h2>
+                <div
+                    style="margin-top: 8px; display: inline-flex; align-items: center; gap: 6px; background: rgba(255,255,255,0.15); padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; border: 1px solid rgba(255,255,255,0.1);">
+                    <i class="fas fa-shield-alt"></i> Secure Access Bureau
                 </div>
             </div>
         </div>
 
-        <!-- Register Form -->
-        <div id="register-tab" class="auth-tab-content">
-            <form id="register-form" onsubmit="handleRegister(event)">
-                <div class="form-group">
-                    <label>Full Name</label>
-                    <input type="text" id="reg-fullname" class="form-input" required>
-                </div>
-                <div class="form-group">
-                    <label>Email</label>
-                    <input type="email" id="reg-email" class="form-input" required>
-                </div>
-                <div class="form-group">
-                    <label>Username</label>
-                    <input type="text" id="reg-username" class="form-input" required>
-                </div>
-                <div class="form-group">
-                    <label>Phone</label>
-                    <input type="tel" id="reg-phone" class="form-input" required>
-                </div>
-                <div class="form-group">
-                    <label>Role</label>
-                    <select id="reg-role" class="form-input" onchange="toggleOfficerFields()">
-                        <option value="user">User / Driver</option>
-                        <option value="officer">Enforcement Officer</option>
-                    </select>
-                </div>
-                <div id="officer-fields" style="display: none;">
+        <div class="auth-modal-body">
+            <div class="auth-tabs">
+                <button class="auth-tab active" onclick="switchAuthTab('login')">
+                    <i class="fas fa-sign-in-alt"></i> LOGIN
+                </button>
+                <button class="auth-tab" onclick="switchAuthTab('register')">
+                    <i class="fas fa-user-plus"></i> REGISTER
+                </button>
+            </div>
+
+            <!-- Login Form -->
+            <div id="login-tab" class="auth-tab-content active">
+                <form id="login-form" onsubmit="handleLogin(event)">
                     <div class="form-group">
-                        <label>Badge ID</label>
-                        <input type="text" id="reg-badge" class="form-input">
+                        <label class="form-label">Email or Username <span class="required">*</span></label>
+                        <div class="input-icon-group">
+                            <input type="text" id="login-identifier" class="form-input" required
+                                placeholder="name@email.com">
+                            <i class="fas fa-envelope"></i>
+                        </div>
+                    </div>
+
+                    <div class="form-group" id="login-password-group">
+                        <label class="form-label">Password <span class="required">*</span></label>
+                        <div class="input-icon-group">
+                            <input type="password" id="login-password" class="form-input" placeholder="••••••••">
+                            <i class="fas fa-lock"></i>
+                        </div>
+                        <div style="text-align: right; margin-top: 8px;">
+                            <a href="#" onclick="toggleLoginMethod(event)"
+                                style="font-size: 12px; color: #4f46e5; font-weight: 700; text-decoration: none;">Login
+                                via OTP?</a>
+                        </div>
+                    </div>
+
+                    <div class="form-group" id="login-otp-group" style="display: none;">
+                        <label class="form-label">Verification OTP <span class="required">*</span></label>
+                        <div class="input-icon-group">
+                            <input type="text" id="login-otp" class="form-input" placeholder="Enter 6-digit OTP">
+                            <i class="fas fa-key"></i>
+                        </div>
+                        <button type="button" class="btn btn-outline" onclick="handleRequestOTP()"
+                            style="margin-top: 10px; width: 100%; border-radius: 12px; font-weight: 700;">REQUEST NEW
+                            OTP</button>
+                    </div>
+
+                    <button type="submit" id="login-btn" class="btn btn-primary"
+                        style="width: 100%; margin-top: 10px; display: flex; align-items: center; justify-content: center; gap: 10px;">
+                        <span>SIGN IN TO SESSION</span>
+                        <i class="fas fa-arrow-right"></i>
+                    </button>
+                </form>
+
+                <div class="social-login">
+                    <p>Verified Identity Hub</p>
+                    <div class="social-btns">
+                        <button class="social-btn google" onclick="handleSocialLogin('Google')">
+                            <i class="fab fa-google"></i>
+                            <span>Continue with Google</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="auth-footer">
+                    <div class="secure-badge">
+                        <i class="fas fa-lock"></i>
+                        <span>AES-256 Bit Encrypted</span>
+                    </div>
+                    <div style="margin-top: 15px;">
+                        <button class="btn btn-outline"
+                            onclick="document.getElementById('login-identifier').value='admin'; document.getElementById('login-password').value='admin123';"
+                            style="padding: 8px 16px; font-size: 11px; border-radius: 10px; color: #64748b;">
+                            <i class="fas fa-flask"></i> Quick Demo Admin
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Register Form -->
+            <div id="register-tab" class="auth-tab-content">
+                <form id="register-form" onsubmit="handleRegister(event)">
+                    <div class="form-group">
+                        <label class="form-label">Full Name <span class="required">*</span></label>
+                        <div class="input-icon-group">
+                            <input type="text" id="reg-fullname" class="form-input" required
+                                placeholder="Aakash Sharma">
+                            <i class="fas fa-user-circle"></i>
+                        </div>
                     </div>
                     <div class="form-group">
-                        <label>Department</label>
-                        <input type="text" id="reg-department" class="form-input">
+                        <label class="form-label">Email Address <span class="required">*</span></label>
+                        <div class="input-icon-group">
+                            <input type="email" id="reg-email" class="form-input" required placeholder="name@email.com">
+                            <i class="fas fa-at"></i>
+                        </div>
                     </div>
-                </div>
-                <div class="form-group">
-                    <label>Password</label>
-                    <input type="password" id="reg-password" class="form-input" required
-                        oninput="checkPasswordStrength()">
-                    <div class="password-strength">
-                        <div class="strength-bar" id="password-strength-bar"></div>
+                    <div class="form-group">
+                        <label class="form-label">Digital Username <span class="required">*</span></label>
+                        <div class="input-icon-group">
+                            <input type="text" id="reg-username" class="form-input" required placeholder="aakash.dev">
+                            <i class="fas fa-user"></i>
+                        </div>
                     </div>
-                    <span id="password-strength-text" style="font-size: 11px;"></span>
-                </div>
-                <div class="form-group">
-                    <label>Confirm Password</label>
-                    <input type="password" id="reg-confirm-password" class="form-input" required>
-                </div>
-                <button type="submit" id="register-btn" class="btn btn-primary"
-                    style="width: 100%; margin-top: 10px;">Create Account</button>
-            </form>
+                    <div class="form-group">
+                        <label class="form-label">Mobile Number <span class="required">*</span></label>
+                        <div class="input-icon-group">
+                            <input type="tel" id="reg-phone" class="form-input" required placeholder="+91 XXXXXXXXXX">
+                            <i class="fas fa-phone"></i>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Bureau Role <span class="required">*</span></label>
+                        <div class="input-icon-group">
+                            <select id="reg-role" class="form-input form-select" onchange="handleRoleChange()">
+                                <option value="user">Citizen / Driver</option>
+                                <option value="officer">Enforcement Officer</option>
+                            </select>
+                            <i class="fas fa-id-badge"></i>
+                        </div>
+                    </div>
+                    <div id="officer-fields" style="display: none; animation: fadeIn 0.3s ease;">
+                        <div class="form-group">
+                            <label class="form-label">MCD Badge ID <span class="required">*</span></label>
+                            <div class="input-icon-group">
+                                <input type="text" id="reg-badge" class="form-input" placeholder="MCD-OFF-XXXX">
+                                <i class="fas fa-award"></i>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Assigned Department <span class="required">*</span></label>
+                            <div class="input-icon-group">
+                                <input type="text" id="reg-department" class="form-input"
+                                    placeholder="e.g. Traffic Bureau">
+                                <i class="fas fa-building"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Secure Password <span class="required">*</span></label>
+                        <div class="input-icon-group">
+                            <input type="password" id="reg-password" class="form-input" required
+                                oninput="checkPasswordStrength()" placeholder="••••••••">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <div class="password-strength">
+                            <div class="password-strength-bar" id="password-strength-bar"></div>
+                        </div>
+                        <span id="password-strength-text" style="font-size: 11px;"></span>
+                    </div>
+                    <div class="form-group" style="margin-bottom: 30px;">
+                        <label class="form-label">Confirm Passphrase <span class="required">*</span></label>
+                        <div class="input-icon-group">
+                            <input type="password" id="reg-confirm-password" class="form-input" required
+                                placeholder="••••••••">
+                            <i class="fas fa-check-double"></i>
+                        </div>
+                    </div>
+                    <button type="submit" id="register-btn" class="btn btn-primary"
+                        style="width: 100%; display: flex; align-items: center; justify-content: center; gap: 10px;">
+                        <span>CREATE BUREAU ACCOUNT</span>
+                        <i class="fas fa-user-plus"></i>
+                    </button>
+                </form>
+            </div>
         </div>
     </div>
 </div>
