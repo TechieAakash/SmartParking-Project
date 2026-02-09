@@ -233,14 +233,14 @@ const requestOTP = async (req, res, next) => {
     });
 
     // Send Email
-    const sent = await sendEmail(
+    const result = await sendEmail(
       email,
       'Your Smart Parking OTP',
       `Your verification code is: ${otp}. It expires in 5 minutes.`
     );
 
-    if (!sent) {
-      throw new Error('Failed to send OTP email. Please check server logs.');
+    if (!result.success) {
+      throw new Error(`Email failed: ${result.error || 'Unknown SMTP error'}`);
     }
 
     successResponse(res, { message: 'OTP sent to your email' });
