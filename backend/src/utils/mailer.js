@@ -1,16 +1,18 @@
 const nodemailer = require('nodemailer');
 
-// Create transporter
+// Create transporter with explicit SMTP settings to avoid IPv6 issues
 const transporter = nodemailer.createTransport({
-  service: process.env.EMAIL_SERVICE || 'gmail',
+  host: 'smtp.gmail.com',
+  port: 465,
+  secure: true, // Use SSL
   auth: {
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASS
   },
   // Prevent hangs if SMTP is slow/unreachable
-  connectionTimeout: 10000, 
-  greetingTimeout: 10000,
-  socketTimeout: 15000
+  connectionTimeout: 15000, 
+  greetingTimeout: 15000,
+  socketTimeout: 20000
 });
 
 /**
