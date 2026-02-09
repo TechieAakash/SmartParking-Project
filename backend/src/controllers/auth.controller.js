@@ -112,6 +112,13 @@ const register = async (req, res, next) => {
     // Remove sensitive data from response
     const userResponse = user.toSafeObject();
     
+    // Asynchronously send welcome email (don't block the response)
+    sendEmail(
+      email,
+      'Welcome to Smart Parking System!',
+      `Hello ${fullName},\n\nWelcome to the MCD Smart Parking Enforcement System. Your account has been successfully created.\n\nYou can now log in to the portal and start using our services.\n\nBest Regards,\nMCD Support Team`
+    ).catch(err => console.error('📧 Welcome email failed:', err.message));
+
     successResponse(res, { user: userResponse, token: accessToken, refreshToken }, 'User registered successfully', 201);
   } catch (error) {
     next(error);
