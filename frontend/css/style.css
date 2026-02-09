@@ -1556,14 +1556,18 @@ body {
 
 .auth-tabs {
     display: flex;
-    gap: 10px;
+    gap: 8px;
     margin-bottom: 24px;
     background: #f7fafc;
     padding: 6px;
     border-radius: 12px;
+    flex-wrap: wrap;
+}
+
 .auth-tab {
     flex: 1;
-    padding: 12px;
+    min-width: 100px;
+    padding: 12px 16px;
     border: none;
     background: transparent;
     border-radius: 8px;
@@ -1571,6 +1575,8 @@ body {
     cursor: pointer;
     transition: all 0.3s;
     color: #4a5568;
+    font-size: 14px;
+    text-align: center;
 }
 
 .auth-tab.active {
@@ -2937,6 +2943,120 @@ body {
     .resolution-options {
         grid-template-columns: 1fr !important;
     }
+
+    /* ========== AUTH MODAL RESPONSIVE (TABLET) ========== */
+    .auth-modal-content {
+        width: 95%;
+        max-width: 420px;
+        margin: 15px;
+        border-radius: 16px;
+    }
+
+    .auth-modal-header {
+        padding: 24px 20px;
+        border-radius: 16px 16px 0 0;
+    }
+
+    .auth-modal-header h2 {
+        font-size: 20px;
+    }
+
+    .auth-modal-body {
+        padding: 20px;
+    }
+
+    .auth-tabs {
+        gap: 6px;
+        padding: 5px;
+    }
+
+    .auth-tab {
+        padding: 10px 14px;
+        font-size: 13px;
+        min-width: 80px;
+    }
+
+    .form-group {
+        margin-bottom: 16px;
+    }
+
+    .form-group label {
+        font-size: 13px;
+        margin-bottom: 6px;
+    }
+
+    .form-input {
+        padding: 12px 14px;
+        font-size: 15px;
+        border-radius: 10px;
+    }
+
+    .social-login {
+        margin-top: 20px;
+        padding-top: 20px;
+        border-top: 1px solid #e2e8f0;
+    }
+
+    .social-login p {
+        font-size: 13px;
+        color: #718096;
+        margin-bottom: 12px;
+    }
+
+    .social-btns {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .social-btn {
+        width: 100%;
+        padding: 12px 16px;
+        border-radius: 10px;
+        font-size: 14px;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        cursor: pointer;
+        transition: all 0.3s;
+        border: 2px solid #e2e8f0;
+        background: white;
+    }
+
+    .social-btn.google {
+        color: #4285f4;
+        border-color: #4285f4;
+    }
+
+    .social-btn.google:hover {
+        background: #4285f4;
+        color: white;
+    }
+
+    .close-btn {
+        width: 32px;
+        height: 32px;
+        font-size: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(255, 255, 255, 0.2);
+        border: none;
+        border-radius: 50%;
+        color: white;
+        cursor: pointer;
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        transition: all 0.3s;
+    }
+
+    .close-btn:hover {
+        background: rgba(255, 255, 255, 0.3);
+        transform: scale(1.1);
+    }
 }
 
 /* ============================================
@@ -3113,6 +3233,130 @@ body {
         height: 50px !important;
         right: 15px !important;
         bottom: 15px !important;
+    }
+
+    /* ========== AUTH MODAL RESPONSIVE (SMARTPHONE) ========== */
+    .auth-modal {
+        padding: 10px;
+    }
+
+    .auth-modal-content {
+        width: 100%;
+        max-width: none;
+        margin: 0;
+        border-radius: 0;
+        max-height: 100vh;
+        min-height: 100vh;
+    }
+
+    .auth-modal-header {
+        padding: 20px 16px;
+        border-radius: 0;
+    }
+
+    .auth-modal-header h2 {
+        font-size: 18px;
+        margin-bottom: 4px;
+    }
+
+    .auth-modal-header p {
+        font-size: 12px;
+    }
+
+    .auth-modal-body {
+        padding: 16px;
+        padding-bottom: 30px;
+    }
+
+    .auth-tabs {
+        gap: 4px;
+        padding: 4px;
+        margin-bottom: 20px;
+    }
+
+    .auth-tab {
+        padding: 10px 12px;
+        font-size: 13px;
+        min-width: 70px;
+    }
+
+    .form-group {
+        margin-bottom: 14px;
+    }
+
+    .form-group label {
+        font-size: 12px;
+        font-weight: 600;
+        color: #4a5568;
+        margin-bottom: 5px;
+        display: block;
+    }
+
+    .form-input {
+        padding: 14px 12px;
+        font-size: 16px;
+        /* Prevents zoom on iOS */
+        border-radius: 8px;
+        border: 2px solid #e2e8f0;
+        -webkit-appearance: none;
+        appearance: none;
+    }
+
+    .form-input:focus {
+        border-color: #4299e1;
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.15);
+    }
+
+    select.form-input {
+        background-position: right 10px center;
+    }
+
+    .password-strength {
+        margin-top: 8px;
+    }
+
+    .social-login {
+        margin-top: 24px;
+        padding-top: 20px;
+    }
+
+    .social-login p {
+        font-size: 12px;
+        text-align: center;
+    }
+
+    .social-btns {
+        gap: 8px;
+    }
+
+    .social-btn {
+        padding: 14px;
+        font-size: 14px;
+        border-radius: 8px;
+    }
+
+    .close-btn {
+        width: 36px;
+        height: 36px;
+        font-size: 24px;
+        top: 12px;
+        right: 12px;
+    }
+
+    /* Officer fields on register */
+    #officer-fields .form-group {
+        margin-bottom: 12px;
+    }
+
+    /* Auth modal buttons */
+    #login-btn,
+    #register-btn {
+        padding: 14px 20px;
+        font-size: 15px;
+        font-weight: 600;
+        border-radius: 10px;
+        margin-top: 16px;
     }
 }
 
