@@ -101,7 +101,7 @@ const handleCallback = [
     const host = req.get('host');
     const defaultUrl = `${protocol}://${host}`;
     
-    const frontendUrl = process.env.CORS_ORIGIN || defaultUrl;
+    const frontendUrl = process.env.CORS_ORIGIN || 'https://smartparking-project-2.onrender.com';
     const baseUrl = frontendUrl.split(',')[0].trim();
     
     console.log(`📡 Redirecting to baseUrl: ${baseUrl}`);

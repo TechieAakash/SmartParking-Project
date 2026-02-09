@@ -2,8 +2,8 @@
 // Auto-detect environment: Use Render backend in production, localhost in development
 const isProduction = window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1';
 
-// Production API on Render (relative for fetch, full URL for OAuth)
-const PRODUCTION_API_URL = '/api';
+// Production API on Render (Using full Railway URL since no proxy is in _redirects)
+const PRODUCTION_API_URL = 'https://smartparking-backend-production.up.railway.app/api';
 const DEVELOPMENT_API_URL = 'http://localhost:5000/api';
 
 // Backend URL for OAuth redirects (must be full URL)
